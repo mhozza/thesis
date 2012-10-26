@@ -1,0 +1,40 @@
+Citanie
+1)background veci - bioinformaticky uvod
+  - skripta
+  - (uvod do biologie) - tutorial
+2)machine learning
+  - random forest(od mica)
+3)alignments(zarovnania)
+  - herton - chyby v elementoch
+
+ 
+-----------------------------------
+Zaciatok
+ - simulator - generator dat
+    - vygenerujeme pasku gen/negen 1/0
+       - markvov chain - 2 parametre - p,q - pravdepodobnost ze zostane v stave
+         - p = 0.999, q = 0.99
+    -  mutator genov
+       - kazdy nezavisle s pravdepodobnostou 10% zrusi
+    -  master geny - povodne 
+    -  clovek geny - mutator - vstup
+    -  mys geny - mutator - vstup
+    -  clovek DNA - random ACGT - vstup
+    -  mys DNA - zavisi od master, mys gen, clovek dna - vstup
+
+
+    cl. gen 0    1   1   0
+    ms. gen 0    1   0   1
+            0.65 0.8 0.7 0.7
+
+
+    delecie - v oboch
+    markvov chain - nemazem -> mazem 1%, naopak 10%
+    
+    
+uvodne kecy - rovan
+    - co je zarovnanie
+    - nieco o stromcekoch
+    - nieco o klasifikatoroch
+
+ 
