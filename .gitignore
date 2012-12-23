@@ -7,5 +7,14 @@
 *.toc
 *.lot
 *.lof
+*.4ct
+*.4tc
+*.idv
+*.lg
+*.tmp
+*.xref
 main.pdf
 main.ps
+main.html
+main.css
+main.dvi
