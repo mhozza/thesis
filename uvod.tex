@@ -1,0 +1,25 @@
+\phantomsection
+\addcontentsline{toc}{chapter}{Úvod}
+\chapter*{Úvod}
+
+
+% preco je zarovnanie dolezite
+Najnovšie technológie sekvenovania DNA produkujú stále väššie monožstvo DNA sekvencií rôznych organizmov. Spolu s tým stúpa aj potreba rozumieť týmto dátam. 
+Dôležitým krokom k ich porozumeniu je \textit{zarovnávanie sekvencií}. Pomocou zarovnávania sekvencií dokážeme zistiť ich štruktúru a následne funkciu jednotlivých častí.
+
+% zarovnavacie algoritmy
+Existujú rôzne algoritmy na zarovnávanie sekvencií. Väčšina z nich je založená na nejakom pravdepodobostnom modeli, pričom sa snažia nájsť zarovnanie s čo najväčšou pravdepodobnosťou. Či už ide o algoritmy založené na dynamickom programovaní, ktoré s určitosťou nájdu najpravdepodbnejšie zarovnanie, ale za cenu kvadradického času v závislosti od dĺžok sekvencií, alebo heuristické algoritmy, ktoré nie vždy nájdu najpravdepodobnejšie zarovnanie, ale pracujú oveľa rýchlejšie.
+
+My sa budeme zaoberať algoritmom založeným na dynamickom programovaní, kde kvalita výsledného zarovnania je ovplyvnená len pravdepodobnostným modelom.
+
+Základný model berie do úvahy len jednotlivé \textit{bázy} a pravdepodobnosti \textit{substitúcie (mutácie)}, \textit{inzercie} a \textit{delécie}.
+Náš model bude navyše uvažovať aj dodatočné informácie získané napríklad z rôznych anotátorov.
+
+% naco je dobra klasifikacia v zarovnaniach
+Keďže množstvo dodatočnej informácie môže byť veľmi veľké, %TODO : radovo kolko?
+nie je možné skonštruovať vhodnú skórovaciu maticu pre zarovnávací algoritmus.
+Namiesto nej teda použijeme klasifikátor, ktorý natrénujeme na sekvenciách so známim zarovnaním a potom použijeme na zarovnanie nových sekvencií. V našom prípade sme si vybrali klasifikátor \textit{Náhodný les (Random forest)}.
+
+%obsah prace
+V práci sa budeme zaoberať rôznymi spôsobmi trénovania, pričom navrneme vlastné modely a porovnáme už s existujúcimi. Ďalej sa budeme zaoberať spôsobom zberu dodatočných informácií, využitu natrénivaného klasifikátora na zarovnávanie nových sekvencií aj pri \textit{prezarovnaní} už existujúcich zarovnaní a implementujeme univerzálny framework, ktorý umožní využívať náš klasifikátor pri rôznych zarovnaniach.
+
