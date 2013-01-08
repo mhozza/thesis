@@ -1,0 +1,12 @@
+\chapter{Zarovnávanie sekvencií}
+\section{Podobnosť sekvencií a sekvenčná homológia}
+V prírode vznikajú nové sekvencie modifikáciou už existujúcich. Preto môžme často spozorovať podobnosť medzi neznámou sekvenciou a sekvenciou o ktorej už niečo vieme. Ak zistíme podobnosti medzi sekvenciami, môžeme preniesť informácie o štruktúre a/alebo funkcii na novú sekvenciu.
+
+Hovoríme, že dve súvisiace sekvencie sú \textit{homologické}, a že prenášame informácie \textit{podľa homológie}.
+
+Na prvý pohľad rozhodnutie podobnosti dvoch biologických sekvencií nie je nič iné, ako rozhodnutie podobnosti dvoch textových reťazcov. Mnoho metód analýzy biologických sekvencií je preto zakorenená v informatike, kde je už mnoho literatúry týkajúcej sa tejto problematiky.
+
+Vývoj sekvencií hromadí \textit{inzercie}, \textit{delécie} a \textit{substitúcie}, takže predtým ako môže byť vyhodnotená podobnosť, treba urobiť zarovnanie sekvencií. Preto je zarovnanie sekvencií veľmi dôležité.
+
+\section{Skórovacie schémy}
+Takmer všetky metódy zarovnania hľadajú zarovnanie dvoch reťazcov na základe nejakej \textit{skórovacej schémy}. Skórovacie schémy môžu byť veľmi jednoduché, napr. $+1$ za \textit{zhodu} a $-1$ za \textit{nezhodu}. Hoci ak chceme mať schému, kde biologicky najkorektnjšie zarovnanie má najvyššie skóre, musíme vziať do úvahy, že biologické sekvencie majú evolučnú históriu, $3D$ štrukturu a mnohé ďalšie vlastnosti obmedzujúce ich primárnu evolúciu. Preto skórovací systém vyžaduje starostlivé premyslenie a môže byť veľmi zložitý.
