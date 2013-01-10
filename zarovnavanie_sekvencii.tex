@@ -10,3 +10,35 @@ Vývoj sekvencií hromadí \textit{inzercie}, \textit{delécie} a \textit{substi
 
 \section{Skórovacie schémy}
 Takmer všetky metódy zarovnania hľadajú zarovnanie dvoch reťazcov na základe nejakej \textit{skórovacej schémy}. Skórovacie schémy môžu byť veľmi jednoduché, napr. $+1$ za \textit{zhodu} a $-1$ za \textit{nezhodu}. Hoci ak chceme mať schému, kde biologicky najkorektnjšie zarovnanie má najvyššie skóre, musíme vziať do úvahy, že biologické sekvencie majú evolučnú históriu, $3D$ štrukturu a mnohé ďalšie vlastnosti obmedzujúce ich primárnu evolúciu. Preto skórovací systém vyžaduje starostlivé premyslenie a môže byť veľmi zložitý.
+
+\section{Párové zarovnávanie}
+Párové zarovnávanie je základná úloha zarovnávania sekvencií, kde sa k sebe zarovnávajú dve sekvencie. V tejto práci sa budeme zaoberať len párovým zarovnávaním.
+
+Kľúčové problémy sú:
+\begin{enumerate}
+\item Aké typy zarovnávania by sme mali uvažovať
+\item Skórovací systém, ktorý použijeme na ohodnotenie zarovnania
+\item Algoritmus, ktorý použijeme na hľadanie optimálneho alebo dobrého zarovnania podľa skórovacieho systému
+\item Štatistické metódy na vyhodnotenie významnosti skóre zarovnania.
+\end{enumerate}
+
+\subsection{Typy zarovnaní}
+Základné typy zarovnaní sú \textit{Globálne zarovnanie} a \textit{Lokálne zarovnanie}. 
+Pri globálnom zarovnaní je výstupom zarovnanie celých sekvencií s najvyšším skóre. 
+Pri lokálnomn zarovnaní je výstupom zarovnanie nejakých poreťazcov sekvencií s najvyšším skóre.
+
+%\subsection{Skórovacie systémy}
+
+\subsection{Algoritmy na hľadanie zarovnaní}
+Máme daný skórovací systém, potrebujeme algoritmus, ktorý nájde optimálne zarovnanie dvoch sekvencií.
+Budeme uvažovať zarovnávanie s medzerami. To znamená, že môžeme do sekvencie pridať ľubovoľne veľa medzier, aby sme dosiahli lepšie skóre. Existuje 
+$$ {2n \choose n}  = \frac{(2n)!}{(n!)^2} \simeq \frac{2^{2n}}{\sqrt{\pi n}} $$
+možných globálnych zarovnaní. Čiže nie je možné v rozumnom čase nimi prejsť.
+
+Algoritmy na hľadanie zarovnaní využívajú \textit{dynamické programovanie}. Algoritmy s dynamickým programovaním garantujú nájdenie optimálneho zarovnania.
+Existujú aj heuristické algoritmy, ktoré môžu byť veľmi rýchle, avšak majú určité predpoklady a môže sa stať, že nenájdu najlepšie zarovnanie pre niektoré páry sekvencií.
+My sa budeme zaoberať len algoritmami využívajúcimi dynamické programovanie. Pre rôzne typy zarovnaní máme rôzne algoritmy zarovnávania.
+
+\subsection{Algoritmus pre globálne zarovnanie: Needelman-Wunch}
+
+\subsection{Algoritmus pre lokálne zarovnanie: Smith-Waterman}
