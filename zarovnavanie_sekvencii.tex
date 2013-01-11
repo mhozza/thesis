@@ -47,6 +47,24 @@ Máme dané 2 sekvencie $X = x_1x_2\dots x_n$ a $Y = y_1y_2\dots y_n$, budeme za
 
 %Idea je nasledovná - Nech máme optimálne zarovnanie dĺžky $n$. Zarovnanie dĺžky $n+1$ vieme vyrobiť 3 spôsobmi. Buď pridáme $(x_i,y_j)$, alebo $(x_i,-)$, alebo $(-,y_j)$, kde $i,\ j$ sú indexy prvej nepoužitej bázy v $X$ resp. $Y$. Možnosť s najlepším skore nám dá optimálne zarovnanie dĺžky $n+1$.
 
+\begin{figure}[htp]
+    \centering
+    \begin{subfigure}[m]{0.5\textwidth}    
+    \centering
+    \includegraphics[width=\textwidth]{images/global_alignment}
+    \end{subfigure}    
+    ~
+    \begin{subfigure}[m]{0.3\textwidth}    
+    \centering
+    \begin{verbatim}
+    CATGTCAT--A
+    CA-GTCCTAGA
+    \end{verbatim}
+    \end{subfigure}
+    \caption{Globálne zarovnanie}
+    \label{fig:global_align}
+\end{figure}
+
 Algoritmus postupne vypĺňa 2-rozmernú tabuľku $A$. Riadky zodpovedajú bázam sekvencie $X$ a stĺpce bázam $Y$. Na políčku $A[i,j]$ bude skóre najlepšieho zarovnania prvých $i$ báz sekvencie $X$ a prvých $j$ báz $Y$.
 
 Ak zarovnávame sekvenciu s prázdnou sekvenciou, tak skóre bude $-n$, kde $n$ je dĺžka sekvencie. Bude tam $n$ pomlčiek, každá nám dá skóre $-1$. Takto vyplníme riadky a stĺpce $A[i,0]$ a $A[0,j]$.
@@ -75,6 +93,24 @@ Pamäťová zložitosť sa dá zredukovať na $O(n+m)$ za cenu zhruba dvojnásob
 
 % TODO: preformulovať aby sedelo na lokalne zarovnania
 %Máme dané 2 sekvencie $X = x_1x_2\dots x_n$ a $Y = y_1y_2\dots y_n$, budeme zarovnávať všetky znaky sekvencie $X$ a všetky znaky sekvencie $Y$. Budeme používať jednoduché skórovanie: $+1$ za zhodu, $-1$ za nezhodu alebo pomlčku. 
+
+\begin{figure}[htp]
+    \centering
+    \begin{subfigure}[m]{0.5\textwidth}    
+    \centering
+    \includegraphics[width=\textwidth]{images/local_alignment}
+    \end{subfigure}    
+    ~
+    \begin{subfigure}[m]{0.3\textwidth}    
+    \centering
+    \begin{verbatim}
+    GT-CTA
+    GTCCTA
+    \end{verbatim}
+    \end{subfigure}
+    \caption{Lokálne zarovnanie}
+    \label{fig:global_align}
+\end{figure}
 
 Algoritmus pre lokálne zarovnania sa líši len v niekoľkých malých detajloch. Opäť vypĺňame tabuľku $A$, s tým, že v $A[i,j]$ bude najvyššie skóre lokálneho zarovnania medzi sekvenciami $x_1x_2\dots x_i$ a $y_1y_2\dots y_j$, ktoré buď obsahuje bázy $x_i$ aj $y_j$, alebo je prázdne. Teda na ľubovoľnom mieste uvažujeme aj prázdne zarovnanie so skóre 0 (v matici nebudú záporné čísla). Vzťah pre výpočet $A[i,j]$ vyzerá takto:
 $$A[i,j] = \max \left\{ 
