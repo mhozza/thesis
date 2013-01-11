@@ -23,15 +23,15 @@ Kľúčové problémy sú:
 \end{enumerate}
 
 \subsection{Typy zarovnaní}
-Základné typy zarovnaní sú \textit{Globálne zarovnanie} a \textit{Lokálne zarovnanie}. 
-Pri globálnom zarovnaní je výstupom zarovnanie celých sekvencií s najvyšším skóre. 
+Základné typy zarovnaní sú \textit{Globálne zarovnanie} a \textit{Lokálne zarovnanie}.\\ 
+Pri globálnom zarovnaní je výstupom zarovnanie celých sekvencií s najvyšším skóre.\\
 Pri lokálnomn zarovnaní je výstupom zarovnanie nejakých poreťazcov sekvencií s najvyšším skóre.
 
 %\subsection{Skórovacie systémy}
 
 \subsection{Algoritmy na hľadanie zarovnaní}
 Máme daný skórovací systém, potrebujeme algoritmus, ktorý nájde optimálne zarovnanie dvoch sekvencií.
-Budeme uvažovať zarovnávanie s medzerami. To znamená, že môžeme do sekvencie pridať ľubovoľne veľa medzier, aby sme dosiahli lepšie skóre. Existuje 
+Budeme uvažovať zarovnávanie s medzerami. To znamená, že môžeme do sekvencie pridať ľubovoľne veľa medzier, aby sme dosiahli lepšie skóre. Pre 2 sekvencie dĺžky $n$ existuje 
 $$ {2n \choose n}  = \frac{(2n)!}{(n!)^2} \simeq \frac{2^{2n}}{\sqrt{\pi n}} $$
 možných globálnych zarovnaní. Čiže nie je možné v rozumnom čase nimi prejsť.
 
@@ -40,5 +40,32 @@ Existujú aj heuristické algoritmy, ktoré môžu byť veľmi rýchle, avšak m
 My sa budeme zaoberať len algoritmami využívajúcimi dynamické programovanie. Pre rôzne typy zarovnaní máme rôzne algoritmy zarovnávania.
 
 \subsection{Algoritmus pre globálne zarovnanie: Needelman-Wunch}
+Máme dané 2 sekvencie $X = x_1x_2\dots x_n$ a $Y = y_1y_2\dots y_n$, budeme zarovnávať všetky znaky sekvencie $X$ a všetky znaky sekvencie $Y$. Budeme používať jednoduché skórovanie: $+1$ za zhodu, $-1$ za nezhodu alebo pomlčku.
+
+%Idea je nasledovná - Nech máme optimálne zarovnanie dĺžky $n$. Zarovnanie dĺžky $n+1$ vieme vyrobiť 3 spôsobmi. Buď pridáme $(x_i,y_j)$, alebo $(x_i,-)$, alebo $(-,y_j)$, kde $i,\ j$ sú indexy prvej nepoužitej bázy v $X$ resp. $Y$. Možnosť s najlepším skore nám dá optimálne zarovnanie dĺžky $n+1$.
+
+Algoritmus postupne vypĺňa 2-rozmernú tabuľku $A$. Riadky zodpovedajú bázam sekvencie $X$ a stĺpce bázam $Y$. Na políčku $A[i,j]$ bude skóre najlepšieho zarovnania prvých $i$ báz sekvencie $X$ a prvých $j$ báz $Y$.
+
+Ak zarovnávame sekvenciu s prázdnou sekvenciou, tak skóre bude $-n$, kde $n$ je dĺžka sekvencie. Bude tam $n$ pomlčiek, každá nám dá skóre $-1$. Takto vyplníme riadky a stĺpce $A[i,0]$ a $A[0,j]$.
+
+Ak chceme vyplniť políčko $A[i,j]$, musíme si uvedomiť ako môže vyzerať posledný stĺpec zarovnania $x_1x_2\dots x_i$ a $y_1y_2\dots y_j$. Máme iba 3 možnosti ako môže vyzerať posledný stĺpec najlepšieho zarovnania. Buď obsahuje $x_i$ alebo $y_j$ alebo oboje. Ak posledný stĺpec obsahuje oboje, cena tohto stĺpca je buď $+1$ ak $x_i = y_j$ alebo $-1$ ináč. AK by sme posledný stĺpec zmazali, dostali by sme zarovnanie $x_1x_2\dots x_{i-1}$ a $y_1y_2\dots y_{j-1}$, pričom musí ísť o najlepšie zarovnanie. To už máme vypočítané v políčku $A[i-1, j-1]$, čiže výsledné skóre bude $A[i-1, j-1] + s(x_i,y_j)$.
+
+Ak posledný stĺpec obsahuje len $x_i$ zarovnané s pomlčkou, skóre stĺpca bude $-1$ a po zmazaní dostávame zarovnanie $x_1x_2\dots x_{i-1}$ a $y_1y_2\dots y_{j}$, výsledné skóre bude teda $A[i-1, j] -1$. V prípade, že posledný stĺpec obsahuje len $y_i$, tak skóre vypočítame analogicky.
+
+Najlepšie skóre bude maximum skóre pre všetky 3 prípady.
+Dostávame teda nasledujúci vzťah pre výpočet $A[i,j]$:
+$$A[i,j] = \max \left\{ 
+\begin{array}{l}
+A[i-1,j-1]+s(x_i, y_j)\\ 
+A[i-1,j]-1\\
+A[i,j-1]-1 
+\end{array} \right.$$
+Tabuľku vieme vypĺňať po riadkoch, pričom každé políčok vieme vypočítať z troch políčok, ktoré už máme vypočítané. 
+
+Ak nás zaujíma aj zarovnanie -- nie len jeho skóre -- vieme si pre každé políčko zapamätať ktorá z 3 možností dosiahla maximálnu hodnotu. Na základe tejto informácie potom vieme zrekonštruovať zarovnanie tak, že postupne z posledného políčka ($A[n,m]$) budeme prechádzať na políčko, z ktorého sme vypočítali aktuálnu hodnotu.
+
+Časová zložitosť je $O(nm)$, pretože vypĺňame $nm$ políčok, každé v konštantnom čase. Zjavne aj pamäťová zložitosť je $O(nm)$.
+
+Pamäťová zložitosť sa dá zredukovať na $O(n+m)$ za cenu zhruba dvojnásobného času výpočtu \cite{hirschberg}.
 
 \subsection{Algoritmus pre lokálne zarovnanie: Smith-Waterman}
