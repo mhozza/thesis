@@ -22,7 +22,7 @@ Kľúčové problémy sú:
 \item Aké typy zarovnávania by sme mali uvažovať
 \item Skórovací systém, ktorý použijeme na ohodnotenie zarovnania
 \item Algoritmus, ktorý použijeme na hľadanie optimálneho alebo dobrého zarovnania podľa skórovacieho systému
-\item Štatistické metódy na vyhodnotenie významnosti skóre zarovnania.
+\item Štatistická významnosť zarovnania.
 \end{enumerate}
 
 \subsection{Typy zarovnaní}
@@ -122,3 +122,15 @@ A[i,j-1]-1
 \end{array} \right.$$
 
 Časová aj pamäťová zložitosť sú, rovnako ako pri globálnom zarovnaní $O(nm)$.
+
+\subsection{Štatistická významnosť zarovnania}
+Smith-Watermanov algoritmus nájde najlepšie lokálne zarovnanie, pre ľubovoľné dve sekvencie. Treba však rozhodnúť, či je zarovnanie dostatočne vierohodné na to, aby predstavovalo skutočnú podobnosť sekvencií a nie len najlepšie zarovnanie dvoch nesúvisiacich sekvencií.
+Ako vodítko pri rozhodnutí sa používajú identifikátory \textit{štatistickej významnosti} zarovnania: \textit{P-hodnota (P-value)} alebo \textit{E-hodnota (E-value)}.
+
+%Predpokladajme, že sme našli zarovnanie medzi sekvenciami dĺžky $n$ a $m$ so skóre $s$.
+P-hodnota zarovnania je pravdepodobnosť, že medzi nádhodne generovanými sekvenciami tej istej dĺžky by sme našli zarovnanie s rovnakým skóre alebo vyšším. Keďže P-hodnota závisí od dĺžok sekvencií a skóre, musíme ju počítať pri každom zarovnaní. Je však časovo náročné robiť to generovaním veľkého množstva zarovnaní, preto sa používajú matematicky odvodené vzorce na odhad tejto hodnoty. (\cite{Karlin}, \cite{Mitrophanov}).
+
+E-hodnota vyjadruje priemerný počet zarovnaní so skóre aspoň takým ako má naše zarovnanie medzi náhodne generovanými sekvenciami. E-hodnota teda môže byť aj väčšia ako jedna. Ak je E-hodnota väčšia ako jedna, tak čisto náhodou by sme očakávali aspoň 1 také silné zarovnanie a teda zarovnania s tak vysokou E-hodnotou nebudeme považovať za štatisticky významné.
+
+V štatistike sa v rôznych testoch štandardne používajú prahy na P-hodnotu $0.05$ alebo $0.01$.
+Pri zarovnávaní sekvencií však často používame ešte nižší prah, teda uvažujeme len zarovnania s P-hodnotou menšou ako napr. $10^{-5}$. Pri malých hodnotách sú P-hodnota a E-hodnota prebližne rovnaké, teda taký istý prah môžme použiť aj na E-hodnotu.
