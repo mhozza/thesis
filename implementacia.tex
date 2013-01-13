@@ -15,7 +15,6 @@ Pri odvodzovaní bude používať aj informáciu o tom, ktorá časť je gén a 
 Keďže simulátor vie spôsob akým generoval druhú sekvenciu z prvej, vie aj korektné zarovnanie.
 
 Simulátor má vopred daných niekolko konštánt -- pravdepodobnosti udalostí, ktoré môžu nastať.
-%TODO: ak bude treba zaberat miesto, drbnut sem tabuku
 
 \subsection{Generovanie informácie o génoch}
 Ak sa na danom mieste nachádza gén, označíme to $1$ inak $0$.
@@ -24,14 +23,33 @@ Gény bývajú súvislé úseky, takže ich treba generovať tak, že niekedy za
 \begin{figure}[htp]
     \centering
     \includegraphics[width=.3\textwidth]{images/markov_chain}
-    \caption{Markovova reťaz}
+    \caption{Markovova reťaz použitá na generovanie informácie o génoch}
     \label{fig:markov_chain}
 \end{figure}
 
 Generovanie robíme pomocou \textit{Markovovej reťaze (Markov Chain)} obr. \ref{fig:markov_chain}. Generujeme podľa aktuálneho stavu a v každom kroku sa podľa pravdepodobnosti rozhodneme či sa prepneme do iného stavu alebo ostaneme v tom istom. Rozhodnutie robíme pomocou \textit{falošnej mince (biased coin)}, kde hlava padne s určitou pravdepodobnosťou, ktorú vopred nastavíme.
-%TODO ak bude treba zabrat miesto, tak nejake zdrojaky
+
+%TODO ak bude treba zabrat miesto, tak sem drbnut nejake zdrojaky
+
+Máme vygenerovanú master postupnosť a z nej teraz vyrobíme dve postupnosti pre sekvencie tak, že skopírujeme master sekvenciu, pričom každú 1 s určitou pravdepodobnosťou (v našom prípade $0,1$) zmeníme na 0.
 
 \subsection{Simulácia mutácie}
 
+Máme vygenerovanú sekvenciu a ideme vyrobiť zmutovanú sekvenciu. Spravíme to tak, že s určitou pravdepodobnosťou sa nahradí báza z pôvodnej sekvencie inou bázou. Pravdepodobnosť závisí aj od toho, či je na danej pozícii gén v oboch sekvenciách, v jednej, alebo v žiadnej. Na rozhodnutie používame jednu z troch falošných mincí podľa toho, ktorá z možností nastala (tabuľka \ref{tab:mutation_prob}).
+
+\begin{table}[h]
+\catcode`\-=12 %kvoli babelu a pomlcke
+\centering
+\begin{tabular}{lcccc}
+Gén A & 0 & 0 & 1 & 1\\
+Gén B & 0 & 1 & 0 & 1\\
+Pravdepodobnosť & $0,35$ & $0,3$ & $0,3$ & $0,2$\\
+\end{tabular}
+\caption{Pravdepodobnosti mutácie}
+\label{tab:mutation_prob}
+\end{table}
+
 \subsection{Simulácia delécie}
+Deléciu simulujeme opäť pomocou Markovovej reťaze, pretože pri evolúcii majú tendenciu vypadávať súvislé úseky. Pravdepodobnosť, že začneme mazať je $0,01$ a že prestaneme $0,1$.
+Ak mažeme, nahradzujeme danú bázu znakom {\tt '-'}. 
 
