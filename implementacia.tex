@@ -1,3 +1,25 @@
 \chapter{Implementácia}
 
 \section{Simulátor}
+
+Simulátor sĺuži na overenie funkčnosti klasifikátora. Náhodne vygeneruje 2 sekvencie, ktoré vznikli zo spoločného predka a vyrobí korektné zarovnanie. Okrem toho vyrobí aj nejaké dodatočné informácie ktoré majú pomôcť pri zarovnávaní.
+
+\subsection{Algoritmus}
+Simulátor vygeneruje informáciu o tom, ktoré časti sekvencie prisĺuchaju génom a ktoré nie. Informácia má podobu boolovskeho vektora.
+Simulátor najskôr vygeneruje \textit{základnú (master) postupnosť} a z nej odvodí dve ďalšie postupnosti, ktoré zodpovedajú sekvenciám.
+
+Okrem toho simulátor vygeneruje dve sekvencie, pričom prvú vyrobí náhodne a druhú odvodí z nej pomocou mutácie a inzercie/delécie.
+V našom prípade sme inzerciu vynechali a simulujeme ju ako deléciu v druhej sekvencii.
+Pri odvodzovaní bude používať aj informáciu o tom, ktorá časť je gén a ktorá nie.
+
+Keďže simulátor vie spôsob akým generoval druhú sekvenciu z prvej, vie aj korektné zarovnanie.
+
+Simulátor má vopred daných niekolko konštánt -- pravdepodobnosti udalostí, ktoré môžu nastať.
+%TODO: ak bude treba zaberat miesto, drbnut sem tabuku
+
+\subsection{Generovanie informácie o génoch}
+
+\subsection{Simulácia mutácie}
+
+\subsection{Simulácia delécie}
+
