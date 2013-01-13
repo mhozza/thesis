@@ -9,6 +9,7 @@
 \usepackage{fontenc}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{amsthm}
 \usepackage{epsfig}
 \usepackage{wrapfig}
 \usepackage{graphicx}
@@ -24,6 +25,7 @@
 \usepackage{listings}
 \renewcommand\baselinestretch{1.3} % riadkovanie jeden a pol
 
+%zdrojaky
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
@@ -54,6 +56,12 @@
   escapeinside={\%*}{*)},            % if you want to add a comment within your code
   morekeywords={*,...}               % if you want to add more keywords to the set
 }
+
+%makra
+\newtheorem{vt}{Veta}[section] 
+\newtheorem{lema}[vt]{Lema}
+\theoremstyle{definition}
+\newtheorem{df}[vt]{Definícia}
 
 % pekne pokope definujeme potrebne udaje
 \def\mftitle{Zarovnávanie sekvencií s použitím metód klasifikácie}
