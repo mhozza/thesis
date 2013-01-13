@@ -18,6 +18,18 @@ Simulátor má vopred daných niekolko konštánt -- pravdepodobnosti udalostí,
 %TODO: ak bude treba zaberat miesto, drbnut sem tabuku
 
 \subsection{Generovanie informácie o génoch}
+Ak sa na danom mieste nachádza gén, označíme to $1$ inak $0$.
+Gény bývajú súvislé úseky, takže ich treba generovať tak, že niekedy začneme gén, potom generujeme 1, potom skončíme gén a generujeme 0. Potom môžme opäť začať gén atď.
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=.3\textwidth]{images/markov_chain}
+    \caption{Markovova reťaz}
+    \label{fig:markov_chain}
+\end{figure}
+
+Generovanie robíme pomocou \textit{Markovovej reťaze (Markov Chain)} obr. \ref{fig:markov_chain}. Generujeme podľa aktuálneho stavu a v každom kroku sa podľa pravdepodobnosti rozhodneme či sa prepneme do iného stavu alebo ostaneme v tom istom. Rozhodnutie robíme pomocou \textit{falošnej mince (biased coin)}, kde hlava padne s určitou pravdepodobnosťou, ktorú vopred nastavíme.
+%TODO ak bude treba zabrat miesto, tak nejake zdrojaky
 
 \subsection{Simulácia mutácie}
 
