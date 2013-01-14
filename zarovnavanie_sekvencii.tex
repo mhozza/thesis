@@ -1,15 +1,27 @@
 \chapter{Zarovnávanie sekvencií}
 
-V tejto kapitole si stručne popíšeme čo je to globálne a lokálne zarovnanie a ukážeme základné algoritmy na hľadanie globálneho a lokálneho zarovnania. Tieto algoritmy budeme neskôr s miernou modifikáciou používať pri našom riešení.
+V tejto kapitole si stručne popíšeme čo je to globálne a lokálne zarovnanie a ukážeme základné algoritmy na hľadanie globálneho a lokálneho zarovnania. Tieto algoritmy budeme neskôr modifikované používať pri našom riešení.
 
-\section{Podobnosť sekvencií a sekvenčná homológia}
-V prírode vznikajú nové sekvencie modifikáciou už existujúcich. Preto môžme často spozorovať podobnosť medzi neznámou sekvenciou a sekvenciou o ktorej už niečo vieme. Ak zistíme podobnosti medzi sekvenciami, môžeme preniesť informácie o štruktúre a/alebo funkcii na novú sekvenciu.
+\section{Podobnosť sekvencií, sekvenčná homológia a zarovnanie}
+V prírode vznikajú nové sekvencie modifikáciou už existujúcich (evolúciou). Preto môžme často spozorovať podobnosť medzi neznámou sekvenciou a sekvenciou o ktorej už niečo vieme. Ak zistíme podobnosti medzi sekvenciami, môžeme preniesť informácie o štruktúre a/alebo funkcii na novú sekvenciu.
 
-Hovoríme, že dve súvisiace sekvencie sú \textit{homologické}, a že prenášame informácie \textit{podľa homológie}.
+Podobné sekvencie, ktoré sa vyvinuli mutáciami so sekvencie v spoločnom predkovi sa nazývajú \textit{homologické} a pod pojmom \textit{hľadanie homológov} rozumieme hľadanie takých podobností, ktoré s veľkou pravdepodobnosťou vznikli práve zdieľanou evolučnou históriou.
 
-Na prvý pohľad rozhodnutie podobnosti dvoch biologických sekvencií nie je nič iné, ako rozhodnutie podobnosti dvoch textových reťazcov. Mnoho metód analýzy biologických sekvencií je preto zakorenená v informatike, kde je už mnoho literatúry týkajúcej sa tejto problematiky.
+%Na prvý pohľad rozhodnutie podobnosti dvoch biologických sekvencií nie je nič iné, ako rozhodnutie podobnosti dvoch textových reťazcov. 
+%--Tuto vetu tam nechceme--Mnoho metód analýzy biologických sekvencií je preto zakorenená v informatike, kde je už mnoho literatúry týkajúcej sa tejto problematiky.
 
-Vývoj sekvencií hromadí \textit{inzercie}, \textit{delécie} a \textit{substitúcie}, takže predtým ako môže byť vyhodnotená podobnosť, treba urobiť zarovnanie sekvencií. Preto je zarovnanie sekvencií veľmi dôležité.
+%Vývoj sekvencií hromadí \textit{inzercie}, \textit{delécie} a \textit{substitúcie}, takže predtým ako môže byť vyhodnotená podobnosť, treba urobiť zarovnanie sekvencií. Preto je zarovnanie sekvencií veľmi dôležité.
+
+Počas evolúcie dvoch homologických sekvencií nastane veľa \textit{inzercií}, \textit{delécií} a \textit{substitúcií}, preto predtým ako môžeme začať porovnávať sekvencie, ich musíme zarovnať tak, aby homologické časti sekvencií boli na rovnakom mieste v zarovnaní.
+\cite{durbin, skripta}
+
+\begin{figure}[hbtp]
+    \centering
+    \includegraphics[width=\textwidth]{images/zarovnanie}
+    \caption{Lokálne zarovnanie}    
+    \label{fig:alignment_example}
+\end{figure}
+
 
 \section{Párové zarovnávanie}
 Párové zarovnávanie je základná úloha zarovnávania sekvencií, kde sa k sebe zarovnávajú dve sekvencie. V tejto práci sa budeme zaoberať len párovým zarovnávaním.
@@ -17,10 +29,12 @@ Párové zarovnávanie je základná úloha zarovnávania sekvencií, kde sa k s
 Kľúčové problémy sú:
 \begin{enumerate}
 \item Aké typy zarovnávania by sme mali uvažovať
-\item Skórovací systém, ktorý použijeme na ohodnotenie zarovnania
+\item Skórovací systém, ktorý použijeme na ohodnotenie zarovnania a trénovanie
 \item Algoritmus, ktorý použijeme na hľadanie optimálneho alebo dobrého zarovnania podľa skórovacieho systému
 \item Štatistická významnosť zarovnania.
 \end{enumerate}
+
+\cite{durbin}
 
 \section{Typy zarovnaní}
 Základné typy zarovnaní sú \textit{Globálne zarovnanie} a \textit{Lokálne zarovnanie}.
@@ -35,16 +49,20 @@ Výstupom je zarovnanie nejakých poreťazcov $x_i\dots x_j$ a $y_k\dots y_l$ se
 \end{df}
 %Pri globálnom zarovnaní je výstupom zarovnanie celých sekvencií s najvyšším skóre.
 %Pri lokálnomn zarovnaní je výstupom zarovnanie nejakých poreťazcov sekvencií s najvyšším skóre.
+\cite{skripta}
 
 \section{Skórovacie systémy}
-Takmer všetky metódy zarovnania hľadajú zarovnanie dvoch reťazcov na základe nejakej \textit{skórovacej schémy}. Skórovacie schémy môžu byť veľmi jednoduché, napr. $+1$ za \textit{zhodu} a $-1$ za \textit{nezhodu}. Hoci ak chceme mať schému, kde biologicky najkorektnjšie zarovnanie má najvyššie skóre, musíme vziať do úvahy, že biologické sekvencie majú evolučnú históriu, $3D$ štrukturu a mnohé ďalšie vlastnosti obmedzujúce ich primárnu evolúciu. Preto skórovací systém vyžaduje starostlivé premyslenie a môže byť veľmi zložitý.
+Takmer všetky metódy zarovnania hľadajú zarovnanie dvoch reťazcov na základe nejakej \textit{skórovacej schémy}. Skórovacie schémy môžu byť veľmi jednoduché, napr. $+1$ za \textit{zhodu} a $-1$ za \textit{nezhodu}. Hoci ak chceme mať schému, kde biologicky najkorektnjšie zarovnanie má najvyššie skóre, musíme vziať do úvahy, že biologické sekvencie majú evolučnú históriu, 3D štrukturu a mnohé ďalšie vlastnosti obmedzujúce ich evolúciu. Preto skórovací systém vyžaduje starostlivé premyslenie a môže byť veľmi zložitý.
+\cite{durbin}
 
 \subsection{Skórovacie matice}
-Niekedy chceme rózne zhody a nezhody skórovať rôzne - nie len všetky zhody $+1$ a nezhody $-1$.
+Skoro vždy však chceme rôzne zhody a nezhody skórovať rôzne - nie len všetky zhody $+1$ a nezhody $-1$.
 Skóre môže záviseť od toho aké bázy sú v danom stĺpci zarovnania. Na to môžme použiť \textit{skórovaciu maticu}, kde máme definované skóre pre každú dvojicu. Skórovacie matice sa využívajú najmä pri zarovnávaní proteínov, kde niektoré dvojice majú podobné chemické vlastnosti.
+\cite{durbin, skripta}
 
 \subsection{Afínne skórovanie medzier}
 V jednoduchom skórovaní sme dávali za pomčlku vždy rovnaké skóre ($-1$). Pri evolúcii sa však môže stať, že sa naraz zmaže niekoľko susedných báz. Pri \textit{afínnom skórovaní medzier} teda zavedieme dva typy skóre. Skóre za \textit{začatie medzery} a skóre za \textit{rozšírenie medzery}.
+\cite{skripta}
 
 \section{Algoritmy na hľadanie zarovnaní}
 Máme daný skórovací systém, potrebujeme algoritmus, ktorý nájde optimálne zarovnanie dvoch sekvencií.
@@ -55,6 +73,7 @@ možných globálnych zarovnaní. Čiže nie je možné v rozumnom čase nimi pr
 Algoritmy na hľadanie zarovnaní využívajú \textit{dynamické programovanie}. Algoritmy s dynamickým programovaním garantujú nájdenie optimálneho zarovnania.
 Existujú aj heuristické algoritmy, ktoré môžu byť veľmi rýchle, avšak majú určité predpoklady a môže sa stať, že nenájdu najlepšie zarovnanie pre niektoré páry sekvencií.
 My sa budeme zaoberať len algoritmami využívajúcimi dynamické programovanie. Pre rôzne typy zarovnaní máme rôzne algoritmy zarovnávania.
+\cite{durbin, skripta}
 
 \subsection{Algoritmus pre globálne zarovnanie: Needelman-Wunch}
 Máme dané 2 sekvencie $X = x_1x_2\dots x_n$ a $Y = y_1y_2\dots y_m$, budeme zarovnávať všetky znaky sekvencie $X$ a všetky znaky sekvencie $Y$. Budeme používať jednoduché skórovanie: $+1$ za zhodu, $-1$ za nezhodu alebo pomlčku.
@@ -75,19 +94,19 @@ Máme dané 2 sekvencie $X = x_1x_2\dots x_n$ a $Y = y_1y_2\dots y_m$, budeme za
     CA-GTCCTAGA
     \end{verbatim}
     \end{subfigure}
-    \caption{Globálne zarovnanie}
+    \caption{Globálne zarovnanie}    
     \label{fig:global_align}
 \end{figure}
 
-Algoritmus postupne vypĺňa 2-rozmernú tabuľku $A$. Riadky zodpovedajú bázam sekvencie $X$ a stĺpce bázam $Y$. Na políčku $A[i,j]$ bude skóre najlepšieho zarovnania prvých $i$ báz sekvencie $X$ a prvých $j$ báz $Y$.
+Algoritmus postupne vypĺňa 2-rozmernú maticu $A$. Riadky zodpovedajú bázam sekvencie $X$ a stĺpce bázam $Y$. Na políčku $A[i,j]$ bude skóre najlepšieho zarovnania prvých $i$ báz sekvencie $X$ a prvých $j$ báz $Y$.
 
-Ak zarovnávame sekvenciu s prázdnou sekvenciou, tak skóre bude $-n$, kde $n$ je dĺžka sekvencie. Bude tam $n$ pomlčiek, každá nám dá skóre $-1$. Takto vyplníme riadky a stĺpce $A[i,0]$ a $A[0,j]$.
+Keď zarovnávame sekvenciu s prázdnou sekvenciou, tak skóre bude $-n$, kde $n$ je dĺžka sekvencie. Bude tam $n$ pomlčiek, každá nám dá skóre $-1$. Takto vyplníme riadky a stĺpce $A[i,0]$ a $A[0,j]$.
 
-Ak chceme vyplniť políčko $A[i,j]$, musíme si uvedomiť ako môže vyzerať posledný stĺpec zarovnania $x_1x_2\dots x_i$ a $y_1y_2\dots y_j$. Máme iba 3 možnosti ako môže vyzerať posledný stĺpec najlepšieho zarovnania. Buď obsahuje $x_i$ alebo $y_j$ alebo oboje. Ak posledný stĺpec obsahuje oboje, cena tohto stĺpca je buď $+1$ ak $x_i = y_j$ alebo $-1$ ináč. AK by sme posledný stĺpec zmazali, dostali by sme zarovnanie $x_1x_2\dots x_{i-1}$ a $y_1y_2\dots y_{j-1}$, pričom musí ísť o najlepšie zarovnanie. To už máme vypočítané v políčku $A[i-1, j-1]$, čiže výsledné skóre bude $A[i-1, j-1] + s(x_i,y_j)$.
+Ak chceme vyplniť políčko $A[i,j]$, musíme si uvedomiť ako môže vyzerať posledný stĺpec zarovnania $x_1x_2\dots x_i$ a $y_1y_2\dots y_j$. Máme iba 3 možnosti ako môže vyzerať posledný stĺpec najlepšieho zarovnania. Buď obsahuje $x_i$ alebo $y_j$ alebo oboje. V prípade, že posledný stĺpec obsahuje oboje, cena tohto stĺpca je buď $+1$ ak $x_i = y_j$ alebo $-1$ ináč. Ak by sme posledný stĺpec zmazali, dostali by sme zarovnanie $x_1x_2\dots x_{i-1}$ a $y_1y_2\dots y_{j-1}$, pričom musí ísť o najlepšie zarovnanie. To už máme vypočítané v políčku $A[i-1, j-1]$, čiže výsledné skóre bude $A[i-1, j-1] + s(x_i,y_j)$.
 
-Ak posledný stĺpec obsahuje len $x_i$ zarovnané s pomlčkou, skóre stĺpca bude $-1$ a po zmazaní dostávame zarovnanie $x_1x_2\dots x_{i-1}$ a $y_1y_2\dots y_{j}$, výsledné skóre bude teda $A[i-1, j] -1$. V prípade, že posledný stĺpec obsahuje len $y_i$, tak skóre vypočítame analogicky.
+V prípade, že posledný stĺpec obsahuje len $x_i$ zarovnané s pomlčkou, skóre stĺpca bude $-1$ a po zmazaní dostávame zarovnanie $x_1x_2\dots x_{i-1}$ a $y_1y_2\dots y_{j}$, výsledné skóre bude teda $A[i-1, j] -1$. V prípade, že posledný stĺpec obsahuje len $y_i$, tak skóre vypočítame analogicky.
 
-Najlepšie skóre bude maximum skóre pre všetky 3 prípady.
+Najlepšie skóre bude maximálne skóre pre všetky 3 prípady.
 Dostávame teda nasledujúci vzťah pre výpočet $A[i,j]$:
 $$A[i,j] = \max \left\{ 
 \begin{array}{l}
@@ -95,9 +114,9 @@ A[i-1,j-1]+s(x_i, y_j)\\
 A[i-1,j]-1\\
 A[i,j-1]-1 
 \end{array} \right.$$
-Tabuľku vieme vypĺňať po riadkoch, pričom každé políčok vieme vypočítať z troch políčok, ktoré už máme vypočítané. 
+Maticu vieme vypĺňať po riadkoch, pričom každé políčok vieme vypočítať z troch políčok, ktoré už sú vypočítané. 
 
-Ak nás zaujíma aj zarovnanie -- nie len jeho skóre -- vieme si pre každé políčko zapamätať ktorá z 3 možností dosiahla maximálnu hodnotu. Na základe tejto informácie potom vieme zrekonštruovať zarovnanie tak, že postupne z posledného políčka ($A[n,m]$) budeme prechádzať na políčko, z ktorého sme vypočítali aktuálnu hodnotu.
+Ak nás zaujíma aj zarovnanie -- nie len jeho skóre -- vieme si pre každé políčko zapamätať ktorá z 3 možností dosiahla maximálnu hodnotu (červené šípky na Obr. \ref{fig:global_align}). Na základe tejto informácie potom vieme zrekonštruovať zarovnanie tak, že postupne z posledného políčka ($A[n,m]$) budeme prechádzať na políčko, z ktorého sme vypočítali aktuálnu hodnotu.
 
 Časová zložitosť je $O(nm)$, pretože vypĺňame $nm$ políčok, každé v konštantnom čase. Zjavne aj pamäťová zložitosť je $O(nm)$.
 
@@ -126,7 +145,7 @@ Pamäťová zložitosť sa dá zredukovať na $O(n+m)$ za cenu zhruba dvojnásob
     \label{fig:global_align}
 \end{figure}
 
-Algoritmus pre lokálne zarovnania sa líši len v niekoľkých malých detajloch. Opäť vypĺňame tabuľku $A$, s tým, že v $A[i,j]$ bude najvyššie skóre lokálneho zarovnania medzi sekvenciami $x_1x_2\dots x_i$ a $y_1y_2\dots y_j$, ktoré buď obsahuje bázy $x_i$ aj $y_j$, alebo je prázdne. Teda na ľubovoľnom mieste uvažujeme aj prázdne zarovnanie so skóre 0 (v matici nebudú záporné čísla). Vzťah pre výpočet $A[i,j]$ vyzerá takto:
+Algoritmus pre lokálne zarovnania sa líši len v niekoľkých malých detajloch. Opäť vypĺňame maticu $A$, s tým, že v $A[i,j]$ bude najvyššie skóre lokálneho zarovnania medzi sekvenciami $x_1x_2\dots x_i$ a $y_1y_2\dots y_j$, ktoré buď obsahuje bázy $x_i$ aj $y_j$, alebo je prázdne. Teda na ľubovoľnom mieste uvažujeme aj prázdne zarovnanie so skóre 0 (v matici nebudú záporné čísla). Vzťah pre výpočet $A[i,j]$ vyzerá takto:
 $$A[i,j] = \max \left\{ 
 \begin{array}{l}
 0\\
@@ -144,14 +163,15 @@ Ako vodítko pri rozhodnutí sa používajú identifikátory \textit{štatistick
 \begin{figure}[htp]
     \centering
     \includegraphics[width=.9\textwidth]{images/p-value}
-    \caption{P-hodnota lokálneho zarovnania so skóre $s = 25$ medzi 2 sekvenciami dĺžky $n = 100$ alebo $n = 200$}
+    \caption{P-hodnota lokálneho zarovnania}
+    P-hodnota lokálneho zarovnania so skóre $s = 25$ medzi 2 sekvenciami dĺžky $n = 100$ alebo $n = 200$
     \label{fig:p-value}
 \end{figure}
 
 %Predpokladajme, že sme našli zarovnanie medzi sekvenciami dĺžky $n$ a $m$ so skóre $s$.
 P-hodnota zarovnania je pravdepodobnosť, že medzi nádhodne generovanými sekvenciami tej istej dĺžky by sme našli zarovnanie s rovnakým skóre alebo vyšším. Keďže P-hodnota závisí od dĺžok sekvencií a skóre, musíme ju počítať pri každom zarovnaní. Je však časovo náročné robiť to generovaním veľkého množstva zarovnaní, preto sa používajú matematicky odvodené vzorce na odhad tejto hodnoty. (\cite{Karlin}, \cite{Mitrophanov}).
 
-E-hodnota vyjadruje priemerný počet zarovnaní so skóre aspoň takým ako má naše zarovnanie medzi náhodne generovanými sekvenciami. E-hodnota teda môže byť aj väčšia ako jedna. Ak je E-hodnota väčšia ako jedna, tak čisto náhodou by sme očakávali aspoň 1 také silné zarovnanie a teda zarovnania s tak vysokou E-hodnotou nebudeme považovať za štatisticky významné.
+E-hodnota vyjadruje strednú hodnotu počtu zarovnaní so skóre aspoň takým ako má naše zarovnanie medzi náhodne generovanými sekvenciami. E-hodnota teda môže byť aj väčšia ako jedna. Ak je E-hodnota väčšia ako jedna, tak čisto náhodou by sme očakávali aspoň 1 také silné zarovnanie a teda zarovnania s tak vysokou E-hodnotou nebudeme považovať za štatisticky významné.
 
 V štatistike sa v rôznych testoch štandardne používajú prahy na P-hodnotu $0.05$ alebo $0.01$.
 Pri zarovnávaní sekvencií však často používame ešte nižší prah, teda uvažujeme len zarovnania s P-hodnotou menšou ako napr. $10^{-5}$. Pri malých hodnotách sú P-hodnota a E-hodnota prebližne rovnaké, teda taký istý prah môžme použiť aj na E-hodnotu.
