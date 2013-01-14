@@ -1,4 +1,4 @@
-\chapter{Random forest}
+\chapter{Random forest[Draft]}
 
 V tejto kapitole si popíšeme ako funguje klasifikátor \textit{Random forest}, v čom spočívajú jeho výhody a prečo sme si ho vybrali.
 
@@ -11,6 +11,9 @@ Klasifikačný strom je klasifikátor vybudovaný na základe trénovacej množi
 
 Klasifikácia vstupného vektora vyzerá nasledovne: prechádzame strom zhora na dol a postupne sa zaraďujeme do vetiev podľa rodzelovacích kritérií. Podľa toho, v ktorom liste skončíme, sa určí výstupná hodnota.
 
+\subsection{Trénovanie}
+TODO - strucne popisat rozne metody + odkazat na literaturu
+
 \section{Random forest}
 
 \subsection{Klasifikácia}
@@ -21,10 +24,30 @@ Random forest sa skladá z mnohých klasifikačných stromov. Pri klasifikácii 
 Každý strom sa buduje nasledovne.
 Máme $N$ trénovacích vektorov, pričom každý vektor sa skladá z $M$ vstupných premenných (teda má rozmer $M$). 
 Z nich vyberieme \textit{náhodne s opakovaním} $N$ vektorov, ktoré budú použité ako tréenovacia množina pre daný rozhodovací strom.
-Okrem toho vyberieme náhodne $m<<M$ vstupných parametrov.
+Okrem toho vyberieme náhodne $m<<M$ vstupných parametrov a len tie sa použijú pri trénovaní stromu. Každý strom je vybudovaný najviac ako sa dá - nie je žiadne orezávanie.
+
+Chyba RF závisí od dvoch vecí
+\begin{itemize}
+\item korelácia
+\item sila
+\end{itemize}
+
 
 \section{Dôležité vlastnosti Random forest-u}
-
+\begin{itemize}
+\item Je najpresnejší spomedzi všetkých terajších klasifikačných algoritmov.
+\item Je efektívny aj na veľkých dátach.
+\item Dokáže obsiahnuť tisícky vstupných premenných bez ich vymazávania.
+\item Dáva odhad, ktoré premenné sú dôležité na klasifikáciu.
+\item It generates an internal unbiased estimate of the generalization error as the forest building progresses.
+\item It has an effective method for estimating missing data and maintains accuracy when a large proportion of the data are missing.
+\item It has methods for balancing error in class population unbalanced data sets.
+\item Generated forests can be saved for future use on other data.
+\item Prototypes are computed that give information about the relation between the variables and the classification.
+\item Počíta blízkosť medzi jednotlivími pármi prípadov, čo môže byť použité pri clusteringu a detekcii outlierov alebo ponúknuť zaujímavé pohľady na dáta.
+\item Predchádzajúce môže byť rozšírené aj na neolabelované dáta (bez informácie o triede), čo sa dá použiť na klasifikáciu, pohľady na dáta a detekciu outlierov bez učiteľa.
+\item Ponúka experimentálnu metódu na detekciu interakcie medzi premennými.
+\end{itemize}
 
 
 
