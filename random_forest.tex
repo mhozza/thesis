@@ -1,3 +1,31 @@
-\chapter{Náhodný les (Random forest)}
+\chapter{Random forest}
 
-V tejto kapitole si popíšeme ako funguje klasifikátor náhodný les, v čom spočívajú jeho výhody a prečo sme si ho vybrali.
+V tejto kapitole si popíšeme ako funguje klasifikátor \textit{Random forest}, v čom spočívajú jeho výhody a prečo sme si ho vybrali.
+
+\section{Klasifikačné stromy}
+Keďže Random forest je vlastne les \textit{klasifikačných stromov (niekedy označované ako rozhodovacie stromy)}, je nevyhnutné, aby sme si najskôr povedali niečo o nich.
+
+%section?
+Klasifikačný strom je klasifikátor vybudovaný na základe trénovacej množiny, ktorý na základe vstupných údajov (vstupného vektora) predpovedá hodnotu výstupnej premennej. Klasifikátor sa skladá z \textit{uzlov} a \textit{listov}. V uzle sa nachádza rozdeľovacie kritérium, podľa ktorého sa vieme rozhodnúť do ktorej vetvy máme pokračovať. V listoch sa nachádzajú triedy, do ktorých sa vstupný vektor klasifikuje.
+%obrazok
+
+Klasifikácia vstupného vektora vyzerá nasledovne: prechádzame strom zhora na dol a postupne sa zaraďujeme do vetiev podľa rodzelovacích kritérií. Podľa toho, v ktorom liste skončíme, sa určí výstupná hodnota.
+
+
+\section{Random forest}
+
+\subsection{Klasifikácia}
+Random forest sa skladá z mnohých klasifikačných stromov. Pri klasifikácii nejakého vstupnéeho vektora sa predloží vstupný vektor každému stromu. Každý strom následne vráti klasifikáciu a hovoríme, že stromy \textit{hlasujú}. Random forest následne zvolí klasifikáciu podľa väčšiny z hlasov všetkých stromov v lese.
+%TODO parametrizacia rf
+
+\subsection{Trénovanie}
+Každý strom sa buduje nasledovne.
+Máme $N$ trénovacích vektorov, pričom každý vektor sa skladá z $M$ vstupných premenných (teda má rozmer $M$). 
+Z nich vyberieme \textit{náhodne s opakovaním} $N$ vektorov, ktoré budú použité ako tréenovacia množina pre daný rozhodovací strom.
+Okrem toho vyberieme náhodne $m<<M$ vstupných parametrov.
+
+\section{Dôležité vlastnosti Random forest-u}
+
+
+
+
