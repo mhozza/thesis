@@ -2,7 +2,7 @@
 
 \section{Simulátor}
 
-Simulátor sĺuži na overenie funkčnosti klasifikátora. Náhodne vygeneruje 2 sekvencie, ktoré vznikli zo spoločného predka a vyrobí korektné zarovnanie. Okrem toho vyrobí aj nejaké dodatočné informácie ktoré majú pomôcť pri zarovnávaní.
+Simulátor sĺuži na overenie funkčnosti zarovnávača. Náhodne vygeneruje 2 sekvencie, ktoré vznikli zo spoločného predka a vyrobí korektné zarovnanie. Okrem toho vyrobí aj nejaké dodatočné informácie ktoré majú pomôcť pri zarovnávaní.
 
 \subsection{Algoritmus}
 Simulátor vygeneruje informáciu o tom, ktoré časti sekvencie prisĺuchaju génom a ktoré nie. Informácia má podobu boolovskeho vektora.
@@ -53,3 +53,6 @@ Pravdepodobnosť & $0,35$ & $0,3$ & $0,3$ & $0,2$\\
 Deléciu simulujeme opäť pomocou Markovovej reťaze, pretože pri evolúcii majú tendenciu vypadávať súvislé úseky. Pravdepodobnosť, že začneme mazať je $0,01$ a že prestaneme $0,1$.
 Ak mažeme, nahradzujeme danú bázu znakom {\tt '-'}. 
 
+\subsection{Využitie}
+
+Simulátor je prvá vec, ktorú sme implementovali a slúžil hlavne na prvotné experimenty.
