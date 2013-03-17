@@ -13,6 +13,8 @@
 *.lg
 *.tmp
 *.xref
+*.nav
+*.snm
 main.pdf
 main.ps
 main.html

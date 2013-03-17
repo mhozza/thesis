@@ -35,7 +35,7 @@ final: pdf
 	cp main.pdf hozza-dipl.pdf
 
 clean: 
-	rm -f *.log *.aux *.toc *.bbl *.blg *.slo *.srs *.out *.lot *.lof *.html *.css
+	rm -f *.log *.aux *.toc *.bbl *.blg *.slo *.srs *.out *.lot *.lof *.html *.css *.nav *.snm
 
 dist-clean: clean
 	rm -f main.ps main.pdf html/*

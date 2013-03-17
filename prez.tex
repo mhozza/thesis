@@ -1,0 +1,175 @@
+%Ohurit komisiu
+%Urobili vela prace, Nebolo to lahke
+
+\documentclass[xcolor=dvipsnames, compress]{beamer} 
+\usepackage[utf8]{inputenc}
+\usepackage[slovak]{babel}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{epsfig}
+\usepackage{wrapfig}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{multicol}
+\usecolortheme[named=Green]{structure} 
+\usetheme{Dresden} 
+% \setbeamertemplate{items}[ball] 
+% \setbeamertemplate{blocks}[rounded][shadow=true] 
+
+% \useoutertheme{umbcfootline} 
+% \AtBeginSection[]{
+% \frame<beamer>{
+%   \begin{multicols}{2}
+%     \ifpdf
+%       \pdfbookmark[0]{Contents}{toc}
+%     \fi    
+%     \frametitle{Obsah}
+%     \setcounter{tocdepth}{2}      
+%     \tableofcontents[currentsection,subsections,hideothersubsections]
+%   \end{multicols} 
+% }
+% }
+
+
+% items enclosed in square brackets are optional; explanation below
+\title{Zarovnávanie sekvencií s použitím metód klasifikácie}
+\subtitle{
+\vspace{0.5cm}
+\small Diplomová práca
+}
+\author[Michal Hozza]{Bc. Michal Hozza \\ Vedúci práce: Mgr. Tomáš Vinář, PhD. \\ Konzultant: Mgr. Michal Nanási}
+\institute[FMFI UK]{
+  Fakulta matematiky, fyziky a informatiky,
+  Univerzita Komenského, Bratislava\\
+}
+\date{\today}
+
+\begin{document}
+
+%--- the titlepage frame -------------------------%
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+%--- the presentation begins here ----------------%
+
+% \begin{frame}{Obsah prezentácie}
+%   % \begin{itemize}
+%   % \item Cieľ
+%   % \item Zarovnávanie sekvencií
+%   % \item 
+%   % \end{itemize} 
+
+% \end{frame}
+\section{Cieľ}
+\begin{frame}{Cieľ}
+  \begin{itemize}
+  \item Cieľom práce je vytvoriť nové metódy na korekciu zarovnaní biologických sekvencií na základe prídavnej informácie.
+  \item Integrácia tejto informácie bude zabezpečená pomocou techník využívaných na klasifikáciu v strojovom učení.
+  \end{itemize} 
+\end{frame}
+
+
+\section{Zarovnávanie sekvencií}
+\begin{frame}{Zarovnávanie sekvencií}
+Kľúčové problémy:
+  \begin{itemize}
+    \item Aké typy zarovnávania by sme mali uvažovať
+    \item Skórovací systém, ktorý použijeme na ohodnotenie zarovnania a trénovanie
+    \item Algoritmus, ktorý použijeme na hľadanie optimálneho alebo dobrého zarovnania podľa skórovacieho systému
+    \item Štatistická významnosť zarovnania.
+  \end{itemize} 
+\end{frame}
+
+\section[Modely]{Generatívny vs. Diskriminačný model}
+\begin{frame}{Generatívny vs. Diskriminačný model}
+Generatívny:
+\begin{itemize}
+\item sa snaží modelovať proces, ktorý generuje dáta ako pravdepodobnosť P (X, Y, Z)
+\item rozložíme ju pomocou nezávislých predpokladov na procese -> obmedzujúce
+\end{itemize} 
+Diskriminačný
+\begin{itemize}
+\item priamo odhaduje P(Z|X,Y) alebo prislúchajúcu diskriminačnú funkciu, a preto sa zamerá na podstatnú časť problému odhadu
+\item Nepotrebuje nezávislosť -> silnejšie
+\end{itemize}   
+\end{frame}
+
+% Existujúce riešenia
+% Problém inverzného zarovnania
+% Support vector training of protein alignment models
+% Support Vector Machine (SVM)
+% Umožňuje trénovať pomocou rôznych účelových funkcií
+% Contralign: Discriminative training for protein sequence alignment.
+% Conditional Rnadom Fields (CRF)
+% Neumožnuje trénovať pomocou rôznych účových funkcií
+
+% Odlišnosti nášho riešenia
+% Rôzne metódy trénovania
+% Možnosť učenia bez učiteľa
+% Iný klasifikátor (možno viac rôznych klasifikátorov, pípadne abstrakcia od klasifikátora)
+
+% Random Forest
+% Klasifikátor
+% Zložený z klasifikačných (rozhodovacích) stromov, ktoré hlasujú
+
+% Simulátor
+% Program, ktorý simuluje evolúciu
+% Model určený na prvotné experimenty
+
+
+% \section{Zarovnávanie sekvencií}
+% \begin{frame}{Zarovnávanie sekvencií}
+% Kľúčové problémy:
+%   \begin{itemize}
+%     \item Aké typy zarovnávania by sme mali uvažovať
+%     \item Skórovací systém, ktorý použijeme na ohodnotenie zarovnania a trénovanie
+%     \item Algoritmus, ktorý použijeme na hľadanie optimálneho alebo dobrého zarovnania podľa skórovacieho systému
+%     \item Štatistická významnosť zarovnania.
+%   \end{itemize} 
+% \end{frame}
+
+% \section{Zarovnávanie sekvencií}
+% \begin{frame}{Zarovnávanie sekvencií}
+% Kľúčové problémy:
+%   \begin{itemize}
+%     \item Aké typy zarovnávania by sme mali uvažovať
+%     \item Skórovací systém, ktorý použijeme na ohodnotenie zarovnania a trénovanie
+%     \item Algoritmus, ktorý použijeme na hľadanie optimálneho alebo dobrého zarovnania podľa skórovacieho systému
+%     \item Štatistická významnosť zarovnania.
+%   \end{itemize} 
+% \end{frame}
+
+% \section{Zarovnávanie sekvencií}
+% \begin{frame}{Zarovnávanie sekvencií}
+% Kľúčové problémy:
+%   \begin{itemize}
+%     \item Aké typy zarovnávania by sme mali uvažovať
+%     \item Skórovací systém, ktorý použijeme na ohodnotenie zarovnania a trénovanie
+%     \item Algoritmus, ktorý použijeme na hľadanie optimálneho alebo dobrého zarovnania podľa skórovacieho systému
+%     \item Štatistická významnosť zarovnania.
+%   \end{itemize} 
+% \end{frame}
+
+
+
+% \begin{frame}{Ďakujem za pozornosť!}
+%   \begin{center}
+% {\bf Ďakujem za pozornosť!} 
+%   \end{center}
+  
+%   \vspace{3cm}
+  
+%   \begin{center}
+%   \small{Ospravedlňujem sa za kvalitu obrázkov.}
+%   \end{center}
+% \end{frame}
+
+
+\end{document}
