@@ -16,26 +16,46 @@
 \usepackage{subcaption}
 \usepackage{url}
 \usepackage{hyperref}
-\usepackage{multicol}
+% \usepackage{multicol}
 \usecolortheme[named=Green]{structure} 
 \usetheme{Dresden} 
+\setbeamertemplate{navigation symbols}{}
+% \setbeamertemplate{footline}[frame number]
 % \setbeamertemplate{items}[ball] 
 % \setbeamertemplate{blocks}[rounded][shadow=true] 
-
 % \useoutertheme{umbcfootline} 
+
 % \AtBeginSection[]{
 % \frame<beamer>{
-%   \begin{multicols}{2}
+  
 %     \ifpdf
 %       \pdfbookmark[0]{Contents}{toc}
 %     \fi    
 %     \frametitle{Obsah}
 %     \setcounter{tocdepth}{2}      
 %     \tableofcontents[currentsection,subsections,hideothersubsections]
-%   \end{multicols} 
+  
 % }
 % }
 
+% Show frame number in footbar
+\setbeamertemplate{footline}%{miniframes theme}
+  {%
+    \begin{beamercolorbox}[colsep=1.5pt]{upper separation line foot}
+    \end{beamercolorbox}
+    \begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,%
+      leftskip=.3cm,rightskip=.3cm plus1fil]{author in head/foot}%
+      \leavevmode{\usebeamerfont{author in head/foot}\insertshortauthor}%
+      \hfill%
+      {\usebeamerfont{institute in head/foot}\usebeamercolor[fg]{institute in head/foot}\insertshortinstitute}%
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,%
+      leftskip=.3cm,rightskip=.3cm plus1fil]{title in head/foot}%
+      {\usebeamerfont{title in head/foot}\insertshorttitle} \hfill     \insertframenumber /\inserttotalframenumber % 
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[colsep=1.5pt]{lower separation line foot}
+    \end{beamercolorbox}
+  }
 
 % items enclosed in square brackets are optional; explanation below
 \title{Zarovnávanie sekvencií s použitím metód klasifikácie}
@@ -43,12 +63,12 @@
 \vspace{0.5cm}
 \small Diplomová práca
 }
-\author[Michal Hozza]{\small Bc. Michal Hozza \\ Vedúci práce: Mgr. Tomáš Vinář, PhD. \\ Konzultant: Mgr. Michal Nanási}
+\author[Michal Hozza]{\small Bc. Michal Hozza \\ \vspace{1cm} \footnotesize \textbf{Vedúci práce:} Mgr. Tomáš Vinář, PhD. \\ \textbf{Konzultant:} Mgr. Michal Nanási\\ \vspace{.5cm}}
 \institute[FMFI UK]{
   Fakulta matematiky, fyziky a informatiky,
   Univerzita Komenského, Bratislava\\
 }
-\date{\today}
+\date{\footnotesize \today}
 
 \begin{document}
 
@@ -59,17 +79,16 @@
 
 %--- the presentation begins here ----------------%
 
-% \begin{frame}{Obsah prezentácie}
-%   % \begin{itemize}
-%   % \item Cieľ
-%   % \item Zarovnávanie sekvencií
-%   % \item 
-%   % \end{itemize} 
+\begin{frame}{Obsah}
+  \transdissolve[duration=0.1]
+  \tableofcontents
+\end{frame}
 
-% \end{frame}
+
 \section{Úvod}
 \subsection{Cieľ}
 \begin{frame}{Cieľ}
+  % \transdissolve
   \begin{itemize}
   \item Cieľom práce je vytvoriť nové metódy na korekciu zarovnaní biologických sekvencií na základe prídavnej informácie.
   \item Integrácia tejto informácie bude zabezpečená pomocou techník využívaných na klasifikáciu v strojovom učení.
@@ -89,18 +108,18 @@ Kľúčové problémy:
 \end{frame}
 
 \section{Modely a Existujúce riešenia}
-\subsection{Generatívny vs. Diskriminačný model}
-\begin{frame}{Generatívny vs. Diskriminačný model}
+\subsection{Modely}
+\begin{frame}{Modely}
 Generatívny:
 \begin{itemize}
-\item sa snaží modelovať proces, ktorý generuje dáta ako pravdepodobnosť P (X, Y, Z)
-\item rozložíme ju pomocou nezávislých predpokladov na procese -> obmedzujúce
+\item sa snaží modelovať proces, ktorý generuje dáta ako pravdepodobnosť $P(X,Y,Z)$
+\item rozložíme ju pomocou nezávislých predpokladov na procese $\longrightarrow$ obmedzujúce
 \end{itemize} 
 \pause
 Diskriminačný
 \begin{itemize}
-\item priamo odhaduje P(Z|X,Y) alebo prislúchajúcu diskriminačnú funkciu, a preto sa zamerá na podstatnú časť problému odhadu
-\item Nepotrebuje nezávislosť -> silnejšie
+\item priamo odhaduje $P(Z|X,Y)$ alebo prislúchajúcu diskriminačnú funkciu, a preto sa zamerá na podstatnú časť problému odhadu
+\item Nepotrebuje nezávislosť $\longrightarrow$ silnejšie
 \end{itemize}   
 \end{frame}
 
@@ -128,30 +147,46 @@ Diskriminačný
 \subsection{Odlišnosti nášho riešenia}
 \begin{frame}{Odlišnosti nášho riešenia}
   \begin{itemize}
+    \item Korekcia existujúcich zarovnaní
+    \begin{itemize}
+      \item Použitie súbežne s existujúcimi zarovnávačmi
+    \end{itemize}
     \item Rôzne metódy trénovania
     \item Možnosť učenia bez učiteľa
-    \item Iný klasifikátor (možno viac rôznych klasifikátorov, pípadne abstrakcia od klasifikátora)
+    \item Iný klasifikátor
+    \begin{itemize}
+      \item možno porovnanie viac rôznych klasifikátorov
+      \item pípadne abstrakcia od klasifikátora
+    \end{itemize} 
   \end{itemize} 
 \end{frame}
 
-\subsection{Random Forest}
-\begin{frame}{Random Forest}
+\subsection{Klasifikátor}
+\begin{frame}{Klasifikátor}
+Random Forest
   \begin{itemize}
-    \item Klasifikátor
-    \item Zložený z klasifikačných (rozhodovacích) stromov, ktoré hlasujú
+    \item Zložený z klasifikačných (rozhodovacích) stromov
+    \item Stromy hlasujú o výsledku ktoré hlasujú
   \end{itemize} 
 \end{frame}
 
 \subsection{Simulátor}
 \begin{frame}{Simulátor}
   \begin{itemize}
-    \item Program, ktorý simuluje evolúciu
     \item Model určený na prvotné experimenty
+    \item Program simuluje evolúciu
+    \begin{itemize}
+      \item Generovanie dvojice postupností so správnym zarovnaním
+      \item Generovanie dodatočej informácie
+      \item Simulácia mutácie a delécie
+    \end{itemize} 
   \end{itemize} 
 \end{frame}
 
-\section{Záver}
-\begin{frame}{}
+
+\section{}
+\begin{frame}[plain]
+  \transdissolve[duration=5]
   \begin{center}
   \textbf{\color{Green} \LARGE Ďakujem za pozornosť!} 
   \end{center}  
