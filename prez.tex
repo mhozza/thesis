@@ -1,7 +1,7 @@
 %Ohurit komisiu
 %Urobili vela prace, Nebolo to lahke
 
-\documentclass[xcolor=dvipsnames, compress]{beamer} 
+\documentclass[xcolor=dvipsnames, compress, 12pt]{beamer} 
 \usepackage[utf8]{inputenc}
 \usepackage[slovak]{babel}
 \usepackage{lmodern}
@@ -43,7 +43,7 @@
 \vspace{0.5cm}
 \small Diplomová práca
 }
-\author[Michal Hozza]{Bc. Michal Hozza \\ Vedúci práce: Mgr. Tomáš Vinář, PhD. \\ Konzultant: Mgr. Michal Nanási}
+\author[Michal Hozza]{\small Bc. Michal Hozza \\ Vedúci práce: Mgr. Tomáš Vinář, PhD. \\ Konzultant: Mgr. Michal Nanási}
 \institute[FMFI UK]{
   Fakulta matematiky, fyziky a informatiky,
   Univerzita Komenského, Bratislava\\
@@ -67,7 +67,8 @@
 %   % \end{itemize} 
 
 % \end{frame}
-\section{Cieľ}
+\section{Úvod}
+\subsection{Cieľ}
 \begin{frame}{Cieľ}
   \begin{itemize}
   \item Cieľom práce je vytvoriť nové metódy na korekciu zarovnaní biologických sekvencií na základe prídavnej informácie.
@@ -76,7 +77,7 @@
 \end{frame}
 
 
-\section{Zarovnávanie sekvencií}
+\subsection{Zarovnávanie sekvencií}
 \begin{frame}{Zarovnávanie sekvencií}
 Kľúčové problémy:
   \begin{itemize}
@@ -87,13 +88,15 @@ Kľúčové problémy:
   \end{itemize} 
 \end{frame}
 
-\section[Modely]{Generatívny vs. Diskriminačný model}
+\section{Modely a Existujúce riešenia}
+\subsection{Generatívny vs. Diskriminačný model}
 \begin{frame}{Generatívny vs. Diskriminačný model}
 Generatívny:
 \begin{itemize}
 \item sa snaží modelovať proces, ktorý generuje dáta ako pravdepodobnosť P (X, Y, Z)
 \item rozložíme ju pomocou nezávislých predpokladov na procese -> obmedzujúce
 \end{itemize} 
+\pause
 Diskriminačný
 \begin{itemize}
 \item priamo odhaduje P(Z|X,Y) alebo prislúchajúcu diskriminačnú funkciu, a preto sa zamerá na podstatnú časť problému odhadu
@@ -101,75 +104,58 @@ Diskriminačný
 \end{itemize}   
 \end{frame}
 
-% Existujúce riešenia
-% Problém inverzného zarovnania
-% Support vector training of protein alignment models
-% Support Vector Machine (SVM)
-% Umožňuje trénovať pomocou rôznych účelových funkcií
-% Contralign: Discriminative training for protein sequence alignment.
-% Conditional Rnadom Fields (CRF)
-% Neumožnuje trénovať pomocou rôznych účových funkcií
 
-% Odlišnosti nášho riešenia
-% Rôzne metódy trénovania
-% Možnosť učenia bez učiteľa
-% Iný klasifikátor (možno viac rôznych klasifikátorov, pípadne abstrakcia od klasifikátora)
+\subsection{Existujúce riešenia}
+\begin{frame}{Existujúce riešenia}
+  \begin{itemize}
+    \item Problém inverzného zarovnania
+    \pause
+    \item Support vector training of protein alignment models
+    \begin{itemize}
+      \item Support Vector Machine (SVM)
+      \item Umožňuje trénovať pomocou rôznych účelových funkcií
+    \end{itemize}
+    \pause
+    \item Contralign: Discriminative training for protein sequence alignment.
+    \begin{itemize}
+      \item Conditional Rnadom Fields (CRF)
+      \item Neumožnuje trénovať pomocou rôznych účových funkcií    
+    \end{itemize}
+  \end{itemize} 
+\end{frame}
 
-% Random Forest
-% Klasifikátor
-% Zložený z klasifikačných (rozhodovacích) stromov, ktoré hlasujú
+\section{Naše riešenie}
+\subsection{Odlišnosti nášho riešenia}
+\begin{frame}{Odlišnosti nášho riešenia}
+  \begin{itemize}
+    \item Rôzne metódy trénovania
+    \item Možnosť učenia bez učiteľa
+    \item Iný klasifikátor (možno viac rôznych klasifikátorov, pípadne abstrakcia od klasifikátora)
+  \end{itemize} 
+\end{frame}
 
-% Simulátor
-% Program, ktorý simuluje evolúciu
-% Model určený na prvotné experimenty
+\subsection{Random Forest}
+\begin{frame}{Random Forest}
+  \begin{itemize}
+    \item Klasifikátor
+    \item Zložený z klasifikačných (rozhodovacích) stromov, ktoré hlasujú
+  \end{itemize} 
+\end{frame}
 
+\subsection{Simulátor}
+\begin{frame}{Simulátor}
+  \begin{itemize}
+    \item Program, ktorý simuluje evolúciu
+    \item Model určený na prvotné experimenty
+  \end{itemize} 
+\end{frame}
 
-% \section{Zarovnávanie sekvencií}
-% \begin{frame}{Zarovnávanie sekvencií}
-% Kľúčové problémy:
-%   \begin{itemize}
-%     \item Aké typy zarovnávania by sme mali uvažovať
-%     \item Skórovací systém, ktorý použijeme na ohodnotenie zarovnania a trénovanie
-%     \item Algoritmus, ktorý použijeme na hľadanie optimálneho alebo dobrého zarovnania podľa skórovacieho systému
-%     \item Štatistická významnosť zarovnania.
-%   \end{itemize} 
-% \end{frame}
-
-% \section{Zarovnávanie sekvencií}
-% \begin{frame}{Zarovnávanie sekvencií}
-% Kľúčové problémy:
-%   \begin{itemize}
-%     \item Aké typy zarovnávania by sme mali uvažovať
-%     \item Skórovací systém, ktorý použijeme na ohodnotenie zarovnania a trénovanie
-%     \item Algoritmus, ktorý použijeme na hľadanie optimálneho alebo dobrého zarovnania podľa skórovacieho systému
-%     \item Štatistická významnosť zarovnania.
-%   \end{itemize} 
-% \end{frame}
-
-% \section{Zarovnávanie sekvencií}
-% \begin{frame}{Zarovnávanie sekvencií}
-% Kľúčové problémy:
-%   \begin{itemize}
-%     \item Aké typy zarovnávania by sme mali uvažovať
-%     \item Skórovací systém, ktorý použijeme na ohodnotenie zarovnania a trénovanie
-%     \item Algoritmus, ktorý použijeme na hľadanie optimálneho alebo dobrého zarovnania podľa skórovacieho systému
-%     \item Štatistická významnosť zarovnania.
-%   \end{itemize} 
-% \end{frame}
-
-
-
-% \begin{frame}{Ďakujem za pozornosť!}
-%   \begin{center}
-% {\bf Ďakujem za pozornosť!} 
-%   \end{center}
-  
-%   \vspace{3cm}
-  
-%   \begin{center}
-%   \small{Ospravedlňujem sa za kvalitu obrázkov.}
-%   \end{center}
-% \end{frame}
+\section{Záver}
+\begin{frame}{}
+  \begin{center}
+  \textbf{\color{Green} \LARGE Ďakujem za pozornosť!} 
+  \end{center}  
+\end{frame}
 
 
 \end{document}
