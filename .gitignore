@@ -16,7 +16,7 @@
 *.nav
 *.snm
 main.pdf
-prez.pdf
+prezentacia/prez*.pdf
 main.ps
 main.html
 main.css

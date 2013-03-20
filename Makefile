@@ -21,25 +21,18 @@ main.html: *.tex *.bib Makefile images/*
 	[ -d html ] || mkdir html
 	mk4ht htlatex main.tex 'xhtml,charset=utf-8,pmathml' ' -cunihtf -utf8 -cvalidate' '-d./html/'
 
-prez.pdf: prez.tex images/*
-	pdflatex prez.tex
-	pdflatex prez.tex
-
 dvi: main.dvi
 
 ps: main.ps
 
 pdf: main.pdf
 
-prez: prez.pdf
-
 html: main.html
 
 all: ps pdf
 
-final: pdf prez
+final: pdf
 	cp main.pdf hozza-dipl.pdf
-	cp prez.pdf hozza-dipl-prez.pdf
 
 clean: 
 	rm -f *.log *.aux *.toc *.bbl *.blg *.slo *.srs *.out *.lot *.lof *.html *.css *.nav *.snm

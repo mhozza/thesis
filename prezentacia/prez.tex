@@ -64,11 +64,11 @@
 \small Diplomová práca
 }
 \author[Michal Hozza]{\small Bc. Michal Hozza \\ \vspace{1cm} \footnotesize \textbf{Vedúci práce:} Mgr. Tomáš Vinář, PhD. \\ \textbf{Konzultant:} Mgr. Michal Nanási\\ \vspace{.5cm}}
-\institute[FMFI UK]{
+\institute[FMFI UK \insertshortdate]{
   Fakulta matematiky, fyziky a informatiky,
   Univerzita Komenského, Bratislava\\
 }
-\date{\footnotesize \today}
+\date[\the\year]{\footnotesize \today}
 
 \begin{document}
 
@@ -100,9 +100,13 @@
 \begin{frame}{Zarovnávanie sekvencií}
 Kľúčové problémy:
   \begin{itemize}
+    \pause
     \item Aké typy zarovnávania by sme mali uvažovať
+    \pause
     \item Skórovací systém, ktorý použijeme na ohodnotenie zarovnania a trénovanie
+    \pause
     \item Algoritmus, ktorý použijeme na hľadanie optimálneho alebo dobrého zarovnania podľa skórovacieho systému
+    \pause
     \item Štatistická významnosť zarovnania.
   \end{itemize} 
 \end{frame}
@@ -137,7 +141,7 @@ Diskriminačný
     \pause
     \item Contralign: Discriminative training for protein sequence alignment.
     \begin{itemize}
-      \item Conditional Rnadom Fields (CRF)
+      \item Conditional Random Fields (CRF)
       \item Neumožnuje trénovať pomocou rôznych účových funkcií    
     \end{itemize}
   \end{itemize} 
@@ -151,8 +155,11 @@ Diskriminačný
     \begin{itemize}
       \item Použitie súbežne s existujúcimi zarovnávačmi
     \end{itemize}
+    \pause
     \item Rôzne metódy trénovania
+    \pause
     \item Možnosť učenia bez učiteľa
+    \pause
     \item Iný klasifikátor
     \begin{itemize}
       \item možno porovnanie viac rôznych klasifikátorov
@@ -168,6 +175,10 @@ Random Forest
     \item Zložený z klasifikačných (rozhodovacích) stromov
     \item Stromy hlasujú o výsledku ktoré hlasujú
   \end{itemize} 
+  \vspace{.5cm}
+  \begin{center}
+  \includegraphics[width=.5\textwidth]{images/random_forest_thumb.png}
+  \end{center}
 \end{frame}
 
 \subsection{Simulátor}
