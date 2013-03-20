@@ -1,0 +1,20 @@
+- dynamiku s klasifikatorom
+- 
+- 
+
+Plan
+- jednoduche vygenerovane data
+- pridavat tracky
+- ziskat prehlad o anotatoroch(ake rozne anotacie mozme mat)
+- + dake databazy zarovnani
+- postupne zacat aj na realnych datach
+- co ak neamame dokonale olabelovane data (ako trenovat?)
+- skontorlovat ci vieme vylepsit zarovnanie
+	- zarovname existujucim, skusime prezarovnat
+
+Anotacie
+- repeaty
+- je to gen?
+
+U Mica 
+- nacitanie zarovnani
