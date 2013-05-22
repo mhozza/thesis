@@ -7,12 +7,12 @@ V princípe môžme rozlišovať dva typy modelov - \textit{generatívny model} 
 %Pri diskriminatívnom modeli sa nestaráme o to ako boli dáta generované, jednoducho kategorizuje vstupný vektor. \cite{gendiscmodels}
 
 Konvenčné techniky odhadu pre zarovnávania sa zakladajú na generatívnom modeli. Generatívny model (napr. HMM) sa snaží modelovať proces, ktorý generuje dáta ako pravdepodobnosť $P(X,Y,Z)$, kde $X = x_1x_2\dots x_n$, $Y = y_1y_2\dots y_m$ a Z je zarovnanie. Ak poznáme $P(X,Y,Z)$ (alebo jej dobrý odhad),
-$$\operatorname{arg\,max}_z P(X = x,Y = y,Z = z)$$
+$$\operatorname{ arg\,max}_z P(X = x,Y = y,Z = z)$$
 predikuje zarovnanie $z$ z dvoch sekvencií $x$ a $y$. Aby sme žľahčili odhad $P(X,Y,Z)$, rozložíme ju pomocou nezávislých predpokladov na procese, ktorý generuje $x$ a $y$. To síce vedie k efektívnym a jednoduchým problémom odhadu, ale obmedzuje to interakcie v rámci sekvencií, ktoré by sme mohli modelovať. \cite{svmTrainingProteinsAlignment}
 
 Výskum v oblasti strojového učenia dokázal, že diskriminatívne učenie (SVM, RandomForest) zvyčajne produkuje ovela presnejšie pravidlá ako generatívne učenie(HMM, naive Bayes classifier).
 Môže to byť vysvetlené tým, že $P(Z|X,Y)$, je už vhodné na vyhodnotenie optimálnej predikcie
-$$\operatorname{arg\,max}_z P(Z = z|X = x,Y = y).$$
+$$\operatorname{ arg\,max}_z P(Z = z|X = x,Y = y).$$
 Diskriminačné učenie aplikované na problém zarovnania bude priamo odhadovať $P(Z|X,Y)$ alebo prislúchajúcu diskriminačnú funkciu, a preto sa zamerá na podstatnú časť problému odhadu. \cite{svmTrainingProteinsAlignment}
 
 Aktuálne existuje len niekoľko prístupov k diskriminačnému učeniu modelov zarovnávaní. 

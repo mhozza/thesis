@@ -116,7 +116,8 @@ A[i,j-1]-1
 \end{array} \right.$$
 Maticu vieme vypĺňať po riadkoch, pričom každé políčok vieme vypočítať z troch políčok, ktoré už sú vypočítané. 
 
-Ak nás zaujíma aj zarovnanie -- nie len jeho skóre -- vieme si pre každé políčko zapamätať ktorá z 3 možností dosiahla maximálnu hodnotu (červené šípky na Obr. \ref{fig:global_align}). Na základe tejto informácie potom vieme zrekonštruovať zarovnanie tak, že postupne z posledného políčka ($A[n,m]$) budeme prechádzať na políčko, z ktorého sme vypočítali aktuálnu hodnotu.
+Ak nás zaujíma aj zarovnanie -- nie len jeho skóre -- vieme si pre každé políčko zapamätať ktorá z 3 možností dosiahla maximálnu hodnotu 
+(červené šípky na Obr. \ref{fig:global_align}). Na základe tejto informácie potom vieme zrekonštruovať zarovnanie tak, že postupne z posledného políčka ($A[n,m]$) budeme prechádzať na políčko, z ktorého sme vypočítali aktuálnu hodnotu.
 
 Časová zložitosť je $O(nm)$, pretože vypĺňame $nm$ políčok, každé v konštantnom čase. Zjavne aj pamäťová zložitosť je $O(nm)$.
 
