@@ -1,5 +1,7 @@
+%Motivacia, ine vysledky
 %Ohurit komisiu
 %Urobili vela prace, Nebolo to lahke
+
 
 \documentclass[xcolor=dvipsnames, compress, 12pt]{beamer} 
 \usepackage[utf8]{inputenc}
@@ -20,6 +22,7 @@
 \usecolortheme[named=Green]{structure} 
 \usetheme{Dresden} 
 \setbeamertemplate{navigation symbols}{}
+\usebackgroundtemplate{\includegraphics[width=\paperwidth, height=\paperheight]{images/bg.png}}
 % \setbeamertemplate{footline}[frame number]
 % \setbeamertemplate{items}[ball] 
 % \setbeamertemplate{blocks}[rounded][shadow=true] 
@@ -63,7 +66,7 @@
 \vspace{0.5cm}
 \small Diplomová práca
 }
-\author[Michal Hozza]{\small Bc. Michal Hozza \\ \vspace{1cm} \footnotesize \textbf{Vedúci práce:} Mgr. Tomáš Vinář, PhD. \\ \textbf{Konzultant:} Mgr. Michal Nanási\\ \vspace{.5cm}}
+\author[Michal Hozza]{\small Bc. Michal Hozza \\ \vspace{1cm} \footnotesize \textbf{Vedúci práce:} Mgr. Tomáš Vinař, PhD. \\ \textbf{Konzultant:} Mgr. Michal Nánási\\ \vspace{.5cm}}
 \institute[FMFI UK \insertshortdate]{
   Fakulta matematiky, fyziky a informatiky,
   Univerzita Komenského, Bratislava\\
@@ -128,58 +131,78 @@ Diskriminačný
 \end{frame}
 
 
-\subsection{Existujúce riešenia}
-\begin{frame}{Existujúce riešenia}
-  \begin{itemize}
-    \item Problém inverzného zarovnania
-    \pause
-    \item Support vector training of protein alignment models
-    \begin{itemize}
-      \item Support Vector Machine (SVM)
-      \item Umožňuje trénovať pomocou rôznych účelových funkcií
-    \end{itemize}
-    \pause
-    \item Contralign: Discriminative training for protein sequence alignment.
-    \begin{itemize}
-      \item Conditional Random Fields (CRF)
-      \item Neumožnuje trénovať pomocou rôznych účových funkcií    
-    \end{itemize}
-  \end{itemize} 
-\end{frame}
+% \subsection{Existujúce riešenia}
+% \begin{frame}{Existujúce riešenia}
+%   \begin{itemize}
+%     \item Problém inverzného zarovnania
+%     \pause
+%     \item Support vector training of protein alignment models
+%     \begin{itemize}
+%       \item Support Vector Machine (SVM)
+%       \item Umožňuje trénovať pomocou rôznych účelových funkcií
+%     \end{itemize}
+%     \pause
+%     \item Contralign: Discriminative training for protein sequence alignment.
+%     \begin{itemize}
+%       \item Conditional Random Fields (CRF)
+%       \item Neumožnuje trénovať pomocou rôznych účových funkcií    
+%     \end{itemize}
+%   \end{itemize} 
+% \end{frame}
 
 \section{Naše riešenie}
-\subsection{Odlišnosti nášho riešenia}
-\begin{frame}{Odlišnosti nášho riešenia}
+% \subsection{Odlišnosti nášho riešenia}
+% \begin{frame}{Odlišnosti nášho riešenia}
+%   \begin{itemize}
+%     \item Korekcia existujúcich zarovnaní
+%     \begin{itemize}
+%       \item Použitie súbežne s existujúcimi zarovnávačmi
+%     \end{itemize}
+%     \pause
+%     \item Rôzne metódy trénovania
+%     \pause
+%     \item Možnosť učenia bez učiteľa
+%     \pause
+%     \item Iný klasifikátor
+%     \begin{itemize}
+%       \item možno porovnanie viac rôznych klasifikátorov
+%       \item pípadne abstrakcia od klasifikátora
+%     \end{itemize} 
+%   \end{itemize} 
+% \end{frame}
+
+\subsection{Základný model}
+\begin{frame}{Základný model}
   \begin{itemize}
-    \item Korekcia existujúcich zarovnaní
+    \item 3 stavový HMM
     \begin{itemize}
-      \item Použitie súbežne s existujúcimi zarovnávačmi
-    \end{itemize}
-    \pause
-    \item Rôzne metódy trénovania
-    \pause
-    \item Možnosť učenia bez učiteľa
-    \pause
-    \item Iný klasifikátor
-    \begin{itemize}
-      \item možno porovnanie viac rôznych klasifikátorov
-      \item pípadne abstrakcia od klasifikátora
+      \item Match
+      \item Insert X
+      \item Insert Y
     \end{itemize} 
+    \pause
+    \item Viterbiho algoritmus
+    \begin{itemize}
+      \item pravdepodobnosti získané z natrénovaného klasifikátora
+	\end{itemize}    
+	\pause
+	\item rozšírenie sekvencií o anotácie
   \end{itemize} 
 \end{frame}
 
-\subsection{Klasifikátor}
-\begin{frame}{Klasifikátor}
-Random Forest
-  \begin{itemize}
-    \item Zložený z klasifikačných (rozhodovacích) stromov
-    \item Stromy hlasujú o výsledku ktoré hlasujú
-  \end{itemize} 
-  \vspace{.5cm}
-  \begin{center}
-  \includegraphics[width=.5\textwidth]{images/random_forest_thumb.png}
-  \end{center}
-\end{frame}
+
+% \subsection{Klasifikátor}
+% \begin{frame}{Klasifikátor}
+% Random Forest
+%   \begin{itemize}
+%     \item Zložený z klasifikačných (rozhodovacích) stromov
+%     \item Stromy hlasujú o výsledku
+%   \end{itemize} 
+%   \vspace{.5cm}
+%   \begin{center}
+%   \includegraphics[width=.5\textwidth]{images/random_forest_thumb.png}
+%   \end{center}
+% \end{frame}
 
 \subsection{Simulátor}
 \begin{frame}{Simulátor}
@@ -192,6 +215,42 @@ Random Forest
       \item Simulácia mutácie a delécie
     \end{itemize} 
   \end{itemize} 
+\end{frame}
+
+\section{Experimenty}
+\subsection{Simulované dáta}
+\begin{frame}{Dodatočné informácie}  
+  \begin{itemize}
+    \item Stopa s informáciou, či daná pozícia je súčasťou génu
+    \item Ukazuje sa, že dodatočné informácie dokážu pomôcť klasifikátoru v lepšej klasifikácii`
+  \end{itemize} 
+\end{frame}
+
+\begin{frame}{Dodatočné informácie}  
+\begin{figure}[hbtp]
+    \centering
+    \includegraphics[width=\textwidth]{images/porovnanie_s1w1testset.png}
+    \caption{Porovnanie distribúcie pravdepodobností bez anotácie a s anotáciou (100000 báz, okno veľkosti 1, testovacia množina)}    
+    \label{fig:porovnanie_s1w1testset.png} 
+\end{figure}
+\end{frame}
+
+\begin{frame}{Väčšie okno}  
+  \begin{itemize}
+    \item Väčšie okno sa prejaví vo väčšom množstve \textit{vlastností}, čo 
+    \item Pri malom množstve doplnkovej informácie má výrazný vplyv 
+    \item Pri väčšom množstve doplnkovej informácie ich znásobuje
+  \end{itemize} 
+\end{frame}
+
+\begin{frame}{Väčšie okno}  
+\begin{figure}[hbtp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/porovnanie_s1w5vsw1testset.png}
+    \caption{Porovnanie distribúcie pravdepodobností bez anotácie a oknom veľkosti 1 a s anotáciou s oknom veľkosti 5 (100000 báz, testovacia množina)}
+    \caption{s1w5vsw1testset}    
+    \label{fig:porovnanie_s1w5vsw1testset.png} 
+\end{figure}
 \end{frame}
 
 
