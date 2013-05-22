@@ -1,7 +1,7 @@
 default: pdf
 
 main.dvi: *.tex *.bib Makefile images/*
-	rm -f *.toc
+	rm -f *.toc *.lot *.lof
 	latex main
 	bibtex main
 	latex main
@@ -11,15 +11,22 @@ main.ps: main.dvi
 	dvips main.dvi
 
 main.pdf: *.tex *.bib Makefile images/*
-	rm -f *.toc
+	rm -f *.toc *.lot *.lof
 	pdflatex main
 	bibtex main
 	pdflatex main
 	pdflatex main
 
 main.html: *.tex *.bib Makefile images/*
+	rm -f *.toc *.lot *.lof
 	[ -d html ] || mkdir html
-	mk4ht htlatex main.tex 'xhtml,charset=utf-8,pmathml' ' -cunihtf -utf8 -cvalidate' '-d./html/'
+	pdflatex main
+	bibtex main
+	mk4ht xhlatex main.tex 'xhtml,charset=utf-8,pmathml' ' -cunihtf -utf8 -cvalidate' '-d./html/'
+	# mk4ht xhlatex main.tex "myconfig" ' -cunihtf -utf8 -cvalidate' '-d./html/' 
+
+main.zip: main.html
+	zip main.zip html/*
 
 dvi: main.dvi
 
@@ -28,6 +35,8 @@ ps: main.ps
 pdf: main.pdf
 
 html: main.html
+
+htmlzip: main.zip
 
 all: ps pdf
 

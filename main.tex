@@ -18,6 +18,8 @@
 \usepackage{subcaption}
 \usepackage{url}
 \usepackage[bookmarks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{indentfirst}
 
 \ifpdf
   \usepackage{pdfpages}
@@ -71,6 +73,7 @@
 \def\mfthesistype{Diplomová práca}
 \def\mfauthor{Bc. Michal Hozza}
 \def\mfadvisor{Mgr. Tomáš Vinař, PhD.}
+\def\mfconsultant{Mgr. Michal Nánási}
 \def\mfdate{2014}
 \def\mfplacedate{Bratislava, \mfdate}
 \def\mfuniversity{Univerzita Komenského, Bratislava}
@@ -90,7 +93,7 @@
 \fi
 
 \begin{document}
-
+\pagestyle{plain}
 \frontmatter
 
 \thispagestyle{empty}
@@ -168,6 +171,7 @@
 Študijný odbor:& 2508 Informatika \\
 Školiace pracovisko:& Katedra Informatiky\\
 Školiteľ:&   \mfadvisor \\
+Konzultant:&   \mfconsultant \\
 \end{tabular}
 \end{minipage}
 \begin{center}
@@ -243,6 +247,8 @@ Poďakovanie...
 \listoftables
 
 \mainmatter
+\pagestyle{fancyplain}
+\fancyhead[l]{}
 
 \input kapitoly.tex
 
