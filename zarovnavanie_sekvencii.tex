@@ -64,7 +64,7 @@ Skóre môže záviseť od toho aké bázy sú v danom stĺpci zarovnania. Na to
 V jednoduchom skórovaní sme dávali za pomčlku vždy rovnaké skóre ($-1$). Pri evolúcii sa však môže stať, že sa naraz zmaže niekoľko susedných báz. Pri \textit{afínnom skórovaní medzier} teda zavedieme dva typy skóre. Skóre za \textit{začatie medzery} a skóre za \textit{rozšírenie medzery}.
 \cite{skripta}
 
-\section{Algoritmy na hľadanie zarovnaní}
+\section[Algoritmy]{Algoritmy na hľadanie zarovnaní}
 Máme daný skórovací systém, potrebujeme algoritmus, ktorý nájde optimálne zarovnanie dvoch sekvencií.
 Budeme uvažovať zarovnávanie s medzerami. To znamená, že môžeme do sekvencie pridať ľubovoľne veľa medzier, aby sme dosiahli lepšie skóre. Pre 2 sekvencie dĺžky $n$ existuje 
 $$ {2n \choose n}  = \frac{(2n)!}{(n!)^2} \simeq \frac{2^{2n}}{\sqrt{\pi n}} $$
@@ -157,7 +157,7 @@ A[i,j-1]-1
 
 Časová aj pamäťová zložitosť sú, rovnako ako pri globálnom zarovnaní $O(nm)$.
 
-\section{Štatistická významnosť zarovnania}
+\section[Štat. významnosť ]{Štatistická významnosť zarovnania}
 Smith-Watermanov algoritmus nájde najlepšie lokálne zarovnanie, pre ľubovoľné dve sekvencie. Treba však rozhodnúť, či je zarovnanie dostatočne vierohodné na to, aby predstavovalo skutočnú podobnosť sekvencií a nie len najlepšie zarovnanie dvoch nesúvisiacich sekvencií.
 Ako vodítko pri rozhodnutí sa používajú identifikátory \textit{štatistickej významnosti} zarovnania: \textit{P-hodnota (P-value)} alebo \textit{E-hodnota (E-value)}.
 
