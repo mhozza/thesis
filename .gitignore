@@ -22,3 +22,4 @@ main.html
 main.css
 main.dvi
 *.sublime*
+data/*
