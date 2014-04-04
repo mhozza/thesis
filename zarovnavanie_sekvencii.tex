@@ -7,7 +7,7 @@ V prírode vznikajú nové sekvencie modifikáciou už existujúcich (evolúciou
 
 Podobné sekvencie, ktoré sa vyvinuli mutáciami so sekvencie v spoločnom predkovi sa nazývajú \textit{homologické} a pod pojmom \textit{hľadanie homológov} rozumieme hľadanie takých podobností, ktoré s veľkou pravdepodobnosťou vznikli práve zdieľanou evolučnou históriou.
 
-%Na prvý pohľad rozhodnutie podobnosti dvoch biologických sekvencií nie je nič iné, ako rozhodnutie podobnosti dvoch textových reťazcov. 
+%Na prvý pohľad rozhodnutie podobnosti dvoch biologických sekvencií nie je nič iné, ako rozhodnutie podobnosti dvoch textových reťazcov.
 %--Tuto vetu tam nechceme--Mnoho metód analýzy biologických sekvencií je preto zakorenená v informatike, kde je už mnoho literatúry týkajúcej sa tejto problematiky.
 
 %Vývoj sekvencií hromadí \textit{inzercie}, \textit{delécie} a \textit{substitúcie}, takže predtým ako môže byť vyhodnotená podobnosť, treba urobiť zarovnanie sekvencií. Preto je zarovnanie sekvencií veľmi dôležité.
@@ -18,7 +18,7 @@ Počas evolúcie dvoch homologických sekvencií nastane veľa \textit{inzercií
 \begin{figure}[hbtp]
     \centering
     \includegraphics[width=\textwidth]{images/zarovnanie}
-    \caption{Lokálne zarovnanie}    
+    \caption{Lokálne zarovnanie}
     \label{fig:alignment_example}
 \end{figure}
 
@@ -60,13 +60,9 @@ Skoro vždy však chceme rôzne zhody a nezhody skórovať rôzne - nie len vše
 Skóre môže záviseť od toho aké bázy sú v danom stĺpci zarovnania. Na to môžme použiť \textit{skórovaciu maticu}, kde máme definované skóre pre každú dvojicu. Skórovacie matice sa využívajú najmä pri zarovnávaní proteínov, kde niektoré dvojice majú podobné chemické vlastnosti.
 \cite{durbin, skripta}
 
-\subsection{Afínne skórovanie medzier}
-V jednoduchom skórovaní sme dávali za pomčlku vždy rovnaké skóre ($-1$). Pri evolúcii sa však môže stať, že sa naraz zmaže niekoľko susedných báz. Pri \textit{afínnom skórovaní medzier} teda zavedieme dva typy skóre. Skóre za \textit{začatie medzery} a skóre za \textit{rozšírenie medzery}.
-\cite{skripta}
-
 \section[Algoritmy]{Algoritmy na hľadanie zarovnaní}
 Máme daný skórovací systém, potrebujeme algoritmus, ktorý nájde optimálne zarovnanie dvoch sekvencií.
-Budeme uvažovať zarovnávanie s medzerami. To znamená, že môžeme do sekvencie pridať ľubovoľne veľa medzier, aby sme dosiahli lepšie skóre. Pre 2 sekvencie dĺžky $n$ existuje 
+Budeme uvažovať zarovnávanie s medzerami. To znamená, že môžeme do sekvencie pridať ľubovoľne veľa medzier, aby sme dosiahli lepšie skóre. Pre 2 sekvencie dĺžky $n$ existuje
 $$ {2n \choose n}  = \frac{(2n)!}{(n!)^2} \simeq \frac{2^{2n}}{\sqrt{\pi n}} $$
 možných globálnych zarovnaní. Čiže nie je možné v rozumnom čase nimi prejsť.
 
@@ -76,26 +72,27 @@ My sa budeme zaoberať len algoritmami využívajúcimi dynamické programovanie
 \cite{durbin, skripta}
 
 \subsection{Algoritmus pre globálne zarovnanie: Needelman-Wunch}
+\label{subsec:global-alignment}
 Máme dané 2 sekvencie $X = x_1x_2\dots x_n$ a $Y = y_1y_2\dots y_m$, budeme zarovnávať všetky znaky sekvencie $X$ a všetky znaky sekvencie $Y$. Budeme používať jednoduché skórovanie: $+1$ za zhodu, $-1$ za nezhodu alebo pomlčku.
 
 %Idea je nasledovná - Nech máme optimálne zarovnanie dĺžky $n$. Zarovnanie dĺžky $n+1$ vieme vyrobiť 3 spôsobmi. Buď pridáme $(x_i,y_j)$, alebo $(x_i,-)$, alebo $(-,y_j)$, kde $i,\ j$ sú indexy prvej nepoužitej bázy v $X$ resp. $Y$. Možnosť s najlepším skore nám dá optimálne zarovnanie dĺžky $n+1$.
 
 \begin{figure}[htp]
     \centering
-    \begin{subfigure}[m]{0.5\textwidth}    
+    \begin{subfigure}[m]{0.5\textwidth}
     \centering
     \includegraphics[width=\textwidth]{images/global_alignment}
-    \end{subfigure}    
+    \end{subfigure}
     ~
-    \begin{subfigure}[m]{0.3\textwidth}    
+    \begin{subfigure}[m]{0.3\textwidth}
     \centering
     \begin{verbatim}
     CATGTCAT--A
     CA-GTCCTAGA
     \end{verbatim}
     \end{subfigure}
-    \caption{Globálne zarovnanie}    
-    \label{fig:global_align}
+    \caption{Globálne zarovnanie}
+    \label{fig:global-align}
 \end{figure}
 
 Algoritmus postupne vypĺňa 2-rozmernú maticu $A$. Riadky zodpovedajú bázam sekvencie $X$ a stĺpce bázam $Y$. Na políčku $A[i,j]$ bude skóre najlepšieho zarovnania prvých $i$ báz sekvencie $X$ a prvých $j$ báz $Y$.
@@ -108,16 +105,16 @@ V prípade, že posledný stĺpec obsahuje len $x_i$ zarovnané s pomlčkou, sk�
 
 Najlepšie skóre bude maximálne skóre pre všetky 3 prípady.
 Dostávame teda nasledujúci vzťah pre výpočet $A[i,j]$:
-$$A[i,j] = \max \left\{ 
+$$A[i,j] = \max \left\{
 \begin{array}{l}
-A[i-1,j-1]+s(x_i, y_j)\\ 
+A[i-1,j-1]+s(x_i, y_j)\\
 A[i-1,j]-1\\
-A[i,j-1]-1 
+A[i,j-1]-1
 \end{array} \right.$$
-Maticu vieme vypĺňať po riadkoch, pričom každé políčok vieme vypočítať z troch políčok, ktoré už sú vypočítané. 
+Maticu vieme vypĺňať po riadkoch, pričom každé políčok vieme vypočítať z troch políčok, ktoré už sú vypočítané.
 
-Ak nás zaujíma aj zarovnanie -- nie len jeho skóre -- vieme si pre každé políčko zapamätať ktorá z 3 možností dosiahla maximálnu hodnotu 
-(červené šípky na Obr. \ref{fig:global_align}). Na základe tejto informácie potom vieme zrekonštruovať zarovnanie tak, že postupne z posledného políčka ($A[n,m]$) budeme prechádzať na políčko, z ktorého sme vypočítali aktuálnu hodnotu.
+Ak nás zaujíma aj zarovnanie -- nie len jeho skóre -- vieme si pre každé políčko zapamätať ktorá z 3 možností dosiahla maximálnu hodnotu
+(červené šípky na Obr. \ref{fig:global-align}). Na základe tejto informácie potom vieme zrekonštruovať zarovnanie tak, že postupne z posledného políčka ($A[n,m]$) budeme prechádzať na políčko, z ktorého sme vypočítali aktuálnu hodnotu.
 
 Časová zložitosť je $O(nm)$, pretože vypĺňame $nm$ políčok, každé v konštantnom čase. Zjavne aj pamäťová zložitosť je $O(nm)$.
 
@@ -126,16 +123,16 @@ Pamäťová zložitosť sa dá zredukovať na $O(n+m)$ za cenu zhruba dvojnásob
 \subsection{Algoritmus pre lokálne zarovnanie: Smith-Waterman}
 
 % TODO: preformulovať aby sedelo na lokalne zarovnania
-%Máme dané 2 sekvencie $X = x_1x_2\dots x_n$ a $Y = y_1y_2\dots y_n$, budeme zarovnávať všetky znaky sekvencie $X$ a všetky znaky sekvencie $Y$. Budeme používať jednoduché skórovanie: $+1$ za zhodu, $-1$ za nezhodu alebo pomlčku. 
+%Máme dané 2 sekvencie $X = x_1x_2\dots x_n$ a $Y = y_1y_2\dots y_n$, budeme zarovnávať všetky znaky sekvencie $X$ a všetky znaky sekvencie $Y$. Budeme používať jednoduché skórovanie: $+1$ za zhodu, $-1$ za nezhodu alebo pomlčku.
 
 \begin{figure}[htp]
     \centering
-    \begin{subfigure}[m]{0.5\textwidth}    
+    \begin{subfigure}[m]{0.5\textwidth}
     \centering
     \includegraphics[width=\textwidth]{images/local_alignment}
-    \end{subfigure}    
+    \end{subfigure}
     ~
-    \begin{subfigure}[m]{0.3\textwidth}    
+    \begin{subfigure}[m]{0.3\textwidth}
     \centering
     \begin{verbatim}
     GT-CTA
@@ -143,19 +140,130 @@ Pamäťová zložitosť sa dá zredukovať na $O(n+m)$ za cenu zhruba dvojnásob
     \end{verbatim}
     \end{subfigure}
     \caption{Lokálne zarovnanie}
-    \label{fig:global_align}
+    \label{fig:global-align}
 \end{figure}
 
 Algoritmus pre lokálne zarovnania sa líši len v niekoľkých malých detajloch. Opäť vypĺňame maticu $A$, s tým, že v $A[i,j]$ bude najvyššie skóre lokálneho zarovnania medzi sekvenciami $x_1x_2\dots x_i$ a $y_1y_2\dots y_j$, ktoré buď obsahuje bázy $x_i$ aj $y_j$, alebo je prázdne. Teda na ľubovoľnom mieste uvažujeme aj prázdne zarovnanie so skóre 0 (v matici nebudú záporné čísla). Vzťah pre výpočet $A[i,j]$ vyzerá takto:
-$$A[i,j] = \max \left\{ 
+$$A[i,j] = \max \left\{
 \begin{array}{l}
 0\\
-A[i-1,j-1]+s(x_i, y_j)\\ 
+A[i-1,j-1]+s(x_i, y_j)\\
 A[i-1,j]-1\\
-A[i,j-1]-1 
+A[i,j-1]-1
 \end{array} \right.$$
 
 Časová aj pamäťová zložitosť sú, rovnako ako pri globálnom zarovnaní $O(nm)$.
+
+\subsection{Afínne skórovanie medzier}
+\label{subsec:affine-gap-scoring}
+V jednoduchom skórovaní sme dávali za pomčlku vždy rovnaké skóre ($-1$). Pri evolúcii sa však môže stať, že sa naraz zmaže niekoľko susedných báz. Pri \textit{afínnom skórovaní medzier} teda zavedieme dva typy skóre. Skóre za \textit{začatie medzery} a skóre za \textit{rozšírenie medzery}.
+
+Algoritmus globálneho zarovnania vieme upraviť nasledovne: Namiesto matice $A$ teraz budeme mať 3 matice $M$, $I_x$, $I_y$ zodpovedajúce trom situáciám. \todo obrazok
+
+Nech $M[i,j]$ je najlepšie skóre prvých $i$ báz zo sekvencie $X$ a prvých $j$ báz zo sekvencie $Y$, pričom $x_i$ je zarovnané k $y_j$, $I_x[i,j]$ je najlepšie skóre ak $x_i$ je zarovnané k medzere a $I_y[i,j]$ je najlepšie skóre ak $y_j$ je zarovnané k medzere.
+
+Označme si $d$ penaltu za začatie medzery a $e$ penaltu za rozšírenie medzery. Vzťahy pre výpočet políčok sú nasledovné:
+\begin{align*}
+M[i,j] &= \max \left\{
+\begin{array}{l}
+M[i-1,j-1]+s(x_i, y_j)\\
+I_x[i-1,j-1]+s(x_i, y_j)\\
+I_y[i,j-1-1]+s(x_i, y_j)
+\end{array} \right.\\
+A[i,j] &= \max \left\{
+\begin{array}{l}
+M[i-1,j]-d\\
+I_x[i-1,j]-e
+\end{array} \right.\\
+A[i,j] &= \max \left\{
+\begin{array}{l}
+M[i,j-1]-d\\
+I_y[i,j-1]-e
+\end{array} \right.
+\end{align*}
+
+V týchto rovniciach predpokladáme, že delécia nie je nasledovaná inzerciou. Toto platí v optimálnej sekvencii, ak $-d-s$ je menšie ako najmenšie skóre nezhody.
+
+Tieto vzťahy vieme popísať nasledovným stavovým diagramom:
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=.5\textwidth]{images/alignment_fsa}
+    \caption{Stavový diagram pre zarovnanie sekvencií}
+    \label{fig:alignment-fsa}
+\end{figure}
+
+Časová zložitosť je $O(nm)$, pretože vypĺňame $3nm$ políčok, každé v konštantnom čase. Pamäťová zložitosť je opäť $O(nm)$.
+
+\cite{durbin}
+
+\section[Zarovnávanie s HMM]{Zarovnávanie pomocou skrytých Markovových modelov}
+
+\subsection{Skryté Markovove modely (HMM)}
+\textit{Skrytý Markovov model (hidden Markov model, HMM)} je pravdepodobnostý model, ktorý generuje náhodnú sekvenciu spolu s jej anotáciou (stavmi). HMM si móžme predstaviť ako konečný automat. Skladá sa z niekoľkých stavov, prechodov medzi nimi a emisií. Narozdiel od bežných konečných automatov, HMM emitujú symboly v stave, nie počas prechodu.
+HMM sa skladá z 3 typov pravdepodobností
+\begin{itemize}
+\item \textbf{začiatočné} pravdepodobnosť, že HMM začne v danom stave
+\item \textbf{prechodové} pravdepodobnosť, že HMM prejde zo stavu $i$ do stavu $j$
+\item \textbf{emisné} pravdepodobnosť, že HMM v stave $i$ vygeneruje symbol $x$
+\end{itemize}
+
+Generovanie sekvencie teda vyzerá nasledovne: Na začiatku je HMM v niektorom stave (každý stav $i$ má nejakú pravdepodobnosť $S_i$, že bude začiatočný). Potom v každom kroku HMM emituje symbol $x$ s pravdepodobnosťou $E_i[x]$ a prejde do stavu $j$ s pravdepodobnosťou $T_{ij}$. Po $n$ krokoch takto vygenerujeme sekvenciu dľžky $n$, pričom každý symbol je oanotovaný stavom, ktorý ho vygeneroval.
+
+V takomto modeli vieme počítať pravdepodobnosť, že model vygeneruje danú sekvenciu dĺžky $n$ s danou anotáciou ako súčin pravdepodobností prechodov a emisií. \cite{skripta, durbin}
+
+\subsection{Viterbiho algoritmus}
+
+Hľadáme najpravdepodobnejšiu postupnosť stavov A, teda $\arg\max_A \Pr(A, S)$. Úlohu budeme riešiť dynamickým programovaním.
+
+Podproblém $V[i,u]$ je pravdepodobnosť najpravdepodobnejšej cesty končiacej po $i$ krokoch v stave $u$, pričom vygeneruje $S_1 S_2 \dots S_i$.
+
+\begin{subequations}
+Rekurentné vzťahy pre náš algoritmus sú nasledovné:
+\begin{align}
+        \label{eq:viterbi-init}
+        V[1,u] &= \pi_u e_{u,S_1}\\
+        \label{eq:viterbi-step}
+        V[i,u] &= \max_w V[i-1, w] a_{w,u} e_{u,S_i}
+\end{align}
+\end{subequations}
+
+Algoritmus funguje takto:
+Nech $n$ je dĺžka reťazca a $m$ je počet stavov.
+Nainicializuj $V[1,i]\, \forall i$ podľa \ref{eq:viterbi-init}
+
+\begin{lstlisting}
+for i in range(2, n):
+    for u in range(1, m):
+        vypočítaj V[i, u] pomocou %*\ref{eq:viterbi-step}
+\end{lstlisting}
+Maximálne V[n,j] je pravdepodobnosť najpravdepodobnejšej cesty
+Aby sme vypísali anotáciu, pamätáme si pre každé V[i,u] stav w, ktorý viedol k maximálnej hodnote vo vzorci \ref{eq:viterbi-step}.
+
+Časová zložitosť tohto algoritmu je $O(nm^2)$, kde $n$ je dľžka sekvencie a $m$ počet stavov.
+
+Poznámka: pre dlhé sekvencie budú čísla V[i,u] veľmi malé a môže dôjsť k podtečeniu. V praxi teda používame zlogarimované hodnoty a namiesto násobenia súčet.
+
+\subsection{Nastavenie parametrov HMM}
+Ak máme oanotované trénovacie sekvencie, môžme z nich parametre odvodiť frekvenčnou analýzou. Emisie získame tak, že vyfiltrujeme symboly s príslušným stavom a spočítame výskyty pre každý stav zvlášť a tranzície získame tak, že pre každý stav spočítame frekvencie nasledujúcich stavov.
+
+\subsection{Párové zarovnávanie pomocou HMM}
+V časti \ref{subsec:affine-gap-scoring} sme si ukázali jednoduchý algoritmus na globálne zarovnávanie s afínnym skórovaním medzier. K tomuto algoritmu sme si uviedli aj jednoduchý stavový automat (Obr. \ref{fig:alignment-fsa}). Tento automat vieme previesť na HMM.
+
+Na to aby sme automat previedli na HMM, musíme urobiť niekoľko zmien - musíme nastaviť emisné a tranzičné pravdepodobnosti, tak aby sumovali do jedna. Pre jednoduchosť pridáme aj prechody medzi stavmi $X a Y$. Ak ich pravdepodobnosti nastavíme na 0, máme model ekvivalentný predchádzajúcemu.
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=.5\textwidth]{images/simple_model}
+    \caption{Párový HMM pre zarovnávanie sekvencií}
+    \label{fig:simple-model}
+\end{figure}
+
+Dostaneme model podobný HMM s tým rozdielom, že namiesto jedného symbolu emitujeme dvojicu symbolov. Takýto model sa nazýva \textit{Párový skrytý Markvov model}. Na tento model môžme použiť mierne modifikovaný Viterbiho algoritmus na nájdenie najpravdepodobnejšej postupnosti stavov, čo nám dá najpravdepodobnejšie zarovnanie.
+
+Parametre modelu móžme ľahko natrénovať z existujúcich párových zarovnaní.
+
+Nech dĺžky oboch sekvencií sú $O(n)$, a $m$ je počet stavov. Potom Viterbiho algoritmus na Párovom HMM bude bežať v čase $O(n^2m^2)$.
+\cite{durbin}
 
 \section[Štat. významnosť ]{Štatistická významnosť zarovnania}
 Smith-Watermanov algoritmus nájde najlepšie lokálne zarovnanie, pre ľubovoľné dve sekvencie. Treba však rozhodnúť, či je zarovnanie dostatočne vierohodné na to, aby predstavovalo skutočnú podobnosť sekvencií a nie len najlepšie zarovnanie dvoch nesúvisiacich sekvencií.
@@ -169,7 +277,6 @@ Ako vodítko pri rozhodnutí sa používajú identifikátory \textit{štatistick
     \label{fig:p-value}
 \end{figure}
 
-%Predpokladajme, že sme našli zarovnanie medzi sekvenciami dĺžky $n$ a $m$ so skóre $s$.
 P-hodnota zarovnania je pravdepodobnosť, že medzi nádhodne generovanými sekvenciami tej istej dĺžky by sme našli zarovnanie s rovnakým skóre alebo vyšším. Keďže P-hodnota závisí od dĺžok sekvencií a skóre, musíme ju počítať pri každom zarovnaní. Je však časovo náročné robiť to generovaním veľkého množstva zarovnaní, preto sa používajú matematicky odvodené vzorce na odhad tejto hodnoty. (\cite{Karlin}, \cite{Mitrophanov}).
 
 E-hodnota vyjadruje strednú hodnotu počtu zarovnaní so skóre aspoň takým ako má naše zarovnanie medzi náhodne generovanými sekvenciami. E-hodnota teda môže byť aj väčšia ako jedna. Ak je E-hodnota väčšia ako jedna, tak čisto náhodou by sme očakávali aspoň 1 také silné zarovnanie a teda zarovnania s tak vysokou E-hodnotou nebudeme považovať za štatisticky významné.

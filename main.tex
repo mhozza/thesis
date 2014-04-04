@@ -32,13 +32,13 @@
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
- 
+
 \lstset{ %
-  language=C++,                % the language of the code
+  language=python,                % the language of the code
   basicstyle=\footnotesize,           % the size of the fonts that are used for the code
   numbers=left,                   % where to put the line-numbers
   numberstyle=\tiny\color{gray},  % the style that is used for the line-numbers
-  stepnumber=1,                   % the step between two line-numbers. If it's 1, each line 
+  stepnumber=1,                   % the step between two line-numbers. If it's 1, each line
                                   % will be numbered
   numbersep=5pt,                  % how far the line-numbers are from the code
   backgroundcolor=\color{white},      % choose the background color. You must add \usepackage{color}
@@ -57,11 +57,13 @@
   commentstyle=\color{dkgreen},       % comment style
   stringstyle=\color{mauve},         % string literal style
   escapeinside={\%*}{*)},            % if you want to add a comment within your code
-  morekeywords={*,...}               % if you want to add more keywords to the set
+  morekeywords={*,...},               % if you want to add more keywords to the set
+  literate={č}{{\v{c}}}1
+           {í}{{\'i}}1
 }
 
 %makra
-\newtheorem{vt}{Veta}[section] 
+\newtheorem{vt}{Veta}[section]
 \newtheorem{lema}[vt]{Lema}
 \theoremstyle{definition}
 \newtheorem{df}[vt]{Definícia}
@@ -185,14 +187,14 @@ Konzultant:&   \mfconsultant \\
 % \thispagestyle{empty}~\vfill\eject % EOP iv % zadna strana titulky je prazdna
 
 % {~}\vspace{12cm}
-% 
+%
 % \noindent
 % \begin{minipage}{0.25\textwidth}~\end{minipage}
 % \begin{minipage}{0.68\textwidth}
 % Čestne prehlasujem, že som túto diplomovú prácu vypracoval(a) samostatne s použitím citovaných zdrojov.
-% 
+%
 % \bigskip\bigskip
-% 
+%
 % \hfill\hbox to 6cm{\dotfill}
 % \end{minipage}
 % \vfill\eject % EOP v
@@ -206,7 +208,7 @@ Konzultant:&   \mfconsultant \\
 \begin{minipage}{0.25\textwidth}~\end{minipage}
 \begin{center}
 \begin{minipage}{1\textwidth}
-%Ďakujem vedúcemu bakalárskej práce Marekovi Nagyovi za cenné rady 
+%Ďakujem vedúcemu bakalárskej práce Marekovi Nagyovi za cenné rady
 %a pripomienky, bez ktorých by táto práca asi nevznikla, priateľke, blízkym priateľom a rodine za morálnu podporu.
 Poďakovanie...
 \end{minipage}
