@@ -1,0 +1,9 @@
+\chapter{Modely}
+
+V našom riešení sme predstavili 2 modifikácie pôvodného HMM, pričom sme využili klasifikátory. V oboch modeloch sú klasifikátory rovnaké – trénované postupom spomenutým vyššie.
+
+\section{Model s klasifikátorom ako emisiou}
+V tomto modeli nahradíme emisné tabuľky stavov výstupom z klasifikátora. Model však nie je celkom korektný, pretože pravdepodobnosti emisií nesumujú do 1. Avšak ukázalo sa, že model aj napriek tomu funguje celkom dobre.
+V tomto modeli trénujeme iba tranzície. Klasifikátor sa trénuje zvlášť.
+\section{Model s klasifikátorovou páskou}
+V tomto modeli budeme okrem modelovania sekvencií modelovať navyše aj výstup z klasifikátora. Páska s výstupom z klasifikátora bude obsahovať akýsi hint pre náš zarovnávač. Tento model je narozdiel od predošlého korektný, no má však nevýhodu, že okrem prípadov keď si je klasifikátor neistý, penalizuje aj prípady kedy si je klasifikátor príliš istý. Je to z dôvodu, že HMM modeluje distribúciu pravdepodobností výstupu klasifikátora a pravdepodobnosť, že si je kalsifikátor príliš istý je malá.
