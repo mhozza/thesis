@@ -55,59 +55,57 @@ Markovovských modelov (pHMM) \cite{durbin}. V~tejto práci sa zaoberáme
 možnosťami použitia prídavnej informácie o~funkcii vstupných sekvencií
 (tzv. anotácie) na zlepšenie kvality takýchto zarovnaní.
 
-\paragraph{Klasifikácia na zaklade lokálnej informácie}
+\paragraph{Klasifikácia na základe lokálnej informácie.}
 
-Na zakomponovanie informácie sme sa rozhodli využiť klasifikátory, ktoré rozhodujú, či dané pozície majú byť zarovnané k~sebe alebo nie. Ako klasifikátor sme sa rozhodli využiť \emph{RandomForest}\cite{randomForestPaper}, pretože aktuálne patrí medzi najlepšie klasifikátory.
-V našich modeloch sme použili rôzne klasifikátory pre Match stav a Insert stavy.
+Informácie sme zakomponovali pomocou klasifikátorov, ktoré rozhodujú či dané pozície majú byť zarovnané k~sebe alebo nie. Ako klasifikátor sme použili \emph{RandomForest} \cite{randomForestPaper}, pretože aktuálne patrí medzi najlepšie klasifikátory.
 
-Vstupné dáta pre klasifikátor sú okná veľkosti $w$, v ktorom sa nachádzaja $w$ dvojíc báz v okolí daných pozícií a ich anotácie (napr. či ide o gén alebo nie). Výstup je hodnota z intervalu $\left<0,1\right>$, ktorá označuje istotu klasifikátora, že dané 2 pozície majú byť zarovnané k sebe (v Insert stave, že daná pozícia má byť zarovnaná k medzere).
+Vstupné dáta pre klasifikátor sú okná veľkosti $w$, v ktorom sa nachádza $w$ dvojíc báz v okolí daných pozícií a ich anotácie (napr. či ide o gén alebo nie). Výstup je hodnota z intervalu $\left<0,1\right>$, ktorá označuje istotu klasifikátora, že dané dve pozície majú byť zarovnané k sebe (v insert stave, že daná pozícia má byť zarovnaná k medzere).
 
-Ukázalo sa, že klasifikátor sa dokáže naučiť, ktoré okná majú byť zarovnané k~sebe a ktoré nie. Na obrázku \ref{fig:clf-m-dist} je distribúcia výstupov klasifikátora. Pozitívne príklady sú tie, ktoré majú byť zarovnané k~sebe.
+Ukázalo sa, že klasifikátor sa dokáže naučiť, ktoré okná majú byť zarovnané k~sebe a ktoré nie (Obr. \ref{fig:clf-m-dist}).
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=.3\textwidth, clip=true]{images/clf_m_test}
-    \caption{Distribúcia výstupu klasifikátora pre pozitívne (modrá) a negatívne (zelená) príklady.  Okno veľkosti 5 a anotácia s génom.
-    Vpravo je spojitá aproximácia ľavého obrázku. Na $x$-ovej osi je výstup z klasifikátora, na $y$-ovej je početnosť daného výstupu.}
+    \includegraphics[width=.5\textwidth, clip=true]{images/clf_m_test}
+    \caption{Distribúcia výstupu klasifikátora pre pozitívne a negatívne príklady. Pozitívne príklady sú tie, ktoré majú byť zarovnané k~sebe, negatívne príklady sú tie, ktoré k sebe zarovnané byť nemajú.}
     \label{fig:clf-m-dist}
 \end{figure}
 
-\paragraph{Zakoponovanie výsledkov klasifikacie do pHMM}
+\paragraph{Zakomponovanie výsledkov klasifikácie do pHMM.}
 
-Vyvinuli sme 2 modely pre zarovnanie sekvencií s~anotáciami za pomoci klasifikátora, ktoré sú založené na skrytých Markovovských modeloch.
+Vyvinuli sme 2 modely pre zarovnanie sekvencií s~anotáciami za pomoci klasifikátora, ktoré sú založené na párových skrytých Markovovských modeloch.
 
 \textbf{Model s~klasifikátorom ako emisiou:} (Obr. \ref{fig:model-clf})
 V~tomto modeli sme nahradili emisné tabuľky stavov výstupom z~klasifikátora.
+Model však nie je korektný pravdepodobnostný model, pretože pravdepodobnosti emisií nesčitujú do~1.
 
-Model však nie je úplne korektný, pretože pravdepodobnosti emisií nesumujú do~1. Avšak ukázalo sa, že model aj napriek tomu funguje dobre.
-
-V~tomto modeli sme trénovali iba tranzície, emisie sme mali priamo z~natrénovaného klasifikátora.
+Emisné pravdepodobnosti sme prevzali priamo z klasifikátora, ktorý trénujeme zvlášť. Prechodové pravdepodobnosti sme natrénovali zo zarovnaní z trénovacej vzorky.
 
 \textbf{Model s~klasifikátorovou páskou:} (Obr. \ref{fig:model-clf-tape})
-Aby sme vyriešili problém s~korektnosťou predošlého modelu, navrhli sme alternatívny model, ktorý navyše modeluje aj výstup z~klasifikátora.
+Aby sme vyriešili problém s~korektnosťou predošlého modelu, navrhli sme alternatívu, ktorá navyše modeluje aj výstup z~klasifikátora.
 Nemodelujeme teda len dvojicu sekvencií, ale aj sekvenciu výstupov klasifikátora.
 
-V~tomto modeli sme trénovali aj tranzície aj emisie. Výstupy z~klasifikátora sme rozdelili do 10 košov rovnomerne na intervale $\left<0, 1\right>$
+V tomto modeli sme trénovali všetky parametre na trénovacej vzorke zarovnaní obohatenej o pásku s výstupmi z klasifikátora.
 
 \begin{figure}[H]
         \centering
         \begin{subfigure}[b]{0.17\textwidth}
                 \includegraphics[width=\textwidth, clip=true]{images/model_clf}
-                \caption{Model s~klasifikátorom ako emisiou}
+                % \caption{Model s~klasifikátorom ako emisiou}
+                \caption{}
                 \label{fig:model-clf}
         \end{subfigure}%
         \qquad %add desired spacing between images, e. g. ~, \quad, \qquad etc.
           %(or a blank line to force the subfigure onto a new line)
         \begin{subfigure}[b]{0.17\textwidth}
                 \includegraphics[width=\textwidth, clip=true]{images/model_clf_paska}
-                \caption{Model s~klasifikátorovou páskou}
+                % \caption{Model s~klasifikátorovou páskou}
+                \caption{}
                 \label{fig:model-clf-tape}
         \end{subfigure}
         \caption{Modely s~klasifikátorom}
 \end{figure}
-
-% \vspace{-1cm}
-\nocite{*}
+\vspace{-1cm}
+% \nocite{*}
 \bibliographystyle{apalike}
 \bibliography{references}
 

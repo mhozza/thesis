@@ -24,7 +24,7 @@
 \authorrunning{easychair: Running author head is undefined.}
 
 % We are an article (more customized later)
-\LoadClass[a4paper,twocolumn,10pt,twoside]{article}
+\LoadClass[a4paper,twocolumn,11pt,twoside]{article}
 %\RequirePackage[headings]{fullpage}
 \RequirePackage[utf8]{inputenc}
 \if@slovak
