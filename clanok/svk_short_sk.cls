@@ -2,10 +2,10 @@
 % Some credits
 %
 
-%% Based on easychair.cls by Serguei A. Mokhov, Andrei Voronkov, 
+%% Based on easychair.cls by Serguei A. Mokhov, Andrei Voronkov,
 %% and Geoff Sutcliffe (C) 2008
 %% Modified for Student Research Conference at FMPH CU by
-%% Tomas Vinar (C) 2010 
+%% Tomas Vinar (C) 2010
 
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
 \ProvidesClass{svk}[2010/03/07]
@@ -24,7 +24,7 @@
 \authorrunning{easychair: Running author head is undefined.}
 
 % We are an article (more customized later)
-\LoadClass[a4paper,twocolumn,11pt,twoside]{article}
+\LoadClass[a4paper,twocolumn,10pt,twoside]{article}
 %\RequirePackage[headings]{fullpage}
 \RequirePackage[utf8]{inputenc}
 \if@slovak
