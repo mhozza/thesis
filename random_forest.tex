@@ -1,4 +1,4 @@
-\chapter{Random forest[Draft]}
+\chapter{Random forest}
 
 V tejto kapitole si popíšeme ako funguje klasifikátor \textit{Random forest}, v čom spočívajú jeho výhody a prečo sme si ho vybrali.
 
@@ -22,7 +22,7 @@ Random forest sa skladá z mnohých klasifikačných stromov. Pri klasifikácii 
 
 \subsection{Trénovanie}
 Každý strom sa buduje nasledovne.
-Máme $N$ trénovacích vektorov, pričom každý vektor sa skladá z $M$ vstupných premenných (teda má rozmer $M$). 
+Máme $N$ trénovacích vektorov, pričom každý vektor sa skladá z $M$ vstupných premenných (teda má rozmer $M$).
 Z nich vyberieme \textit{náhodne s opakovaním} $N$ vektorov, ktoré budú použité ako tréenovacia množina pre daný rozhodovací strom.
 Okrem toho vyberieme náhodne $m<<M$ vstupných parametrov a len tie sa použijú pri trénovaní stromu. Každý strom je vybudovaný najviac ako sa dá - nie je žiadne orezávanie.
 

@@ -213,11 +213,11 @@ Generovanie sekvencie teda vyzerá nasledovne: Na začiatku je HMM v niektorom s
 V takomto modeli vieme počítať pravdepodobnosť, že model vygeneruje danú sekvenciu dĺžky $n$ s danou anotáciou ako súčin pravdepodobností prechodov a emisií. \cite{skripta, durbin}
 
 \subsection{Viterbiho algoritmus}
-
 Hľadáme najpravdepodobnejšiu postupnosť stavov A, teda $\arg\max_A \Pr(A, S)$. Úlohu budeme riešiť dynamickým programovaním.
 
 Podproblém $V[i,u]$ je pravdepodobnosť najpravdepodobnejšej cesty končiacej po $i$ krokoch v stave $u$, pričom vygeneruje $S_1 S_2 \dots S_i$.
 
+\todo indexy su zle, napisat to trochu inac, asi cele do toho algoritmu, a mozno tie rekurentne vztahy zvlast nakoniec, alebo vynechat
 \begin{subequations}
 Rekurentné vzťahy pre náš algoritmus sú nasledovné:
 \begin{align}
@@ -254,7 +254,7 @@ Na to aby sme automat previedli na HMM, musíme urobiť niekoľko zmien - musím
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=.5\textwidth]{images/simple_model}
+    \includegraphics[width=.4\textwidth]{images/simple_model}
     \caption{Párový HMM pre zarovnávanie sekvencií}
     \label{fig:simple-model}
 \end{figure}
