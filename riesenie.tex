@@ -9,7 +9,12 @@ V našich modeloch sme použili 2 typy klasifikátorov -- \textit{Match klasifik
 
 \subsection{Random Forest}
 
+\todo chcem to tu, alebo niekde inde?
+
+\todo
+
 \subsection{Match klasifikátor}
+\todo mozno to nechcem striktne rozdelovat na tieto 2 klasifikatory, ak budem mat rozne typy dat tak to mozno budem chciet radsej zlucit do jedneho
 
 Match klasifikátor určuje, či sa dané dve pozície majú zarovnať k sebe. Jeho výstupom je číslo z intervalu $\left<0,1\right>$, pričom čím bližšie je toto čislo k 1, tým si je klasifikátor istejší, že dané 2 pozície sa majú zarovnať k sebe. Naopak, čím bližšie je k 0, tým si je viac istý, že by tieto pozície k sebe byť nemajú.
 
@@ -27,6 +32,7 @@ Majme dve sekvencie, $X = x_1 x_2 \dots x_n$ a $Y = y_1 y_2 \dots y_n$ a pozíci
 % \end{figure}
 
 \subsubsection{Trénovanie}
+
 \todo
 
 \subsection{InDel klasifikátor}
@@ -45,7 +51,7 @@ Majme dve sekvencie, $X = x_1 x_2 \dots x_n$ a $Y = y_1 y_2 \dots y_n$ a pozíci
 %     \label{fig:window-i}
 % \end{figure}
 
-\begin{figure}[hp]
+\begin{figure}[h]
         \centering
         \begin{subfigure}[b]{0.35\textwidth}
                 \includegraphics[width=\textwidth]{images/window_m}
@@ -61,7 +67,6 @@ Majme dve sekvencie, $X = x_1 x_2 \dots x_n$ a $Y = y_1 y_2 \dots y_n$ a pozíci
         \end{subfigure}
         \caption{Okno klasifikátora pre pozície $i = 3$ a $j = 6$}
 \end{figure}
-\vspace{-1cm}
 
 \subsubsection{Trénovanie}
 \todo
