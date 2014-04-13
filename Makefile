@@ -23,7 +23,7 @@ main.html: *.tex *.bib Makefile images/*
 	pdflatex main
 	bibtex main
 	mk4ht xhlatex main.tex 'xhtml,charset=utf-8,pmathml' ' -cunihtf -utf8 -cvalidate' '-d./html/'
-	# mk4ht xhlatex main.tex "myconfig" ' -cunihtf -utf8 -cvalidate' '-d./html/' 
+	# mk4ht xhlatex main.tex "myconfig" ' -cunihtf -utf8 -cvalidate' '-d./html/'
 
 main.zip: main.html
 	zip main.zip html/*
@@ -43,8 +43,8 @@ all: ps pdf
 final: pdf
 	cp main.pdf hozza-dipl.pdf
 
-clean: 
-	rm -f *.log *.aux *.toc *.bbl *.blg *.slo *.srs *.out *.lot *.lof *.html *.css *.nav *.snm
+clean:
+	rm -f *.log *.aux *.toc *.bbl *.blg *.slo *.srs *.out *.lot *.lof *.html *.css *.nav *.snm *.4ct *.4tc *.dvi *.idv *.lg *.tmp *.xref
 
 dist-clean: clean
 	rm -f main.ps main.pdf html/*
