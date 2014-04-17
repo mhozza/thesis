@@ -5,29 +5,45 @@
 \usepackage{multicol}
 \usepackage{color}
 \usepackage{graphicx}
-
 %% znaky s diakritikou
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[slovak]{babel} % slovenske delenie slov
+% \usepackage{wallpaper}
 
 %% definicia farieb
-\definecolor{mainCol}{rgb}{.97,.99,0.93} % farba pozadia posteru
-\definecolor{BoxCol}{rgb}{.7,1,.7} % farba boxu okolo nadpisov
-\definecolor{sectionCol}{rgb}{.5,.7,.5} % farba nadpisu
-\definecolor{textCol}{rgb}{0,0.1,0} % farba hlavneho textu
+
+% \definecolor{mainCol}{rgb}{0.925, 0.941, 0.945} % farba pozadia posteru
+\definecolor{mainCol}{rgb}{0.94, 1, 0.92} % farba pozadia posteru
+\definecolor{SectionCol}{rgb}{0.98, 1, 0.98} % farba nadpisu
+% \definecolor{SectionCol}{rgb}{0.925, 0.941, 0.945} % farba nadpisu
+% \definecolor{SectionCol}{rgb}{0.173, 0.243, 0.314} % farba nadpisu
+\definecolor{BoxCol}{rgb}{0.18, 0.8, 0.443} % farba boxu okolo nadpisov
+\definecolor{TextCol}{rgb}{0.10, 0.24, 0.11} % farba hlavneho textu
 
 \def\mysection#1{
-{\color{sectionCol}\section*{\sc\bfseries #1}}}
+{\color{SectionCol}\section*{\sc\bfseries #1}}}
+
+\usepackage{eso-pic}
+\newcommand\BackgroundPic{
+\put(0,0){
+\parbox[b][\paperheight]{\paperwidth}{%
+\vfill
+\centering
+\includegraphics[width=\paperwidth,height=\paperheight]{images/dna_bg}%
+\vfill
+}}}
+
 
 \begin{document}
+\AddToShipoutPicture{\BackgroundPic}
 \setlength{\logowidth}{20cm}
 \setlength{\titlewidth}{\textwidth}
 \addtolength{\titlewidth}{-\logowidth}
 \rightlogo[0.9]{images/fmfilogo-farebne}
 \useleftlogofalse
 
-\color{textCol}
+\color{TextCol}
 \title{Zarovnávanie sekvencií s~použitím metód klasifikácie}
 
 \author{Michal Hozza\\
@@ -42,6 +58,7 @@ FMFI UK, Mlynská Dolina, 842~48~Bratislava}
 \maketitle
 
 \begin{multicols*}{3}
+
 
 \mysection{Úvod}
 

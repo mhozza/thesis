@@ -1,74 +1,74 @@
 %% FIX BY BRONA TO MAKE PDFOUTPUT DETECTION TO WORK NOW
 %% ADJUSTED SMALLER MARGINS
 
-%% 
+%%
 %% This is file `sciposter.cls' v 1.18
 %%
 %% Authors Michael H.F. Wilkinson and Alle Meije Wink
 %%   August 18, 2006
-%%    
-%% Derived from IWIposter.cls, 18/11/2003, same authors 
-%% Problems, bugs and comments to 
+%%
+%% Derived from IWIposter.cls, 18/11/2003, same authors
+%% Problems, bugs and comments to
 %%        m.h.f.wilkinson@rug.nl
 %% version 1.18, 2006/08/18 :
 %%               - footer layout options changed \LEFTSIDEfootlogo command
 %%                 added
-%%               - \PARstart command problem fixed, by redefining it using 
+%%               - \PARstart command problem fixed, by redefining it using
 %%                 the lettrine package by Daniel Flipo
 %%               - bug in babel support fixed (\abstractname hook used now)
 %% version 1.17, 2006/06/15 :
-%%               - interfacing to babel implemented by using \figurename 
+%%               - interfacing to babel implemented by using \figurename
 %%                 and \tablename in table caption. Thanks to Marcus
 %%                 Guenther for pointing out the problem.
-%%               - \algorithmname added for easy changing of algorithm 
+%%               - \algorithmname added for easy changing of algorithm
 %%                 caption start, for similar reasons as above
 %%               - posibilities for changing caption style added
 %%               - \setmargins added as command
-%%               - \noindent added to figure, algorithm, and table 
-%%                 environments to obtain correct layout if \parindent 
+%%               - \noindent added to figure, algorithm, and table
+%%                 environments to obtain correct layout if \parindent
 %%                 is not zero (the default). Suggested by Pavel Rehulka
-%% version 1.16, 2006/03/28 : 
+%% version 1.16, 2006/03/28 :
 %%               - plainboxsection option added, by popular request
-%% version 1.15, 2005/10/20 : 
+%% version 1.15, 2005/10/20 :
 %%               - \caption given extra optional parameter indicating
 %%                 which fraction of \columnwidth the width should be
-%%                 (default 1). Thanks to Andreas Engel for this 
+%%                 (default 1). Thanks to Andreas Engel for this
 %%                 suggestion.
 %% version 1.14, 2005/09/02 :
-%%               - \centering (in stead of the center environment) can now 
-%%                 be used within figure environment without unwanted 
+%%               - \centering (in stead of the center environment) can now
+%%                 be used within figure environment without unwanted
 %%                 centering of the caption
 %%               - Bug in colour setting of \section* fixed
-%%               - Font pointsize options now also work properly with 
-%%                 external paper size settings (including ISO RA0-RA3, 
+%%               - Font pointsize options now also work properly with
+%%                 external paper size settings (including ISO RA0-RA3,
 %%                 ISO B0-B3, and custom).
 %% version 1.13, 2005/07/13 :
-%%               - mainCol now properly affects background \pagecolor, 
+%%               - mainCol now properly affects background \pagecolor,
 %%                 even in the presence of a right logo
-%% version 1.12, 2004/10/11 : 
+%% version 1.12, 2004/10/11 :
 %%               - mainCol now properly affects background \pagecolor
 %%
 %% version 1.11, 2004/06/22 :
-%%               - Some cosmetics of the \subfigure command improved, 
+%%               - Some cosmetics of the \subfigure command improved,
 %%                 references to subfigures are now displayed as 2(a) etc.
-%% version 1.10, 2004/04/02 : 
+%% version 1.10, 2004/04/02 :
 %%               - Standard LaTeX seems to work now: xdvi look weird,
 %%                 but with up-to-date dvips I get good results when viewed
 %%                 with gv
-%%               - Custom paper support through external files added 
+%%               - Custom paper support through external files added
 %%                 ISO paper sizes RA0, RA1, RA2, B1, B2, and B3 added
 %%                 using this feature
 %%               - ANSI paper sizes B (tabloid), C, D, and E added
 %%               - oddball paper size A0b removed (was this an attempt at
 %%                 ANSI E?).
 %%               - Boxed section headers work better on small paper now.
-%% version 1.00, 2004/02/16 : 
-%%               - Essentially IWIposter.cls v1.16, but without explicit 
+%% version 1.00, 2004/02/16 :
+%%               - Essentially IWIposter.cls v1.16, but without explicit
 %%                 reference to University of Groningen and Institute for
 %%                 Mathematics and Computing Science
-%%                 Formatting for logos is provided but no defaults 
+%%                 Formatting for logos is provided but no defaults
 %%                 available
-%% 
+%%
 \ProvidesClass{sciposter}[2006/05/30 v1.17 scientific poster class (MHFW, AMW)]
 \NeedsTeXFormat{LaTeX2e}[1995/06/01]
 \LoadClass{article}
@@ -161,7 +161,7 @@
       }
     }
   }
-\DeclareOption{a3}{% ISO A3 
+\DeclareOption{a3}{% ISO A3
   \renewcommand{\papertype}{a3}
   \renewcommand{\fontpointsize}{14pt}
   \setlength{\paperwidth}{29.7cm}
@@ -316,7 +316,7 @@
   \addtolength{\textwidth}{-2\papermargin}
   \setlength{\textheight}{\paperheight}
   \addtolength{\textheight}{-2\papermargin}
-  
+
   \setlength{\voffset}{-2.54cm}
   \addtolength{\voffset}{\papermargin}
   \setlength{\hoffset}{-2.54cm}
@@ -342,7 +342,7 @@
 \ifthenelse{\equal{\fontpointsize}{20pt}}{
   \renewcommand{\tiny}{\fontsize{10}{12}\selectfont}
   \renewcommand{\scriptsize}{\fontsize{12}{14}\selectfont}
-  \renewcommand{\footnotesize}{\fontsize{14.4}{18}\selectfont}   
+  \renewcommand{\footnotesize}{\fontsize{14.4}{18}\selectfont}
   \renewcommand{\small}{\fontsize{17.28}{22}\selectfont}
   \renewcommand{\normalsize}{\fontsize{20.74}{25}\selectfont}
   \renewcommand{\large}{\fontsize{24.88}{30}\selectfont}
@@ -369,7 +369,7 @@
     \renewcommand{\tiny}{\fontsize{8.3}{10}\selectfont}
     \renewcommand{\scriptsize}{\fontsize{10}{12}\selectfont}
     \renewcommand{\footnotesize}{\fontsize{12}{14}\selectfont}
-    \renewcommand{\small}{\fontsize{14.4}{18}\selectfont}   
+    \renewcommand{\small}{\fontsize{14.4}{18}\selectfont}
     \renewcommand{\normalsize}{\fontsize{17.28}{22}\selectfont}
     \renewcommand{\large}{\fontsize{20.74}{25}\selectfont}
     \renewcommand{\Large}{\fontsize{24.88}{30}\selectfont}
@@ -382,7 +382,7 @@
     \newcommand{\titlesize}{\Huge}
     \newcommand{\authorsize}{\LARGE}
     \newcommand{\instsize}{\Large}
-    
+
 
     \setlength\smallskipamount{4.5pt plus 2pt minus 2pt}
     \setlength\medskipamount{9pt plus 3pt minus 3pt}
@@ -398,7 +398,7 @@
       \renewcommand{\scriptsize}{\fontsize{8.3}{10}\selectfont}
       \renewcommand{\footnotesize}{\fontsize{10}{12}\selectfont}
       \renewcommand{\small}{\fontsize{12}{14}\selectfont}
-      \renewcommand{\normalsize}{\fontsize{14.4}{18}\selectfont}   
+      \renewcommand{\normalsize}{\fontsize{14.4}{18}\selectfont}
       \renewcommand{\large}{\fontsize{17.28}{22}\selectfont}
       \renewcommand{\Large}{\fontsize{20.74}{25}\selectfont}
       \renewcommand{\LARGE}{\fontsize{24.88}{30}\selectfont}
@@ -423,7 +423,7 @@
 
     }{\ifthenelse{\equal{\fontpointsize}{25pt}}{
         \renewcommand{\tiny}{\fontsize{12}{14}\selectfont}
-        \renewcommand{\scriptsize}{\fontsize{14.4}{18}\selectfont}   
+        \renewcommand{\scriptsize}{\fontsize{14.4}{18}\selectfont}
         \renewcommand{\footnotesize}{\fontsize{17.28}{22}\selectfont}
         \renewcommand{\small}{\fontsize{20.74}{25}\selectfont}
         \renewcommand{\normalsize}{\fontsize{24.88}{30}\selectfont}
@@ -439,7 +439,7 @@
         \newcommand{\titlesize}{\VeryHuge}
         \newcommand{\authorsize}{\LARGE}
         \newcommand{\instsize}{\Large}
-       
+
         \setlength\smallskipamount{6pt plus 2pt minus 2pt}
         \setlength\medskipamount{12pt plus 4pt minus 4pt}
         \setlength\bigskipamount{24pt plus 8pt minus 8pt}
@@ -450,7 +450,7 @@
         \setlength\belowdisplayshortskip{13pt plus 7pt minus 6pt}
 
       }{\ifthenelse{\equal{\fontpointsize}{30pt}}{
-        \renewcommand{\tiny}{\fontsize{14.4}{18}\selectfont}   
+        \renewcommand{\tiny}{\fontsize{14.4}{18}\selectfont}
         \renewcommand{\scriptsize}{\fontsize{17.28}{22}\selectfont}
         \renewcommand{\footnotesize}{\fontsize{20.74}{25}\selectfont}
         \renewcommand{\small}{\fontsize{24.88}{30}\selectfont}
@@ -467,7 +467,7 @@
         \newcommand{\titlesize}{\veryHuge}
         \newcommand{\authorsize}{\Large}
         \newcommand{\instsize}{\large}
-       
+
         \setlength\smallskipamount{8pt plus 2pt minus 2pt}
         \setlength\medskipamount{14pt plus 5pt minus 5pt}
         \setlength\bigskipamount{29pt plus 9pt minus 9pt}
@@ -497,7 +497,7 @@
         \newcommand{\titlesize}{\Huge}
         \newcommand{\authorsize}{\Large}
         \newcommand{\instsize}{\large}
-       
+
         \setlength\smallskipamount{10pt plus 2pt minus 2pt}
         \setlength\medskipamount{18pt plus 6pt minus 6pt}
         \setlength\bigskipamount{36pt plus 11pt minus 11pt}
@@ -543,7 +543,7 @@
  %%   }{}
   \pagestyle{empty}
   \setfooter
-  \pagecolor{mainCol} 
+  \pagecolor{mainCol}
   }
 %
 
@@ -584,7 +584,7 @@
 \newcommand{\LEFTSIDEfootlogo}[1][true]{%
   \setboolean{footlogo@leftside}{#1}
   \setfooter
-} 
+}
 %
 \newcommand{\footlogo}{}
 \newcommand{\@conference}{}
@@ -598,7 +598,7 @@
 }
 %
 %
-\newcommand{\conference}[1]{% arg:name of conference 
+\newcommand{\conference}[1]{% arg:name of conference
 \makeatletter
 \renewcommand{\@conference}{\footnotesize #1}
 \setfooter
@@ -614,7 +614,7 @@
     \begin{center}
       \renewcommand{\baselinestretch}{3.3}\normalsize
       {\titlesize \bf \@title}\par
-      \renewcommand{\baselinestretch}{1.0}\normalsize            
+      \renewcommand{\baselinestretch}{1.0}\normalsize
       \vspace{0.4\titleskip}
       {\authorsize {\bf\@author} \par}
       {\instsize
@@ -662,7 +662,8 @@
   \begin{center}
     \setlength{\secboxwidth}{\columnwidth}
     \addtolength{\secboxwidth}{-1cm}
-    \shabox{\colorbox{BoxCol}{
+    %\shabox{
+      \colorbox{BoxCol}{
       \begin{minipage}[c]{\secboxwidth}
         \vspace{1.1ex}
         \begin{center}
@@ -670,7 +671,8 @@
         \end{center}
         \vspace{0.2ex}
       \end{minipage}
-    }}
+    }
+    %}
   \end{center}
   \par\vspace{0.375\secskip}
 }
@@ -771,7 +773,7 @@
 }{
   \ifthenelse{\equal{\secstyle}{plain}}{
     \renewcommand{\section}{\secdef\PlainSection\sPlainSection}
-  }{  
+  }{
     \ifthenelse{\equal{\secstyle}{plainboxed}}{
       \renewcommand{\section}{\secdef\PlainBoxSection\sPlainBoxSection}
     }{
@@ -885,7 +887,7 @@
     \else
       \centerline{\box0}
     \fi
-    \par 
+    \par
   \end{minipage}
   \caplastskip
 }
@@ -970,7 +972,7 @@
 
 %
 %%% \PARstart command redefined using lettrine package of Danial Flipo
-%%  only included here for backwards compatibility 
+%%  only included here for backwards compatibility
 
 \newcommand{\PARstart}[2]{\lettrine{#1}{#2}}
 
@@ -979,7 +981,7 @@
 
 \color{TextCol}
 
-%% 
+%%
 %% End of file `sciposter.cls'.
 
 
