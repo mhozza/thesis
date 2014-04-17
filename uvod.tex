@@ -4,27 +4,38 @@
 \markboth{Úvod}{Úvod}
 
 % preco je zarovnanie dolezite
-Najnovšie technológie sekvenovania DNA produkujú stále väčšie monožstvo DNA sekvencií rôznych organizmov. Spolu s tým stúpa aj potreba rozumieť týmto dátam.
-Dôležitým krokom k ich porozumeniu je \textit{zarovnávanie sekvencií} -- nájdenie podobností medzi sekvenciami.
-Zarovnávanie sekvencií je nápomocné pri zisťovaní ich štruktúry a následne funkciu jednotlivých častí.
+Najnovšie technológie sekvenovania DNA produkujú stále väčšie monožstvo sekvencií rôznych organizmov. Spolu s tým stúpa aj potreba rozumieť týmto dátam.
+Dôležitým krokom k ich porozumeniu je \textit{zarovnávanie sekvencií}.
+Zarovnávanie dvoch DNA sekvencií je teda jedným zo základných
+bioinformatických problémov. Správne zarovnanie identifikuje časti
+sekvencie, ktoré vznikli z~toho istého predka (zarovnané bázy), ako aj
+inzercie a delécie v~priebehu evolúcie (medzery v~zarovnaní).
+Je nápomocné pri zisťovaní ich štruktúry a následne funkciu jednotlivých častí.
 
 % zarovnavacie algoritmy
-Existujú rôzne algoritmy na zarovnávanie sekvencií. Väčšina z nich je založená na  pravdepodobostnom modeli, pričom sa snažia nájsť zarovnanie s čo najväčšou pravdepodobnosťou.
-Algoritmy sú zvyčajne založené na dynamickom programovaní. Sú buď deterministické, ktoré s určitosťou nájdu najpravdepodbnejšie zarovnanie, ale za cenu kvadradického času v závislosti od dĺžok sekvencií, alebo heuristické algoritmy, ktoré nie vždy nájdu najpravdepodobnejšie zarovnanie, ale pracujú oveľa rýchlejšie.
+Existujú rôzne algoritmy na zarovnávanie sekvencií. Väčšina z nich je založená na  pravdepodobnostnom modeli, pričom sa snažia nájsť zarovnanie s čo najväčšou pravdepodobnosťou.
+Algoritmy sú zvyčajne založené na dynamickom programovaní a pracujú v kvadratickom čase v závislosti od dĺžok sekvencií. Niekedy sa na urýchlenie použijú rôzne heuristické algoritmy, ktoré nie vždy nájdu najpravdepodobnejšie zarovnanie, ale pracujú oveľa rýchlejšie.
 
-My sa budeme zaoberať algoritmom založeným na dynamickom programovaní, kde kvalita výsledného zarovnania je ovplyvnená len pravdepodobnostným modelom.
+My sme sa v práci zaoberali algoritmom, ktorý hľadá zarovnanie pomocou jednoduchých párových skrytých
+Markovovských modelov (pHMM) \cite{durbin}, kde kvalita výsledného zarovnania je ovplyvnená len pravdepodobnostným modelom.
 
 Základný model berie do úvahy len jednotlivé \textit{bázy} a pravdepodobnosti \textit{substitúcie (mutácie)}, \textit{inzercie} a \textit{delécie}.
-Náš model bude navyše uvažovať aj dodatočné informácie získané napríklad z rôznych anotátorov.
+Náš model navyše uvažuje aj prídavné informácie (takzvané anotácie) získané z externých programov (napr. anotácie o génoch z vyhľadávača génov).
 
 % naco je dobra klasifikacia v zarovnaniach
-Keďže množstvo dodatočnej informácie môže byť veľmi veľké -- napríklad pre 3 binárne anotátory by sme mali $2^3 \times 2^3 = 64$ krát väčší počet parametrov --
+Keďže množstvo dodatočnej informácie môže byť veľmi veľké -- napríklad pre 3 binárne anotácie by sme mali $2^3 \times 2^3 = 64$ krát väčší počet parametrov --
 je ťažké skonštruovať vhodnú skórovaciu maticu pre zarovnávací algoritmus.
-Namiesto nej teda použijeme klasifikátor, ktorý natrénujeme na sekvenciách so známim zarovnaním a potom použijeme na zarovnanie nových sekvencií. Klasifikátor bude vracať pravdepodobnosť, že dané dve bázy majú byť zarovnané spolu.
-Ako klasifikátor použijeme \textit{Náhodný les (Random forest)}, poprípade skúsime aj nejaké iné a porovnáme úspešnosť.
+Namiesto nej sme teda použili klasifikátory\footnote{program, ktorý na základe vstupnej informácie a vopred natrénovaných parametrov klasifikuje dáta do niektorej triedy z danej množiny tried}, ktorý  sme trénovali na sekvenciách so známim zarovnaním a potom použili na zarovnanie nových sekvencií. Naše klasifikátory vracajú čísla z intervalu $\left<0, 1\right>$, ktoré určujú, či dané dve bázy majú byť zarovnané spolu.
+% Ked mi bude rozbijat footenote na 2 strany, kuk sem: http://www.tex.ac.uk/cgi-bin/texfaq2html?label=splitfoot
+
+Ako klasifikátor sme použili \emph{RandomForest} \cite{randomForestPaper}, pretože aktuálne patrí medzi najlepšie klasifikátory.
+
+% Ako klasifikátor sme použili \textit{Náhodný les (Random forest)}, poprípade skúsime aj nejaké iné a porovnáme úspešnosť.
 
 %obsah prace
-\todo zmenit podla skutocnosti
+% \todo zmenit podla skutocnosti
 
-V práci sa budeme zaoberať rôznymi spôsobmi trénovania, pričom navrneme vlastné modely a porovnáme už s existujúcimi. Ďalej sa budeme zaoberať spôsobom zberu dodatočných informácií, využitu natrénovaného klasifikátora na zarovnávanie nových sekvencií aj pri \textit{prezarovnaní} už existujúcich zarovnaní a implementujeme univerzálny framework, ktorý umožní využívať náš klasifikátor pri rôznych zarovnaniach.
+% V práci sme sa zaoberali rôznymi spôsobmi trénovania, pričom sme navrhli vlastné modely a porovnáme už s existujúcimi. Ďalej sa budeme zaoberať spôsobom zberu dodatočných informácií, využitu natrénovaného klasifikátora na zarovnávanie nových sekvencií aj pri \textit{prezarovnaní} už existujúcich zarovnaní a implementujeme univerzálny framework, ktorý umožní využívať náš klasifikátor pri rôznych zarovnaniach.
+
+\todo napisat este strucny obsah prace
 
