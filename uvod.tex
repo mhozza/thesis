@@ -4,7 +4,7 @@
 \markboth{Úvod}{Úvod}
 
 % preco je zarovnanie dolezite
-Najnovšie technológie sekvenovania DNA produkujú stále väčšie monožstvo DNA sekvencií rôznych organizmov. Spolu s tým stúpa aj potreba rozumieť týmto dátam. 
+Najnovšie technológie sekvenovania DNA produkujú stále väčšie monožstvo DNA sekvencií rôznych organizmov. Spolu s tým stúpa aj potreba rozumieť týmto dátam.
 Dôležitým krokom k ich porozumeniu je \textit{zarovnávanie sekvencií} -- nájdenie podobností medzi sekvenciami.
 Zarovnávanie sekvencií je nápomocné pri zisťovaní ich štruktúry a následne funkciu jednotlivých častí.
 
@@ -18,12 +18,13 @@ Základný model berie do úvahy len jednotlivé \textit{bázy} a pravdepodobnos
 Náš model bude navyše uvažovať aj dodatočné informácie získané napríklad z rôznych anotátorov.
 
 % naco je dobra klasifikacia v zarovnaniach
-Keďže množstvo dodatočnej informácie môže byť veľmi veľké -- napríklad pre 3 binárne anotátory by sme mali $2^3 \times 2^3 = 64$ krat vacsi pocet parametrov --
-nie je možné skonštruovať vhodnú skórovaciu maticu pre zarovnávací algoritmus.
-Namiesto nej teda použijeme klasifikátor, ktorý natrénujeme na sekvenciách so známim zarovnaním a potom použijeme na zarovnanie nových sekvencií. Klasifikátor bude vracať pravdepodobnosť, že dané dve bázy majú byť zarovnané spolu. 
+Keďže množstvo dodatočnej informácie môže byť veľmi veľké -- napríklad pre 3 binárne anotátory by sme mali $2^3 \times 2^3 = 64$ krát väčší počet parametrov --
+je ťažké skonštruovať vhodnú skórovaciu maticu pre zarovnávací algoritmus.
+Namiesto nej teda použijeme klasifikátor, ktorý natrénujeme na sekvenciách so známim zarovnaním a potom použijeme na zarovnanie nových sekvencií. Klasifikátor bude vracať pravdepodobnosť, že dané dve bázy majú byť zarovnané spolu.
 Ako klasifikátor použijeme \textit{Náhodný les (Random forest)}, poprípade skúsime aj nejaké iné a porovnáme úspešnosť.
 
-
 %obsah prace
+\todo zmenit podla skutocnosti
+
 V práci sa budeme zaoberať rôznymi spôsobmi trénovania, pričom navrneme vlastné modely a porovnáme už s existujúcimi. Ďalej sa budeme zaoberať spôsobom zberu dodatočných informácií, využitu natrénovaného klasifikátora na zarovnávanie nových sekvencií aj pri \textit{prezarovnaní} už existujúcich zarovnaní a implementujeme univerzálny framework, ktorý umožní využívať náš klasifikátor pri rôznych zarovnaniach.
 
