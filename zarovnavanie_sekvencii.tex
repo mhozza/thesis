@@ -88,23 +88,36 @@ Výstupom je zarovnanie celých sekvencií $X$ a $Y$.
 
 \begin{df}[Lokálne zarovnanie]
 Vstupom sú dve sekvencie $X = x_1x_2\dots x_n$ a $Y = y_1y_2\dots y_m$
-Výstupom je zarovnanie nejakých poreťazcov $x_i\dots x_j$ a $y_k\dots y_l$ sekvencií.
+Výstupom je zarovnanie nejakých podreťazcov $x_i\dots x_j$ a $y_k\dots y_l$ sekvencií.
 \end{df}
 V praxi sa väčšinou snažíme nájsť zarovnania s najvyšším skóre.
 \cite{skripta}
 
 \section{Skórovacie systémy}
-Takmer všetky metódy zarovnania hľadajú zarovnanie dvoch reťazcov na základe nejakej \textit{skórovacej schémy}\footnote{metóda, ktorou priradíme zarovnaniu skóre - zvyčajne čím väčšie skóre, tým realistickejšie zarovnanie by to malo byť}. Skórovacie schémy môžu byť veľmi jednoduché, napr. $+1$ za \textit{zhodu} a $-1$ za \textit{nezhodu}. Hoci ak chceme mať schému, kde biologicky najkorektnjšie zarovnanie má najvyššie skóre, musíme vziať do úvahy, že biologické sekvencie majú evolučnú históriu, 3D štrukturu a mnohé ďalšie vlastnosti obmedzujúce ich evolucné procesy. Preto skórovací systém vyžaduje starostlivé premyslenie a môže byť veľmi zložitý.
+Takmer všetky metódy zarovnania hľadajú zarovnanie dvoch reťazcov na základe nejakej \textit{skórovacej schémy}\footnote{metóda, ktorou priradíme zarovnaniu skóre - zvyčajne čím väčšie skóre, tým realistickejšie zarovnanie by to malo byť}. Skórovacie schémy môžu byť veľmi jednoduché, napr. $+1$ za \textit{zhodu} a $-1$ za \textit{nezhodu}. Hoci ak chceme mať schému, kde biologicky najkorektnejšie zarovnanie má najvyššie skóre, musíme vziať do úvahy, že biologické sekvencie majú evolučnú históriu, 3D štruktúru a mnohé ďalšie vlastnosti obmedzujúce ich evolučné procesy. Preto skórovací systém vyžaduje starostlivé premyslenie a môže byť veľmi zložitý.
 \cite{durbin}
 
 \subsection{Skórovacie matice}
 Skoro vždy však chceme rôzne zhody a nezhody skórovať rôzne - nie len všetky zhody $+1$ a nezhody $-1$.
-Skóre môže záviseť od toho aké bázy sú v danom stĺpci zarovnania. Na to sa používa \textit{skórovacia matica}, kde máme definované skóre pre každú dvojicu. Skórovacie matice sa využívajú najmä pri zarovnávaní proteínov, kde niektoré dvojice majú podobné chemické vlastnosti.
+Skóre môže záviseť od toho aké bázy sú v danom stĺpci zarovnania. Na to sa používa \textit{skórovacia matica} (obr. \ref{fig:scoringmatrix}), kde máme definované skóre pre každú dvojicu. Skórovacie matice sa využívajú najmä pri zarovnávaní proteínov, kde niektoré dvojice majú podobné chemické vlastnosti.
 \cite{durbin, skripta}
 
 Iným typom skórovacej schémy je napríklad \textit{párový skrytý markvovský model} (viac v \ref{sec:hmm-alignment})
 
-\todo obrazok matice
+\begin{figure}[hbtp]
+    \centering
+    \begin{tabular}{r|ccccc}
+    & A & C & G & T & -\\
+    \hline
+    A & 6 & -1 & -2 & -1 & -3\\
+    C & -1 & 5 & -3 & -2 & -4\\
+    G & -2 & -3 & 5 & -2 & -2\\
+    T & -1 & -2 & -2 & 6 & -1\\
+    - & -3 & -4 & -2 & -1 & $\infty$\\
+    \end{tabular}
+    \caption[Skórovacia matica]{Ukážka skórovacej matice. Všimnime si, že môžu byť rôzne skóre aj za jednotlivé zhody, nezhody alebo medzery.}
+    \label{fig:scoringmatrix}
+\end{figure}
 
 \section[Algoritmy]{Algoritmy na hľadanie zarovnaní}
 Pre danú skórovaciu schému potrebujeme algoritmus, ktorý nájde optimálne zarovnanie dvoch sekvencií.
@@ -115,7 +128,7 @@ možných globálnych zarovnaní. \cite{durbin} Čiže nie je možné v rozumnom
 Algoritmy na hľadanie zarovnaní využívajú \textit{dynamické programovanie}.
 % Algoritmy s dynamickým programovaním garantujú nájdenie optimálneho zarovnania.
 % Existujú aj heuristické algoritmy, ktoré môžu byť veľmi rýchle, avšak majú určité predpoklady a môže sa stať, že nenájdu najlepšie zarovnanie pre niektoré páry sekvencií.
-Často sa používajú aj rúzne heuristiky na urýchlenie výpočtu.
+Často sa používajú aj rôzne heuristiky na urýchlenie výpočtu.
 My sa budeme zaoberať len algoritmami využívajúcimi dynamické programovanie. Pre rôzne typy zarovnaní a skórovacie schémy máme rôzne algoritmy zarovnávania.
 \cite{durbin, skripta}
 
@@ -140,7 +153,7 @@ Definujeme si jednoduchú skórovaciu tabuľku kde $s(x, y)$ bude udávať skór
     CA-GTCCTAGA
     \end{verbatim}
     \end{subfigure}
-    \caption[Tabuľka dyn. programovania pre  globálne zarovnanie]{Tabuľka dynamického programovania pre  globálne zarovnanie (vľavo) a výsledné zarovnanie (vpravo)}
+    \caption[Tabuľka dyn. programovania pre  globálne zarovnanie]{Tabuľka dynamického programovania pre  globálne zarovnanie (vľavo) a výsledné zarovnanie (vpravo). Skóre je +1 za zhodu a -1 za nezhodu alebo medzeru.}
     \label{fig:global-align}
 \end{figure}
 
@@ -188,11 +201,11 @@ Pamäťová zložitosť sa dá zredukovať na $O(n+m)$ za cenu zhruba dvojnásob
     GTCCTA
     \end{verbatim}
     \end{subfigure}
-    \caption[Tabuľka dyn. programovania pre  lokálne zarovnanie]{Tabuľka dynamického programovania pre  lokálne zarovnanie (vľavo) a výsledné zarovnanie (vpravo)}
+    \caption[Tabuľka dyn. programovania pre  lokálne zarovnanie]{Tabuľka dynamického programovania pre  lokálne zarovnanie (vľavo) a výsledné zarovnanie (vpravo). Skóre je +1 za zhodu a -1 za nezhodu alebo medzeru.}
     \label{fig:local-align}
 \end{figure}
 
-Algoritmus pre lokálne zarovnania sa líši len v niekoľkých malých detajloch. Opäť vypĺňame maticu $A$, s tým, že v $A[i,j]$ bude najvyššie skóre lokálneho zarovnania medzi sekvenciami $x_1x_2\dots x_i$ a $y_1y_2\dots y_j$, ktoré buď obsahuje bázy $x_i$ aj $y_j$, alebo je prázdne. Teda na ľubovoľnom mieste uvažujeme aj prázdne zarovnanie so skóre 0 (v matici nebudú záporné čísla). Vzťah pre výpočet $A[i,j]$ vyzerá takto:
+Algoritmus pre lokálne zarovnania sa líši len v niekoľkých malých detailoch. Opäť vypĺňame maticu $A$, s tým, že v $A[i,j]$ bude najvyššie skóre lokálneho zarovnania medzi sekvenciami $x_1x_2\dots x_i$ a $y_1y_2\dots y_j$, ktoré buď obsahuje bázy $x_i$ aj $y_j$, alebo je prázdne. Teda na ľubovoľnom mieste uvažujeme aj prázdne zarovnanie so skóre 0 (v matici nebudú záporné čísla). Vzťah pre výpočet $A[i,j]$ vyzerá takto:
 $$A[i,j] = \max \left\{
 \begin{array}{l}
 0\\
@@ -206,7 +219,7 @@ V tomto prípade sú všetky krajné políčka nulové.
 
 \subsection{Afínne skórovanie medzier}
 \label{subsec:affine-gap-scoring}
-V jednoduchom skórovaní sme dávali za pomčlku vždy rovnaké skóre ($-1$). Pri evolúcii sa však môže stať, že sa naraz zmaže niekoľko susedných báz. Pri \textit{afínnom skórovaní medzier} teda zavedieme dva typy skóre. Skóre za \textit{začatie medzery} a skóre za \textit{rozšírenie medzery}.
+V jednoduchom skórovaní sme dávali za pomlčku vždy rovnaké skóre ($-1$). Pri evolúcii sa však môže stať, že sa naraz zmaže niekoľko susedných báz. Pri \textit{afínnom skórovaní medzier} teda zavedieme dva typy skóre. Skóre za \textit{začatie medzery} a skóre za \textit{rozšírenie medzery}.
 
 Algoritmus globálneho zarovnania vieme upraviť nasledovne: Namiesto matice $A$ teraz budeme mať 3 matice $M$, $I_x$, $I_y$ zodpovedajúce trom situáciám (Obr. \ref{fig:affine-space-situations}).
 
@@ -278,11 +291,11 @@ Tieto vzťahy vieme popísať stavovým diagramom na obrázku \ref{fig:alignment
 
 \cite{durbin}
 
-\section[Zarovnávanie s HMM]{Zarovnávanie pomocou skrytých Markovových modelov}
+\section[Zarovnávanie s HMM]{Zarovnávanie pomocou skrytých Markovovských modelov}
 \label{sec:hmm-alignment}
 
-\subsection{Skryté Markovove modely (HMM)}
-\textit{Skrytý Markovov model (hidden Markov model, HMM)} je pravdepodobnostý model, ktorý generuje náhodnú sekvenciu spolu s jej anotáciou (stavmi). HMM si móžme predstaviť ako konečný automat. Skladá sa z niekoľkých stavov, prechodov medzi nimi a emisií. Narozdiel od bežných konečných automatov, HMM emitujú symboly v stave, nie počas prechodu.
+\subsection{Skryté Markovovské modely (HMM)}
+\textit{Skrytý Markovovský model (hidden Markov model, HMM)} je pravdepodobnostný model, ktorý generuje náhodnú sekvenciu spolu s jej anotáciou (stavmi). HMM si môžme predstaviť ako konečný automat. Skladá sa z niekoľkých stavov, prechodov medzi nimi a emisií. Narozdiel od bežných konečných automatov, HMM emitujú symboly v stave, nie počas prechodu.
 HMM sa skladá z 3 distribúcií
 \begin{itemize}
 \item distribúcia začiatočných stavov (HMM začne v stave $i$)
@@ -290,7 +303,7 @@ HMM sa skladá z 3 distribúcií
 \item distribúcia emisií (HMM v stave $i$ vygeneruje symbol $x$)
 \end{itemize}
 
-Generovanie sekvencie teda vyzerá nasledovne: Na začiatku je HMM v niektorom stave (každý stav $i$ má nejakú pravdepodobnosť $\pi_i$, že bude začiatočný). Potom v každom kroku HMM emituje symbol $x$ s pravdepodobnosťou $e_{i, x}$ a prejde do stavu $j$ s pravdepodobnosťou $a_{i,j}$. Po $n$ krokoch takto vygenerujeme sekvenciu dľžky $n$, pričom každý symbol je oanotovaný stavom, ktorý ho vygeneroval.
+Generovanie sekvencie teda vyzerá nasledovne: Na začiatku je HMM v niektorom stave (každý stav $i$ má nejakú pravdepodobnosť $\pi_i$, že bude začiatočný). Potom v každom kroku HMM emituje symbol $x$ s pravdepodobnosťou $e_{i, x}$ a prejde do stavu $j$ s pravdepodobnosťou $a_{i,j}$. Po $n$ krokoch takto vygenerujeme sekvenciu dĺžky $n$, pričom každý symbol je oanotovaný stavom, ktorý ho vygeneroval.
 
 V takomto modeli vieme počítať pravdepodobnosť, že model vygeneruje sekvenciu $x$ dĺžky $n$ s anotáciou $s$ ako súčin pravdepodobností prechodov a emisií.
 Výpočet vyzerá nasledovne: $$P[X=x | S=s] = \pi_{s_1} e_{s_1,x1} a_{s_1,s_2} e_{s_2,x_2} a_{s_2,s_3} e_{s_3,x_3}\dots a_{s_{n-1},s_n} e_{s_n,x_n}$$.
@@ -323,7 +336,7 @@ for i in range(2, n):
 Maximálne V[n,j] je pravdepodobnosť najpravdepodobnejšej cesty
 Aby sme vypísali anotáciu, pamätáme si pre každé V[i,u] stav w, ktorý viedol k maximálnej hodnote vo vzorci \ref{eq:viterbi-step}.
 
-Časová zložitosť tohto algoritmu je $O(nm^2)$, kde $n$ je dľžka sekvencie a $m$ počet stavov.
+Časová zložitosť tohto algoritmu je $O(nm^2)$, kde $n$ je dĺžka sekvencie a $m$ počet stavov.
 
 Poznámka: pre dlhé sekvencie budú čísla V[i,u] veľmi malé a môže dôjsť k podtečeniu. V praxi teda používame zlogarimované hodnoty a namiesto násobenia súčet.
 
@@ -335,7 +348,7 @@ Ak máme oanotované trénovacie sekvencie, môžme z nich parametre odvodiť fr
 
 V časti \ref{subsec:affine-gap-scoring} sme si ukázali jednoduchý algoritmus na globálne zarovnávanie s afínnym skórovaním medzier. K tomuto algoritmu sme si uviedli aj jednoduchý stavový automat (Obr. \ref{fig:alignment-fsa}). Tento automat vieme previesť na HMM.
 
-Na to aby sme automat previedli na HMM, musíme urobiť niekoľko zmien - musíme nastaviť emisné a tranzičné pravdepodobnosti, tak aby sumovali do jedna. Pre jednoduchosť pridáme aj prechody medzi stavmi $X a Y$. Ak ich pravdepodobnosti nastavíme na 0, máme model ekvivalentný predchádzajúcemu.
+Na to aby sme automat previedli na HMM, musíme urobiť niekoľko zmien - musíme nastaviť emisné a prechodové pravdepodobnosti, tak aby sčítavali do jedna. Pre jednoduchosť pridáme aj prechody medzi stavmi $X a Y$. Ak ich pravdepodobnosti nastavíme na 0, máme model ekvivalentný predchádzajúcemu.
 
 \begin{figure}[htp]
     \centering
@@ -344,9 +357,9 @@ Na to aby sme automat previedli na HMM, musíme urobiť niekoľko zmien - musím
     \label{fig:simple-model}
 \end{figure}
 
-Dostaneme model podobný HMM s tým rozdielom, že namiesto jedného symbolu emitujeme dvojicu symbolov. Takýto model sa nazýva \textit{Párový skrytý Markvov model}. Na tento model môžme použiť mierne modifikovaný Viterbiho algoritmus na nájdenie najpravdepodobnejšej postupnosti stavov, čo nám dá najpravdepodobnejšie zarovnanie.
+Dostaneme model podobný HMM s tým rozdielom, že namiesto jedného symbolu emitujeme dvojicu symbolov. Takýto model sa nazýva \textit{Párový skrytý Markovovský model}. Na tento model môžme použiť mierne modifikovaný Viterbiho algoritmus na nájdenie najpravdepodobnejšej postupnosti stavov, čo nám dá najpravdepodobnejšie zarovnanie.
 
-Parametre modelu móžme ľahko natrénovať z existujúcich párových zarovnaní.
+Parametre modelu môžme ľahko natrénovať z existujúcich párových zarovnaní.
 
 Nech dĺžky oboch sekvencií sú $O(n)$, a $m$ je počet stavov. Potom Viterbiho algoritmus na Párovom HMM bude bežať v čase $O(n^2m^2)$.
 \cite{durbin}
@@ -358,13 +371,13 @@ Ako vodítko pri rozhodnutí sa používajú identifikátory \textit{štatistick
 \begin{figure}[htp]
     \centering
     \includegraphics[width=.9\textwidth]{images/p-value}
-    \caption[P-hodnota lokálneho zarovnania]{P-hodnota lokálneho zarovnania so skóre $s = 25$ medzi 2 sekvenciami dĺžky $n = 100$ alebo $n = 200$ (skórovanie $+1$ zhoda, $-1$ nezhoda alebo medzera). Rozdelenie bolo získané zarovnávaním $100000$ párov náhodných sekvencií. Pri $n=100$ je P-hodnota približne 0.003 a zodpovedá malej čiernej poloche pod krivkou napravo od zvislej čiary pre $s=25$. Pri dlhšich sekvenciách zodpovedá P-hodnota veľkej sivej ploche napravo od zvislej čiary. Pri takto dlhých sekvenciách očakáveme skóre 25 alebo väčšie vo viac ako 60\% prípadov čisto náhodou. Nejde teda o štatisticky významné zarovnanie.}
+    \caption[P-hodnota lokálneho zarovnania]{P-hodnota lokálneho zarovnania so skóre $s = 25$ medzi 2 sekvenciami dĺžky $n = 100$ alebo $n = 200$ (skórovanie $+1$ zhoda, $-1$ nezhoda alebo medzera). Rozdelenie bolo získané zarovnávaním $100000$ párov náhodných sekvencií. Pri $n=100$ je P-hodnota približne 0.003 a zodpovedá malej čiernej ploche pod krivkou napravo od zvislej čiary pre $s=25$. Pri dlhších sekvenciách zodpovedá P-hodnota veľkej sivej ploche napravo od zvislej čiary. Pri takto dlhých sekvenciách očakávame skóre 25 alebo väčšie vo viac ako 60\% prípadov čisto náhodou. Nejde teda o štatisticky významné zarovnanie.}
     \label{fig:p-value}
 \end{figure}
 
-P-hodnota zarovnania je pravdepodobnosť, že medzi nádhodne generovanými sekvenciami tej istej dĺžky by sme našli zarovnanie s rovnakým skóre alebo vyšším. Keďže P-hodnota závisí od dĺžok sekvencií a skóre, musíme ju počítať pri každom zarovnaní. Je však časovo náročné robiť to generovaním veľkého množstva zarovnaní, preto sa používajú matematicky odvodené vzorce na odhad tejto hodnoty. (\cite{Karlin}, \cite{Mitrophanov}).
+P-hodnota zarovnania je pravdepodobnosť, že medzi náhodne generovanými sekvenciami tej istej dĺžky by sme našli zarovnanie s rovnakým skóre alebo vyšším. Keďže P-hodnota závisí od dĺžok sekvencií a skóre, musíme ju počítať pri každom zarovnaní. Je však časovo náročné robiť to generovaním veľkého množstva zarovnaní, preto sa používajú matematicky odvodené vzorce na odhad tejto hodnoty. (\cite{Karlin}, \cite{Mitrophanov}).
 
 E-hodnota vyjadruje strednú hodnotu počtu zarovnaní so skóre aspoň takým ako má naše zarovnanie medzi náhodne generovanými sekvenciami. E-hodnota teda môže byť aj väčšia ako jedna. Ak je E-hodnota väčšia ako jedna, tak čisto náhodou by sme očakávali aspoň 1 také silné zarovnanie a teda zarovnania s takouto (a nižšou) E-hodnotou nebudeme považovať za štatisticky významné.
 
 V štatistike sa v rôznych testoch štandardne používajú prahy na P-hodnotu $0.05$ alebo $0.01$.
-Pri zarovnávaní sekvencií však často používame ešte nižší prah, teda uvažujeme len zarovnania s P-hodnotou menšou ako napr. $10^{-5}$. Pri malých hodnotách sú P-hodnota a E-hodnota prebližne rovnaké, teda taký istý prah môžme použiť aj na E-hodnotu.
+Pri zarovnávaní sekvencií však často používame ešte nižší prah, teda uvažujeme len zarovnania s P-hodnotou menšou ako napr. $10^{-5}$. Pri malých hodnotách sú P-hodnota a E-hodnota približne rovnaké, teda taký istý prah môžme použiť aj na E-hodnotu.

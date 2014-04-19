@@ -8,9 +8,9 @@ V princípe môžme rozlišovať dva typy modelov - \textit{generatívny model} 
 
 Konvenčné techniky odhadu pre zarovnávania sa zakladajú na generatívnom modeli. Generatívny model (napr. HMM) sa snaží modelovať proces, ktorý generuje dáta ako pravdepodobnosť $P(X,Y,Z)$, kde $X = x_1x_2\dots x_n$, $Y = y_1y_2\dots y_m$ a Z je zarovnanie. Ak poznáme $P(X,Y,Z)$ (alebo jej dobrý odhad),
 $$\operatorname{ arg\,max}_z P(X = x,Y = y,Z = z)$$
-predikuje zarovnanie $z$ z dvoch sekvencií $x$ a $y$. Aby sme žľahčili odhad $P(X,Y,Z)$, rozložíme ju pomocou nezávislých predpokladov na procese, ktorý generuje $x$ a $y$. To síce vedie k efektívnym a jednoduchým problémom odhadu, ale obmedzuje to interakcie v rámci sekvencií, ktoré by sme mohli modelovať. \cite{svmTrainingProteinsAlignment}
+predikuje zarovnanie $z$ z dvoch sekvencií $x$ a $y$. Aby sme zľahčili odhad $P(X,Y,Z)$, rozložíme ju pomocou nezávislých predpokladov na procese, ktorý generuje $x$ a $y$. To síce vedie k efektívnym a jednoduchým problémom odhadu, ale obmedzuje to interakcie v rámci sekvencií, ktoré by sme mohli modelovať. \cite{svmTrainingProteinsAlignment}
 
-Výskum v oblasti strojového učenia dokázal, že diskriminatívne učenie (SVM, RandomForest) zvyčajne produkuje ovela presnejšie pravidlá ako generatívne učenie(HMM, naive Bayes classifier). \cite{svmTrainingProteinsAlignment}
+Výskum v oblasti strojového učenia dokázal, že diskriminačné učenie (SVM, RandomForest) zvyčajne produkuje oveľa presnejšie pravidlá ako generatívne učenie(HMM, naive Bayes classifier). \cite{svmTrainingProteinsAlignment}
 Môže to byť vysvetlené tým, že $P(Z|X,Y)$, je už vhodné na vyhodnotenie optimálnej predikcie
 $$\operatorname{ arg\,max}_z P(Z = z|X = x,Y = y).$$
 \cite{svmTrainingProteinsAlignment}\\
@@ -24,8 +24,8 @@ Máme dané sekvencie a k nim zarovnanie. Inverzné zarovnanie nám vráti váho
 \end{df}
 
 Problém inverzného zarovnania bol prvý krát formulovaný v \cite{inverseAlign1}.
-Na tomto probléme je postavený aj model v \cite{svmTrainingProteinsAlignment}, kde sa na trénovanie Support Vector Machine (SVM) dá pozerať ako na riešenie tohto problému. V článku sa zaoberajú použitím \textit{Structural SVM} algoritmu na zarovnávanie proteínových sekvencií. Diskriminatívne učenie umožňuje zahrnutie množstva dodatočnej informácie -- státisíce parametrov.
-Navyše SVM umožňuje trénovanie pomocou rôznych účelových funkcií(loss functions).
+Na tomto probléme je postavený aj model v \cite{svmTrainingProteinsAlignment}, kde sa na trénovanie Support Vector Machine (SVM) dá pozerať ako na riešenie tohto problému. V článku sa zaoberajú použitím \textit{Structural SVM} algoritmu na zarovnávanie proteínových sekvencií. Diskriminačné učenie umožňuje zahrnutie množstva dodatočnej informácie -- státisíce parametrov.
+Navyše SVM umožňuje trénovanie pomocou rôznych účelových funkcií (loss functions).
 SVM algoritmus má lepšiu úspešnosť ako generatívna metóda SSALN, ktorá je veľmi presným generatívnym modelom zarovnaní, ktorá zahŕňa informáciu o štruktúre.
 
-Podobný prístup je aj v CONTRAlign \cite{contralign}, kde sa používajú Conditional Random Fields (CRF). Tento prístup tiež ťaží z benefitov diskriminatívneho učenia, avšak narozdiel od \cite{svmTrainingProteinsAlignment} neumožňuje použitie účelových funkcií závislých na aplikácii.
+Podobný prístup je aj v CONTRAlign \cite{contralign}, kde sa používajú Conditional Random Fields (CRF). Tento prístup tiež ťaží z benefitov diskriminačného učenia, avšak narozdiel od \cite{svmTrainingProteinsAlignment} neumožňuje použitie účelových funkcií.

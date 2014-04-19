@@ -7,7 +7,7 @@
 \subsection{Realigner}
 \todo cosi k micovmu kodu - mozno referencia na jeho dizertacku + mozno nejaky pokec k tomu ze co sme pouzili a mozno ako to funguje
 
-\subsection{Pyhonové knižnice}
+\subsection{Pythonové knižnice}
 \todo python kniznice - najma scikit-learn, numpy, track
 
 \section{Triedy na zarovnávanie s klasifikátorom}
@@ -27,10 +27,10 @@
 \section{Pomocné programy}
 \subsection{Simulátor}
 
-Simulátor sĺuži na overenie funkčnosti zarovnávača. Náhodne vygeneruje 2 sekvencie, ktoré vznikli zo spoločného predka a vyrobí korektné zarovnanie. Okrem toho vyrobí aj nejaké dodatočné informácie ktoré majú pomôcť pri zarovnávaní.
+Simulátor sĺúži na overenie funkčnosti zarovnávača. Náhodne vygeneruje 2 sekvencie, ktoré vznikli zo spoločného predka a vyrobí korektné zarovnanie. Okrem toho vyrobí aj nejaké dodatočné informácie ktoré majú pomôcť pri zarovnávaní.
 
 \subsubsection{Algoritmus}
-Simulátor vygeneruje informáciu o tom, ktoré časti sekvencie prisĺuchaju génom a ktoré nie. Informácia má podobu boolovskeho vektora.
+Simulátor vygeneruje informáciu o tom, ktoré časti sekvencie prislúchajú génom a ktoré nie. Informácia má podobu boolovského vektora.
 Simulátor najskôr vygeneruje \textit{základnú (master) postupnosť} a z nej odvodí dve ďalšie postupnosti, ktoré zodpovedajú sekvenciám.
 
 Okrem toho simulátor vygeneruje dve sekvencie, pričom prvú vyrobí náhodne a druhú odvodí z nej pomocou mutácie a inzercie/delécie.
@@ -39,7 +39,7 @@ Pri odvodzovaní bude používať aj informáciu o tom, ktorá časť je gén a 
 
 Keďže simulátor vie spôsob akým generoval druhú sekvenciu z prvej, vie aj korektné zarovnanie.
 
-Simulátor má vopred daných niekolko konštánt -- pravdepodobnosti udalostí, ktoré môžu nastať.
+Simulátor má vopred daných niekoľko konštánt -- pravdepodobnosti udalostí, ktoré môžu nastať.
 
 \subsubsection{Generovanie informácie o génoch}
 Ak sa na danom mieste nachádza gén, označíme to $1$ inak $0$.
@@ -52,7 +52,7 @@ Gény bývajú súvislé úseky, takže ich treba generovať tak, že niekedy za
     \label{fig:markov-chain}
 \end{figure}
 
-Generovanie robíme pomocou \textit{Markovovej reťaze (Markov Chain)} obr. \ref{fig:markov-chain}. Generujeme podľa aktuálneho stavu a v každom kroku sa podľa pravdepodobnosti rozhodneme či sa prepneme do iného stavu alebo ostaneme v tom istom. Rozhodnutie robíme pomocou \textit{falošnej mince (biased coin)}, kde hlava padne s určitou pravdepodobnosťou, ktorú vopred nastavíme.
+Generovanie robíme pomocou \textit{Markovovskej reťaze (Markov Chain)} obr. \ref{fig:markov-chain}. Generujeme podľa aktuálneho stavu a v každom kroku sa podľa pravdepodobnosti rozhodneme či sa prepneme do iného stavu alebo ostaneme v tom istom. Rozhodnutie robíme pomocou \textit{falošnej mince (biased coin)}, kde hlava padne s určitou pravdepodobnosťou, ktorú vopred nastavíme.
 
 %TODO ak bude treba zabrat miesto, tak sem drbnut nejake zdrojaky
 
@@ -75,7 +75,7 @@ Pravdepodobnosť & $0,35$ & $0,3$ & $0,3$ & $0,2$\\
 \end{table}
 
 \subsubsection{Simulácia delécie}
-Deléciu simulujeme opäť pomocou Markovovej reťaze, pretože pri evolúcii majú tendenciu vypadávať súvislé úseky. Pravdepodobnosť, že začneme mazať je $0,01$ a že prestaneme $0,1$.
+Deléciu simulujeme opäť pomocou Markovovskej reťaze, pretože pri evolúcii majú tendenciu vypadávať súvislé úseky. Pravdepodobnosť, že začneme mazať je $0,01$ a že prestaneme $0,1$.
 Ak mažeme, nahradzujeme danú bázu znakom {\verb+'-'+}.
 
 \subsubsection{Využitie}

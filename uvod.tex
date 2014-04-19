@@ -4,7 +4,7 @@
 \markboth{Úvod}{Úvod}
 
 % preco je zarovnanie dolezite
-Najnovšie technológie sekvenovania DNA produkujú stále väčšie monožstvo sekvencií rôznych organizmov. Spolu s tým stúpa aj potreba rozumieť týmto dátam.
+Najnovšie technológie sekvenovania DNA produkujú stále väčšie množstvo sekvencií rôznych organizmov. Spolu s tým stúpa aj potreba rozumieť týmto dátam.
 Dôležitým krokom k ich porozumeniu je \textit{zarovnávanie sekvencií}.
 Zarovnávanie dvoch DNA sekvencií je teda jedným zo základných
 bioinformatických problémov. Správne zarovnanie identifikuje časti
@@ -25,7 +25,7 @@ Náš model navyše uvažuje aj prídavné informácie (takzvané anotácie) zí
 % naco je dobra klasifikacia v zarovnaniach
 Keďže množstvo dodatočnej informácie môže byť veľmi veľké -- napríklad pre 3 binárne anotácie by sme mali $2^3 \times 2^3 = 64$ krát väčší počet parametrov --
 je ťažké skonštruovať vhodnú skórovaciu maticu pre zarovnávací algoritmus.
-Namiesto nej sme teda použili klasifikátory\footnote{program, ktorý na základe vstupnej informácie a vopred natrénovaných parametrov klasifikuje dáta do niektorej triedy z danej množiny tried}, ktorý  sme trénovali na sekvenciách so známim zarovnaním a potom použili na zarovnanie nových sekvencií. Naše klasifikátory vracajú čísla z intervalu $\left<0, 1\right>$, ktoré určujú, či dané dve bázy majú byť zarovnané spolu.
+Namiesto nej sme teda použili klasifikátory\footnote{program, ktorý na základe vstupnej informácie a vopred natrénovaných parametrov klasifikuje dáta do niektorej triedy z danej množiny tried}, ktorý  sme trénovali na sekvenciách so známym zarovnaním a potom použili na zarovnanie nových sekvencií. Naše klasifikátory vracajú čísla z intervalu $\left<0, 1\right>$, ktoré určujú, či dané dve bázy majú byť zarovnané spolu.
 % Ked mi bude rozbijat footenote na 2 strany, kuk sem: http://www.tex.ac.uk/cgi-bin/texfaq2html?label=splitfoot
 
 Ako klasifikátor sme použili \emph{RandomForest} \cite{randomForestPaper}, pretože aktuálne patrí medzi najlepšie klasifikátory.
