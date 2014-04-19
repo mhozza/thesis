@@ -341,6 +341,7 @@ Aby sme vypísali anotáciu, pamätáme si pre každé V[i,u] stav w, ktorý vie
 Poznámka: pre dlhé sekvencie budú čísla V[i,u] veľmi malé a môže dôjsť k podtečeniu. V praxi teda používame zlogarimované hodnoty a namiesto násobenia súčet.
 
 \subsection{Nastavenie parametrov HMM}
+\label{subsec:hmmtraining}
 Ak máme oanotované trénovacie sekvencie, môžme z nich parametre odvodiť frekvenčnou analýzou. Emisie získame tak, že vyfiltrujeme symboly s príslušným stavom a spočítame frekvencie pre každý stav zvlášť a tranzície získame tak, že pre každý stav spočítame frekvencie nasledujúcich stavov. Tento postup sa volá \textit{metóda maximálnej vierohodnosti (v angličtine maximum likelihood estimation)}. \cite{ durbin, wiki:mle}
 
 \subsection{Párové zarovnávanie pomocou HMM}
