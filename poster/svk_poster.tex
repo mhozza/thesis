@@ -9,7 +9,10 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[slovak]{babel} % slovenske delenie slov
-% \usepackage{wallpaper}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+
 
 %% definicia farieb
 
@@ -71,11 +74,33 @@ Markovovských modelov (pHMM) \cite{durbin}. V~tejto práci sa zaoberáme
 možnosťami použitia prídavnej informácie o~funkcii vstupných sekvencií
 (tzv. anotácie) na zlepšenie kvality takýchto zarovnaní.
 
+% \mysection{Zarovnávanie sekvencií}
+
 \mysection{Klasifikácia na základe lokálnej informácie.}
 
 Informácie sme zakomponovali pomocou klasifikátorov, ktoré rozhodujú či dané pozície majú byť zarovnané k~sebe alebo nie. Ako klasifikátor sme použili \emph{RandomForest} \cite{randomForestPaper}, pretože aktuálne patrí medzi najlepšie klasifikátory.
 
-Vstupné dáta pre klasifikátor sú okná veľkosti $w$, v ktorom sa nachádza $w$ dvojíc báz v okolí daných pozícií a ich anotácie (napr. či ide o gén alebo nie). Výstup je hodnota z intervalu $\left<0,1\right>$, ktorá označuje istotu klasifikátora, že dané dve pozície majú byť zarovnané k sebe (v insert stave, že daná pozícia má byť zarovnaná k medzere).
+Vstupné dáta pre klasifikátor sú okná veľkosti $w$, v ktorom sa nachádza $w$ dvojíc báz v okolí daných pozícií a ich anotácie (napr. či ide o gén alebo nie).
+
+\begin{figure}[h]
+        \centering
+        \begin{subfigure}[b]{0.35\textwidth}
+                \includegraphics[width=\textwidth]{images/window_m}
+                \caption{Match klasifikátor}
+                \label{fig:window-m}
+        \end{subfigure}%
+        \qquad\qquad %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.35\textwidth}
+                \includegraphics[width=\textwidth]{images/window_i}
+                \caption{InDel klasifikátor}
+                \label{fig:window-i}
+        \end{subfigure}
+        \caption[Okno klasifikátora]{Okno klasifikátora pre pozície $i = 6$ a $j = 3$}
+\end{figure}
+
+
+Výstup je hodnota z intervalu $\left<0,1\right>$, ktorá označuje istotu klasifikátora, že dané dve pozície majú byť zarovnané k sebe (v insert stave, že daná pozícia má byť zarovnaná k medzere).
 
 Ukázalo sa, že klasifikátor sa dokáže naučiť, ktoré okná majú byť zarovnané k~sebe a ktoré nie (Obr. \ref{fig:clf-m-dist}).
 
