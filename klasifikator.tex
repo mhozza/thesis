@@ -368,15 +368,29 @@ Typ dát & Match & Indel\\
 
 \section{Trénovanie}
 
+Pre oba typy klasifikátorov sme sa snažili nájsť vhodné pozitívne a negatívne trénovacie príklady, pričom z oboch sme do trénovacej množiny zahrnuli rovnako, aby bola trénovacia množina vyvážená.
+
 \subsection{Výber pozitívnych a negatívnych príkladov pre Match klasifikátor}
+\label{subsec:matchtraining}
+
+Match klasifikátor sme chceli natrénovať tak, aby pre pozície, ktoré majú byť pri sebe, dával hodnoty blízke 1 a pre pozície ktoré k sebe byť zarovnané nemajú dával hodnoty blízke 0.
+Ako pozitívne príklady sme teda vybrali pozície z trénovacích sekvencií, ktoré boli zarovnané k sebe. Ako negatívne príklady sme najskôr zvolili náhodné pozície, tak aby sa nám nestalo, že by boli k sebe zarovnané. Toto sa však ukázalo ako nedostatočné riešenie, pretože sa mohlo ľahko stať, že sa k sebe dostali pozície s okolím, ktoré boli od seba pomerne ďaleko a tak sa mohlo ľahko stať, že v inej sekvencii, by mohli byť zarovnané k sebe. Preto sme sa rozhodli pristúpiť k inému spôsobu výberu negatívnych vzoriek.
+
+Počas zarovnávania sa väčšinou lokálne rozhodujeme, či zarovnať dané pozície k sebe, alebo vložiť medzeru. Ak by sme vložili medzeru, nastal by posun v jednej zo sekvencií. Rozhodli sme sa teda sa týmto inšpirovať a vyrábať negatívne príklady posunom zarovnaných pozícií. Pre každú zarovnanú pozíciu si najskôr rovnomerne náhodne vyberieme sekvenciu, ktorú budeme posúvať a potom z exponenciálneho rozdelenia náhodne vyberieme veľkosť posunu. Presný vzťah pre výpočet posunu $\Delta$ je
+
+$$\Delta = \left(2D-1\right)\cdot \left(1+\lfloor S\rfloor\right)\qquad D\sim Alt(0.5),\, S\sim Exp(0.75),$$
+
+kde prvý člen nám určuje smer posunu (čo je to isté ako: ktorá sekvencia sa bude posúvať) a druhý člen určuje veľkosť posunu - chceme celočíselnú hodnotu $\leq 1$.
 
 \subsection{Výber pozitívnych a negatívnych príkladov pre Indel klasifikátor}
 
-% \section{Random Forest}
+Indel klasifikátor sme chceli natrénovať tak aby pre miesta, ktoré majú byť zarovnané s medzerou dával čo najvyššie hodnoty a pre miesta, ktoré nemajú byť zarovnané k medzere dával čo najnižšie hodnoty. Ako pozitívne príklady sme sa teda rozhodli vyberať pozície, ktoré boli v trénovacích sekvenciách zarovnané k medzere. A ako negatívne príklady sme vybrali pozície, ktoré boli zarovnané k sebe - teda tie isté, čo sme pri trénovaní Match klasifikátora (sekcia \ref{subsec:matchtraining}) považovali za pozitívne, akurát v tomto prípade mala jedna zo sekvencií okno skrátené o 1, teda akoby bola medzera pred bázou, s ktorou je aktuálne uvažovaná pozícia zarovnaná.
 
-% \todo chcem to tu, alebo niekde inde?
+\section{Random Forest}
 
-% \todo
+\todo chcem to tu, alebo niekde inde?
+
+\todo
 
 
 
