@@ -4,8 +4,8 @@
 \markboth{Úvod}{Úvod}
 
 % preco je zarovnanie dolezite
-Najnovšie technológie sekvenovania DNA produkujú stále väčšie množstvo sekvencií rôznych organizmov. Spolu s tým stúpa aj potreba rozumieť týmto dátam.
-Dôležitým krokom k ich porozumeniu je \textit{zarovnávanie sekvencií}.
+Najnovšie technológie sekvenovania DNA produkujú stále väčšie množstvo sekvencií rôznych organizmov. Spolu s~tým stúpa aj potreba rozumieť týmto dátam.
+Dôležitým krokom k~ich porozumeniu je \textit{zarovnávanie sekvencií}.
 Zarovnávanie dvoch DNA sekvencií je teda jedným zo základných
 bioinformatických problémov. Správne zarovnanie identifikuje časti
 sekvencie, ktoré vznikli z~toho istého predka (zarovnané bázy), ako aj
@@ -13,19 +13,19 @@ inzercie a delécie v~priebehu evolúcie (medzery v~zarovnaní).
 Je nápomocné pri zisťovaní ich štruktúry a následne funkciu jednotlivých častí.
 
 % zarovnavacie algoritmy
-Existujú rôzne algoritmy na zarovnávanie sekvencií. Väčšina z nich je založená na  pravdepodobnostnom modeli, pričom sa snažia nájsť zarovnanie s čo najväčšou pravdepodobnosťou.
-Algoritmy sú zvyčajne založené na dynamickom programovaní a pracujú v kvadratickom čase v závislosti od dĺžok sekvencií. Niekedy sa na urýchlenie použijú rôzne heuristické algoritmy, ktoré nie vždy nájdu najpravdepodobnejšie zarovnanie, ale pracujú oveľa rýchlejšie.
+Existujú rôzne algoritmy na zarovnávanie sekvencií. Väčšina z~nich je založená na  pravdepodobnostnom modeli, pričom sa snažia nájsť zarovnanie s~čo najväčšou pravdepodobnosťou.
+Algoritmy sú zvyčajne založené na dynamickom programovaní a pracujú v~kvadratickom čase v~závislosti od dĺžok sekvencií. Niekedy sa na urýchlenie použijú rôzne heuristické algoritmy, ktoré nie vždy nájdu najpravdepodobnejšie zarovnanie, ale pracujú oveľa rýchlejšie.
 
-My sme sa v práci zaoberali algoritmom, ktorý hľadá zarovnanie pomocou jednoduchých párových skrytých
+My sme sa v~práci zaoberali algoritmom, ktorý hľadá zarovnanie pomocou jednoduchých párových skrytých
 Markovovských modelov (pHMM) \cite{durbin}, kde kvalita výsledného zarovnania je ovplyvnená len pravdepodobnostným modelom.
 
 Základný model berie do úvahy len jednotlivé \textit{bázy} a pravdepodobnosti \textit{substitúcie (mutácie)}, \textit{inzercie} a \textit{delécie}.
-Náš model navyše uvažuje aj prídavné informácie (takzvané anotácie) získané z externých programov (napr. anotácie o génoch z vyhľadávača génov).
+Náš model navyše uvažuje aj prídavné informácie (takzvané anotácie) získané z~externých programov (napr. anotácie o~génoch z~vyhľadávača génov).
 
 % naco je dobra klasifikacia v zarovnaniach
 Keďže množstvo dodatočnej informácie môže byť veľmi veľké -- napríklad pre 3 binárne anotácie by sme mali $2^3 \times 2^3 = 64$ krát väčší počet parametrov --
 je ťažké skonštruovať vhodnú skórovaciu maticu pre zarovnávací algoritmus.
-Namiesto nej sme teda použili klasifikátory\footnote{program, ktorý na základe vstupnej informácie a vopred natrénovaných parametrov klasifikuje dáta do niektorej triedy z danej množiny tried}, ktorý  sme trénovali na sekvenciách so známym zarovnaním a potom použili na zarovnanie nových sekvencií. Naše klasifikátory vracajú čísla z intervalu $\left<0, 1\right>$, ktoré určujú, či dané dve bázy majú byť zarovnané spolu.
+Namiesto nej sme teda použili klasifikátory\footnote{program, ktorý na základe vstupnej informácie a vopred natrénovaných parametrov klasifikuje dáta do niektorej triedy z~danej množiny tried}, ktorý  sme trénovali na sekvenciách so známym zarovnaním a potom použili na zarovnanie nových sekvencií. Naše klasifikátory vracajú čísla z~intervalu $\left<0, 1\right>$, ktoré určujú, či dané dve bázy majú byť zarovnané spolu.
 % Ked mi bude rozbijat footenote na 2 strany, kuk sem: http://www.tex.ac.uk/cgi-bin/texfaq2html?label=splitfoot
 
 Ako klasifikátor sme použili \emph{RandomForest} \cite{randomForestPaper}, pretože aktuálne patrí medzi najlepšie klasifikátory.

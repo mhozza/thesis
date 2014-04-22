@@ -1,16 +1,16 @@
 \chapter{Implementácia}
 
-\todo daky pokec o tom ze som to pisal v pythone a preco je python super
+\todo daky pokec o~tom ze som to pisal v~pythone a preco je python super
 
 \section{Použité knižnice}
 
 \subsection{Realigner}
-\todo cosi k micovmu kodu - mozno referencia na jeho dizertacku + mozno nejaky pokec k tomu ze co sme pouzili a mozno ako to funguje
+\todo cosi k~micovmu kodu - mozno referencia na jeho dizertacku + mozno nejaky pokec k~tomu ze co sme pouzili a mozno ako to funguje
 
 \subsection{Pythonové knižnice}
 \todo python kniznice - najma scikit-learn, numpy, track
 
-\section{Triedy na zarovnávanie s klasifikátorom}
+\section{Triedy na zarovnávanie s~klasifikátorom}
 
 \subsection{Predspracovanie dát}
 
@@ -20,7 +20,7 @@
 
 \todo PairClassifier
 
-\subsection{HMM stavy s klasifikátorom}
+\subsection{HMM stavy s~klasifikátorom}
 
 \todo Classifier state...
 
@@ -30,43 +30,43 @@
 Simulátor sĺúži na overenie funkčnosti zarovnávača. Náhodne vygeneruje 2 sekvencie, ktoré vznikli zo spoločného predka a vyrobí korektné zarovnanie. Okrem toho vyrobí aj nejaké dodatočné informácie ktoré majú pomôcť pri zarovnávaní.
 
 \subsubsection{Algoritmus}
-Simulátor vygeneruje informáciu o tom, ktoré časti sekvencie prislúchajú génom a ktoré nie. Informácia má podobu boolovského vektora.
-Simulátor najskôr vygeneruje \textit{základnú (master) postupnosť} a z nej odvodí dve ďalšie postupnosti, ktoré zodpovedajú sekvenciám.
+Simulátor vygeneruje informáciu o~tom, ktoré časti sekvencie prislúchajú génom a ktoré nie. Informácia má podobu boolovského vektora.
+Simulátor najskôr vygeneruje \textit{základnú (master) postupnosť} a z~nej odvodí dve ďalšie postupnosti, ktoré zodpovedajú sekvenciám.
 
-Okrem toho simulátor vygeneruje dve sekvencie, pričom prvú vyrobí náhodne a druhú odvodí z nej pomocou mutácie a inzercie/delécie.
-V našom prípade sme inzerciu vynechali a simulujeme ju ako deléciu v druhej sekvencii.
-Pri odvodzovaní bude používať aj informáciu o tom, ktorá časť je gén a ktorá nie.
+Okrem toho simulátor vygeneruje dve sekvencie, pričom prvú vyrobí náhodne a druhú odvodí z~nej pomocou mutácie a inzercie/delécie.
+V~našom prípade sme inzerciu vynechali a simulujeme ju ako deléciu v~druhej sekvencii.
+Pri odvodzovaní bude používať aj informáciu o~tom, ktorá časť je gén a ktorá nie.
 
-Keďže simulátor vie spôsob akým generoval druhú sekvenciu z prvej, vie aj korektné zarovnanie.
+Keďže simulátor vie spôsob akým generoval druhú sekvenciu z~prvej, vie aj korektné zarovnanie.
 
 Simulátor má vopred daných niekoľko konštánt -- pravdepodobnosti udalostí, ktoré môžu nastať.
 
-\subsubsection{Generovanie informácie o génoch}
+\subsubsection{Generovanie informácie o~génoch}
 Ak sa na danom mieste nachádza gén, označíme to $1$ inak $0$.
 Gény bývajú súvislé úseky, takže ich treba generovať tak, že niekedy začneme gén, potom generujeme 1, potom skončíme gén a generujeme 0. Potom môžme opäť začať gén atď.
 
 \begin{figure}[htp]
     \centering
     \includegraphics[width=.3\textwidth]{images/markov_chain}
-    \caption{Markovova reťaz použitá na generovanie informácie o génoch}
+    \caption{Markovova reťaz použitá na generovanie informácie o~génoch}
     \label{fig:markov-chain}
 \end{figure}
 
-Generovanie robíme pomocou \textit{Markovovskej reťaze (Markov Chain)} obr. \ref{fig:markov-chain}. Generujeme podľa aktuálneho stavu a v každom kroku sa podľa pravdepodobnosti rozhodneme či sa prepneme do iného stavu alebo ostaneme v tom istom. Rozhodnutie robíme pomocou \textit{falošnej mince (biased coin)}, kde hlava padne s určitou pravdepodobnosťou, ktorú vopred nastavíme.
+Generovanie robíme pomocou \textit{Markovovskej reťaze (Markov Chain)} obr. \ref{fig:markov-chain}. Generujeme podľa aktuálneho stavu a v~každom kroku sa podľa pravdepodobnosti rozhodneme či sa prepneme do iného stavu alebo ostaneme v~tom istom. Rozhodnutie robíme pomocou \textit{falošnej mince (biased coin)}, kde hlava padne s~určitou pravdepodobnosťou, ktorú vopred nastavíme.
 
 %TODO ak bude treba zabrat miesto, tak sem drbnut nejake zdrojaky
 
-Máme vygenerovanú master postupnosť a z nej teraz vyrobíme dve postupnosti pre sekvencie tak, že skopírujeme master sekvenciu, pričom každú 1 s určitou pravdepodobnosťou (v našom prípade $0,1$) zmeníme na 0.
+Máme vygenerovanú master postupnosť a z~nej teraz vyrobíme dve postupnosti pre sekvencie tak, že skopírujeme master sekvenciu, pričom každú 1 s~určitou pravdepodobnosťou (v~našom prípade $0,1$) zmeníme na 0.
 
 \subsubsection{Simulácia mutácie}
 
-Máme vygenerovanú sekvenciu a ideme vyrobiť zmutovanú sekvenciu. Spravíme to tak, že s určitou pravdepodobnosťou sa nahradí báza z pôvodnej sekvencie inou bázou. Pravdepodobnosť závisí aj od toho, či je na danej pozícii gén v oboch sekvenciách, v jednej, alebo v žiadnej. Na rozhodnutie používame jednu z troch falošných mincí podľa toho, ktorá z možností nastala (tabuľka \ref{tab:mutation-prob}).
+Máme vygenerovanú sekvenciu a ideme vyrobiť zmutovanú sekvenciu. Spravíme to tak, že s~určitou pravdepodobnosťou sa nahradí báza z~pôvodnej sekvencie inou bázou. Pravdepodobnosť závisí aj od toho, či je na danej pozícii gén v~oboch sekvenciách, v~jednej, alebo v~žiadnej. Na rozhodnutie používame jednu z~troch falošných mincí podľa toho, ktorá z~možností nastala (tabuľka \ref{tab:mutation-prob}).
 
 \begin{table}[h]
 \catcode`\-=12 %kvoli babelu a pomlcke
 \centering
 \begin{tabular}{lcccc}
-Gén A & 0 & 0 & 1 & 1\\
+Gén A~& 0 & 0 & 1 & 1\\
 Gén B & 0 & 1 & 0 & 1\\
 Pravdepodobnosť & $0,35$ & $0,3$ & $0,3$ & $0,2$\\
 \end{tabular}
@@ -91,7 +91,7 @@ Simulátor je prvá vec, ktorú sme implementovali a slúžil hlavne na prvotné
 \todo random\_forest\_evaluation.py
 
 \section{Použitie}
-\todo v kratkosti o tom ako to vobec spustit so svojimi sekvenciami a modelmi...
+\todo v~kratkosti o~tom ako to vobec spustit so svojimi sekvenciami a modelmi...
 
 \todo mozno sem dat aj moznosti rozsirenia
 

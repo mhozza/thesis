@@ -1,14 +1,14 @@
 Zarovnávanie dvoch DNA sekvencií je jedným zo základných
 bioinformatických problémov. Obvykle takéto zarovnanie hľadáme pomocou jednoduchých párových skrytých
-Markovovských modelov (pHMM). V tejto práci sa zaoberáme možnosťami použitia prídavnej informácie o funkcii vstupných sekvencií na zlepšenie kvality takýchto zarovnaní.
-Informácie sme zakomponovali pomocou klasifikátorov, ktoré rozhodujú či dané pozície majú byť zarovnané k sebe alebo nie. Ako klasifikátor sme použili Random forest.
+Markovovských modelov (pHMM). V~tejto práci sa zaoberáme možnosťami použitia prídavnej informácie o~funkcii vstupných sekvencií na zlepšenie kvality takýchto zarovnaní.
+Informácie sme zakomponovali pomocou klasifikátorov, ktoré rozhodujú či dané pozície majú byť zarovnané k~sebe alebo nie. Ako klasifikátor sme použili Random forest.
 
-Ukázalo sa, že klasifikátor sa dokáže naučiť, ktoré okná majú byť zarovnané k sebe a ktoré nie.
+Ukázalo sa, že klasifikátor sa dokáže naučiť, ktoré okná majú byť zarovnané k~sebe a ktoré nie.
 
-Vyvinuli sme 2 modely pre zarovnanie sekvencií s anotáciami za pomoci klasifikátora, ktoré sú založené na párových skrytých Markovovských modeloch.
+Vyvinuli sme 2 modely pre zarovnanie sekvencií s~anotáciami za pomoci klasifikátora, ktoré sú založené na párových skrytých Markovovských modeloch.
 
-Model s klasifikátorom ako emisiou, kde sme nahradili emisné tabuľky stavov výstupom z klasifikátora.
+Model s~klasifikátorom ako emisiou, kde sme nahradili emisné tabuľky stavov výstupom z~klasifikátora.
 
-Model s klasifikátorovou páskou, kde navyše modelujeme aj výstup z klasifikátora.
+Model s~klasifikátorovou páskou, kde navyše modelujeme aj výstup z~klasifikátora.
 \\ \\
 {\bf Kľúčové slová:} zarovnávanie sekvencií, strojové učenie, Random forest, anotácie

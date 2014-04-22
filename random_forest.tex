@@ -1,15 +1,15 @@
 \chapter{Random forest}
 
-V tejto kapitole si popíšeme ako funguje klasifikátor \textit{Random forest}, v čom spočívajú jeho výhody a prečo sme si ho vybrali.
+V~tejto kapitole si popíšeme ako funguje klasifikátor \textit{Random forest}, v~čom spočívajú jeho výhody a prečo sme si ho vybrali.
 
 \section{Klasifikačné stromy}
-Keďže Random forest je vlastne les \textit{klasifikačných stromov (niekedy označované ako rozhodovacie stromy)}, je nevyhnutné, aby sme si najskôr povedali niečo o nich.
+Keďže Random forest je vlastne les \textit{klasifikačných stromov (niekedy označované ako rozhodovacie stromy)}, je nevyhnutné, aby sme si najskôr povedali niečo o~nich.
 
 %section?
-Klasifikačný strom je klasifikátor vybudovaný na základe trénovacej množiny, ktorý na základe vstupných údajov (vstupného vektora) predpovedá hodnotu výstupnej premennej. Klasifikátor sa skladá z \textit{uzlov} a \textit{listov}. V uzle sa nachádza rozdeľovacie kritérium, podľa ktorého sa vieme rozhodnúť do ktorej vetvy máme pokračovať. V listoch sa nachádzajú triedy, do ktorých sa vstupný vektor klasifikuje.
+Klasifikačný strom je klasifikátor vybudovaný na základe trénovacej množiny, ktorý na základe vstupných údajov (vstupného vektora) predpovedá hodnotu výstupnej premennej. Klasifikátor sa skladá z~\textit{uzlov} a \textit{listov}. V~uzle sa nachádza rozdeľovacie kritérium, podľa ktorého sa vieme rozhodnúť do ktorej vetvy máme pokračovať. V~listoch sa nachádzajú triedy, do ktorých sa vstupný vektor klasifikuje.
 %obrazok
 
-Klasifikácia vstupného vektora vyzerá nasledovne: prechádzame strom zhora na dol a postupne sa zaraďujeme do vetiev podľa rodzelovacích kritérií. Podľa toho, v ktorom liste skončíme, sa určí výstupná hodnota.
+Klasifikácia vstupného vektora vyzerá nasledovne: prechádzame strom zhora na dol a postupne sa zaraďujeme do vetiev podľa rodzelovacích kritérií. Podľa toho, v~ktorom liste skončíme, sa určí výstupná hodnota.
 
 \subsection{Trénovanie}
 TODO - strucne popisat rozne metody + odkazat na literaturu
@@ -17,13 +17,13 @@ TODO - strucne popisat rozne metody + odkazat na literaturu
 \section{Random forest}
 
 \subsection{Klasifikácia}
-Random forest sa skladá z mnohých klasifikačných stromov. Pri klasifikácii nejakého vstupnéeho vektora sa predloží vstupný vektor každému stromu. Každý strom následne vráti klasifikáciu a hovoríme, že stromy \textit{hlasujú}. Random forest následne zvolí klasifikáciu podľa väčšiny z hlasov všetkých stromov v lese.
+Random forest sa skladá z~mnohých klasifikačných stromov. Pri klasifikácii nejakého vstupnéeho vektora sa predloží vstupný vektor každému stromu. Každý strom následne vráti klasifikáciu a hovoríme, že stromy \textit{hlasujú}. Random forest následne zvolí klasifikáciu podľa väčšiny z~hlasov všetkých stromov v~lese.
 %TODO parametrizacia rf
 
 \subsection{Trénovanie}
 Každý strom sa buduje nasledovne.
-Máme $N$ trénovacích vektorov, pričom každý vektor sa skladá z $M$ vstupných premenných (teda má rozmer $M$).
-Z nich vyberieme \textit{náhodne s opakovaním} $N$ vektorov, ktoré budú použité ako tréenovacia množina pre daný rozhodovací strom.
+Máme $N$ trénovacích vektorov, pričom každý vektor sa skladá z~$M$ vstupných premenných (teda má rozmer $M$).
+Z~nich vyberieme \textit{náhodne s~opakovaním} $N$ vektorov, ktoré budú použité ako tréenovacia množina pre daný rozhodovací strom.
 Okrem toho vyberieme náhodne $m<<M$ vstupných parametrov a len tie sa použijú pri trénovaní stromu. Každý strom je vybudovaný najviac ako sa dá - nie je žiadne orezávanie.
 
 Chyba RF závisí od dvoch vecí
@@ -45,7 +45,7 @@ Chyba RF závisí od dvoch vecí
 \item Generated forests can be saved for future use on other data.
 \item Prototypes are computed that give information about the relation between the variables and the classification.
 \item Počíta blízkosť medzi jednotlivími pármi prípadov, čo môže byť použité pri clusteringu a detekcii outlierov alebo ponúknuť zaujímavé pohľady na dáta.
-\item Predchádzajúce môže byť rozšírené aj na neolabelované dáta (bez informácie o triede), čo sa dá použiť na klasifikáciu, pohľady na dáta a detekciu outlierov bez učiteľa.
+\item Predchádzajúce môže byť rozšírené aj na neolabelované dáta (bez informácie o~triede), čo sa dá použiť na klasifikáciu, pohľady na dáta a detekciu outlierov bez učiteľa.
 \item Ponúka experimentálnu metódu na detekciu interakcie medzi premennými.
 \end{itemize}
 
