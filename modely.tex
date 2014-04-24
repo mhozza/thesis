@@ -1,12 +1,12 @@
 \chapter{Modely}
 
-V~sekcii \ref{sec:hmm-alignment} sme si zadefinovali HMM pre zarovnávanie sekvencií (obr. \ref{fig:simple-model}).
-V~našom riešení sme predstavili 2 modifikácie pôvodného HMM na zakomponovanie dodatočnej informácie, pričom sme využili klasifikátory. V~oboch modeloch sú klasifikátory rovnaké, aj s~rovnakým postupom trénovania. Líši sa len trénovanie samotného HMM a architektúra modelu.
+V~sekcii \ref{sec:hmm-alignment} sme si zadefinovali pHMM pre zarovnávanie sekvencií (obr. \ref{fig:simple-model}).
+V~našom riešení sme predstavili 2 modifikácie pôvodného pHMM na zakomponovanie dodatočnej informácie, pričom sme využili klasifikátory. V~oboch modeloch sú klasifikátory rovnaké, aj s~rovnakým postupom trénovania. Líši sa len trénovanie samotného pHMM a architektúra modelu.
 
-\section{Model s~klasifikátorom ako emisiou}
+\section[Model s~klasifikátorom ako emisiou]{Model s~klasifikátorom ako emisiou (Model A)}
+\label{sec:model-clf}
 
-V~tomto modeli sme nahradili emisné tabuľky stavov výstupom z~klasifikátora.
-Model teda bude vyzerať rovnako, aj pravdepodobnosti prechodov zostanú, ale emisná pravdepodobnosť sa nahradí výstupom z~klasifikátora.
+Tento model vyzerá rovnako ako základný model, aj pravdepodobnosti prechodov zostanú, ale emisnú pravdepodobnosť sme nahradili výstupom z~klasifikátora.
 
 \begin{figure}[htp]
     \centering
@@ -14,17 +14,17 @@ Model teda bude vyzerať rovnako, aj pravdepodobnosti prechodov zostanú, ale em
     \caption{Model s~klasifikátorom ako emisiou}
 \end{figure}
 
+Problémom tohto modelu je, že výstup klasifikátora nezodpovedá emisným pravdepodobnostiam, ale akejsi istote klasifikátora o~tom, že dve pozície majú byť zarovnané k~sebe. Hodnoty z~klasifikátora teda nesumujú do 1 a model nie je korektný pravdepodobnostný model. V~praxi sa však ukázalo (viď sekcia \ref{sec:cmp-model}), že to až tak nevadí, avšak o~takomto modeli už nemôžme hovoriť ako o~pravdepodobnostnom. Je len inšpirovaný pHMM.
 
-Problémom tohto modelu je, že výstup klasifikátora nezodpovedá emisným pravdepodobnostiam, ale akejsi istote klasifikátora o~tom, že dve pozície majú byť zarovnané k~sebe. Hodnoty z~klasifikátora teda nesumujú do 1 a model nie je celkom korektný. V~praxi sa však ukázalo, že to až tak nevadí, avšak o~takomto modeli už nemôžme hovoriť ako o~pravdepodobnostnom. Je len inšpirovaný HMM.
+V~tomto modeli sme trénovali iba prechodové pravdepodobnosti, emisie sme mali priamo z~natrénovaného klasifikátora.
 
-V~tomto modeli sme trénovali iba tranzície, emisie sme mali priamo z~natrénovaného klasifikátora.
-
-\section{Model s~klasifikátorovou páskou}
+\section[Model s~klasifikátorovou páskou]{Model s~klasifikátorovou páskou (Model B)}
+\label{sec:model-tape}
 (\todo alebo s orákulom?)
 
-Na to aby sme vyriešili problém s~korektnosťou predošlého modelu, navrhli sme alternatívny model, ktorý je korektný pravdepodobnostný model, ktorý navyše modeluje aj výstup z~klasifikátora.
-Nemodelujeme teda len dvojicu sekvencií, ale aj sekvenciu výstupov klasifikátora vo forme pásky.
-Pásku s~výstupom z~klasifikátora vieme považovať za akúsi pomôcku pre náš zarovnávač.
+Keďže predošlý model nie je korektný pravdepodobnostný model, navrhli sme alternatívny model, ktorý navyše modeluje aj výstup z~klasifikátora.
+Nemodelujeme teda len dvojicu sekvencií, ale aj sekvenciu výstupov klasifikátora vo forme pásky. Tento model teda je korektný pravdepodobnostný model.
+Pásku s~výstupom z~klasifikátora považujeme za akúsi pomôcku pre náš zarovnávač.
 
 \begin{figure}[htp]
     \centering
@@ -34,12 +34,62 @@ Pásku s~výstupom z~klasifikátora vieme považovať za akúsi pomôcku pre ná
 
 Keďže stále ide o párový HMM, pásku si musíme predstaviť ako cestu v 2D tabuľke výstupov klasifikátorov, ktorá sa zhoduje s cestou zarovnania. Teda ak sa pohneme horizontálne  alebo vertikálne, používame Indel klasifikátor a ak sa pohneme diagonálne tak použijeme Match klasifikátor.
 
+\subsection{Diskrétna verzia}
+
+Klasifikátor môže ľubovoľnú vrátiť hodnotu z intervalu $\left<0,1 \right>$. Keďže výstup z klasifikátora je spojitý, museli sme ho pre naše potreby diskretizovať.
+Diskretizovať hodnoty môžme 2 spôsobmi, buď priamo -- spočítať histogram pre trénovacie dáta, alebo nepriamo -- interpolovať vstupnú vzorku pomocou spojitej distribúcie, napr. pomocou zmesi gausiánov a potom toto rozdelenie diskretizovať (obr. \ref{fig:clf-discretisation}). Druhá spomenutá metóda má výhodu v tom, že vyhladí šum, ale treba s ňou narábať opatrne, aby sme nezaviedli príliš veľkú nepresnosť. V oboch prípadoch si musíme zvoliť počet košov $b$, do ktorých dáta rozdelíme. Koše sme rozdelili rovnomerne a na základe experimentov sme si zvolili $b = 10$.
+% todo experimenty a porovnanie týchto 2 prístupov
+
+\begin{figure}[htp]
+        \centering
+        \begin{subfigure}[c]{0.3\textwidth}
+                \includegraphics[width=\textwidth]{images/hist1}
+                \caption{Histogram}
+                \label{fig:clf-discretisation-1}
+        \end{subfigure}%
+        % \qquad\qquad %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+          %(or a blank line to force the subfigure onto a new line)
+          % $\Rightarrow$
+        $\vcenter{\hbox{\raisebox{.8cm}{\Huge\pointer}}}$
+        \begin{subfigure}[c]{0.3\textwidth}
+                \includegraphics[width=\textwidth]{images/hist2}
+                \caption{Zmes gausiánov}
+                \label{fig:clf-discretisation-2}
+        \end{subfigure}
+        $\vcenter{\hbox{\raisebox{.8cm}{\Huge\pointer}}}$
+        \begin{subfigure}[c]{0.3\textwidth}
+                \includegraphics[width=\textwidth]{images/hist3}
+                \caption{Nasekaný gausián}
+                \label{fig:clf-discretisation-3}
+        \end{subfigure}
+        \caption[Diskretizácia výstupu klasifikátora]{Dve možnosti diskretizácie výstupu klasifikátora -- buď použijeme histogram \ref{fig:clf-discretisation-1}, alebo dáta najskôr aproximujeme pomocou zmesi gausiánov \ref{fig:clf-discretisation-2} a následne rozsekáme na koše \ref{fig:clf-discretisation-3}.}
+        \label{fig:clf-discretisation}
+\end{figure}
+
+\subsection{Spojitá verzia}
+
+Alternatíva k predošlej metóde je použiť spojitý HMM. Hlavný rozdiel medzi spojitými a diskrétnymi HMM je, že spojité HMM nepočítajú s pravdepodobnosťou, ale s hustotou. Hodnota hustoty v danom bode narozdiel od pravdepodobnosti môže byť aj väčšia ako jedna. Jedným zo štandardných spôsobov reprezentácie hustoty v spojitých HMM je zmes gausiánov. \cite{huang1989multiple}, takže využijeme interpoláciu takouto distribúciou a to budeme brať ako hustotu výstupu klasifikátora (obr. \ref{fig:clf-discretisation-2}).
+
+\begin{table}[htp]
+\centering
+\begin{tabular}{c|r@{,}lr@{,}lr@{,}l}
+& \multicolumn{2}{c}{Histogram}  & \multicolumn{2}{c}{Nasekaný gausián} & \multicolumn{2}{c}{Zmes gausiánov}\\
+\hline
+Úspešnosť & 82 & 25\% & 82 & 98\% & 65 & 59\%\\
+\end{tabular}
+\vspace{0.5cm}
+\caption[Porovnanie úspešností pri rôznom spracovaní pásky]{Porovnanie úspešností modelu B pri rôznom spracovaní pásky.}
+\label{tab:success-b-tape}
+\end{table}
+
+Ako vidíme z tabuľky \ref{tab:success-b-tape}, spojitá verzia modelu sa nám neosvedčila. Má totiž nedostatok, že distribučná funkcia nedosahuje maximum pri výstupe klasifikátora rovnom jedna, ale kúsok predtým, čo znamená istú penalizáciu v prípade, že si je klasifikátor príliš istý. To, či použijeme vyhladenie pomocou gausiánu až tak nezaváži, ale rozhodli sme sa ho predsa len využiť, pretože úspešnosť bola trochu vyššia takmer na všetkých testovaných sekvenciách.
+
 \subsection{Trénovanie modelu} % (fold)
+
 Pri tomto modeli stojí za zmienku aj spôsob trénovania.
 Trénovali aj tranzície aj emisie, pričom základný princíp ostáva taký, ako sme si ho popísali v~sekcii \ref{subsec:hmmtraining}.
-Zaujímavé je trénovanie emisií klasifikátora. Z~dôvodu lepšej vizualizácie a ďalších dôvodov, ktoré uvedieme neskôr sa nám hodí modelovať pravdepodobnosti $P(C|X \cap Y)$. Ukážeme si, že pravdepodobnosť $P(X \cap Y \cap C)$ vieme rozložiť pomocou $P(C|X \cap Y)$.
+Zaujímavé je trénovanie emisií klasifikátora. Aby sme vedeli ľahko interpolovať vstupnú vzorku a~z~dôvodu lepšej vizualizácie sa nám hodí modelovať pravdepodobnosti $P(C|X \cap Y)$ (resp. $P(C|X)$ a $P(C|Y)$). Ukážeme si, že pravdepodobnosť $P(X \cap Y \cap C)$ vieme rozložiť pomocou $P(C|X \cap Y)$ a $P(X \cap C)$ vieme rozložiť pomocou $P(C|X)$.
 
-V~Match stave modelujeme 3 náhodné premenné -- $X$, $Y$ a $C$, pričom tieto náhodné premenné sú nezávislé. Teda platí $P(X \cap Y \cap C) = P(X \cap Y)P(C)$.
 $P(X \cap Y)$ poznáme z~frekvenčnej tabuľky a $P(C)$ vieme rozložiť pomocou nasledujúcej vety.
 
 \begin{vt}[Veta o~úplnej pravdepodobnosti]
@@ -58,16 +108,44 @@ Vieme teda pravdepodobnosť emisie $(x, y, c)$ Match stave vypočítať ako $$P\
 P\left[C=c \wedge X=x\right] &= P\left[C=c | X=x\right] P\left[X=x\right]\\
 P\left[C=c \wedge Y=y\right] &= P\left[C=c | Y=y\right] P\left[Y=y\right].
 \end{align*}
-
-Klasifikátor môže ľubovoľnú vrátiť hodnotu z intervalu $\left<0,1 \right>$. Doteraz používané HMM boli diskrétne, čiže nepracovali so spojitými výstupmi. Môžme buď hodnoty diskretizovať, alebo použiť spojité HMM definované napr. v \cite{huang1989multiple}. Diskretizovať hodnoty môžme 2 spôsobmi, buď priamo -- spočítať histogram pre trénovacie dáta, alebo nepriamo -- interpolovať vstupnú vzorku na celý interval, napr. pomocou zmesi gausovských rozdelení a potom toto rozdelenie diskretizovať. Druhá spomenutá metóda má výhodu v tom, že vyhladí šum, ale treba s ňou narábať opatrne, aby sme nezaviedli príliš veľkú nepresnosť.
-
-\todo spojité hmm
-
-Ak použijeme spojitý HMM, tak využijeme interpoláciu pomocou zmesi gausovských rozdelení a to budeme brať ako hustotu výstupu klasifikátora.
-
-\todo obrázok toho čo ideme robiť
-
-% Klasifikátorovú pásku sme generovali pomocou oboch klasifikátorov, pričom v~Match stave sme použili Match klasifikátor a v~Insert stavoch Indel klasifikátor.
-% Výstupy z~klasifikátora sme rozdelili do 10 košov rovnomerne na intervale <0, 1>.
+Emisie môžme teda natrénovať zvlášť pre každú dvojicu báz (resp. pre každú bázu).
 
 % subsection Trénovanie modelu (end)
+
+\section{Porovnanie modelov}
+\label{sec:cmp-model}
+Hlavný rozdiel v modeloch A a B, ktoré sme predstavili v sekciách \ref{sec:model-clf} a \ref{sec:model-tape} je v tom, že prvý model je diskriminačný, zatiaľčo druhý je generatívny. (\todo mozno toto lepsie sformulovat alebo vyhodit lebo si nie som isty ci je to celkom pravda)
+
+Model A emituje len na základe natrénovaného klasifikátora, takže čokoľvek dokážeme klasifikátor naučiť, môžme priamo použiť. Model B používa klasifikátor iba ako pomôcku. Model funguje podobne ako štandardný model pre zarovnanie (sekcia \ref{subsec:hmm-alignment}) a klasifikátor iba mierne upravuje výsledné pravdepodobnosti.
+
+\begin{table}
+\centering
+\begin{tabular}{cc|r@{,}l}
+bázy & výstup klasifikátora & \multicolumn{2}{c}{emis. pravd.}\\
+\hline
+AA & 0.96 & 0 & 09398720286410\\
+AG & 0.96 & 0 & 00512870137097\\
+AA & 0.42 & 0 & 00729190980568\\
+AA & 0.26 & 0 & 00410698647573\\
+AG & 0.02 & 0 & 00167788321643\\
+\end{tabular}
+\caption[Porovnanie emisných pravdepodobností]{Porovnanie emisných pravdepodobností pre rôzne bázy a výstup natrénovaného klasifikátora}
+\label{tab:emission-prob}
+\end{table}
+
+Ako môžme v tabuľke \ref{tab:emission-prob} vidieť, pre rovnaký výstup klasifikátora, ale rôzne bázy sa emisná pravdepodobnosť môže líšiť. Dokonca aj pre značne nižší výstup klasifikátora pri rovnakých bázach môže byť pravdepodobnosť emisie stále vyššia ako pri rôznych bázach s vysokým výstupom z klasifikátora. Na druhej strane si môžme tiež všimnúť, že pri nižšom výstupe klasifikátora emisná pravdepodobnosť rapídne klesá a pri dostatočne nízkom výstupe klasifikátora pri rovnakých bázach už je emisná pravdepodobnosť nižšia, ako pri rôznych bázach s vysokým výstupom klasifikátora.
+
+\begin{table}[htp]
+\centering
+\begin{tabular}{c|r@{,}lr@{,}lr@{,}l}
+& \multicolumn{2}{c}{Model A}  & \multicolumn{2}{c}{Model B} & \multicolumn{2}{c}{Ref. model}\\
+\hline
+Simulované 1 & 73 & 95\% & 82 & 98\% & 85 & 78\%\\
+Simulované 2 & 72 & 62\% & 18 & 57\% & 6 & 78\% \\
+\end{tabular}
+\vspace{0.5cm}
+\caption[Porovnanie úspešností modelov]{Porovnanie úspešností modelov. Referenčný model je obyčajný pHMM na zarovnávanie DNA sekvencií. Úspešnosť je počítaná ako percentuálna zhoda originálneho a nového zarovnania. Simulované dáta 1 sa snažia napodobňovať biologické procesy, Simulované dáta 2 nezodpovedajú biologickým dátam a sú zložitejšie na natrénovanie pre referenčný model.}
+\label{tab:success-compare}
+\end{table}
+
+V tabuľke \ref{tab:success-compare} sme porovnávali, ako sa modely dokážu prispôsobiť zložitejším dátam. Môžme si všimnúť, že model A sa správa konzistentne na oboch typoch dát, zatiaľ čo model B sa pri zložitejšom type dát nechal stiahnuť dole nutnosťou dodržovať pravdepodobnosti generovania báz.
