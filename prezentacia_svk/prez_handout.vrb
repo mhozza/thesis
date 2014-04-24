@@ -1,0 +1,16 @@
+\frametitle{Zarovnávanie sekvencií}
+\begin{itemize}
+      \item jedným zo základných bioinformatických problémov
+      \item identifikuje časti sekvencie, ktoré vznikli z~toho istého predka (zarovnané bázy), inzercie a delécie v~priebehu evolúcie (medzery v~zarovnaní).
+  \end{itemize}
+\pause
+\begin{df}[Globálne zarovnanie]
+Vstupom sú dve sekvencie $X = x_1x_2\dots x_n$ a $Y = y_1y_2\dots y_m$
+Výstupom je zarovnanie celých sekvencií $X$ a $Y$.
+\end{df}
+\pause
+Príklad:
+      \begin{verbatim}
+  GTGGACCGTT------CCTTCCGGCAATCACGAGAAAAGCCACGT
+  GTCGACCGTTTCAGTGACTTGAAGCAATCAGG---AACACCACCT
+      \end{verbatim}
