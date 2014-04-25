@@ -263,7 +263,7 @@ M[i,j] &= \max \left\{
 \begin{array}{l}
 M[i-1,j-1]+s(x_i, y_j)\\
 I_x[i-1,j-1]+s(x_i, y_j)\\
-I_y[i,j-1-1]+s(x_i, y_j)
+I_y[i-1,j-1]+s(x_i, y_j)
 \end{array} \right.\\
 A[i,j] &= \max \left\{
 \begin{array}{l}
@@ -291,7 +291,7 @@ Tieto vzťahy vieme popísať stavovým diagramom na obrázku \ref{fig:alignment
 
 \cite{durbin}
 
-\section[Zarovnávanie s~HMM]{Zarovnávanie pomocou skrytých Markovovských modelov}
+\section[Zarovnávanie s~pHMM]{Zarovnávanie pomocou skrytých Markovovských modelov}
 \label{sec:hmm-alignment}
 
 \subsection{Skryté Markovovské modely (HMM)}
@@ -309,48 +309,51 @@ V~takomto modeli vieme počítať pravdepodobnosť, že model vygeneruje sekvenc
 Výpočet vyzerá nasledovne: $$P[X=x | S=s] = \pi_{s_1} e_{s_1,x1} a_{s_1,s_2} e_{s_2,x_2} a_{s_2,s_3} e_{s_3,x_3}\dots a_{s_{n-1},s_n} e_{s_n,x_n}$$.
 \cite{skripta, durbin}
 
-\subsection{Viterbiho algoritmus}
-Hľadáme najpravdepodobnejšiu postupnosť stavov A, teda $\arg\max_A \Pr(A, S)$. Úlohu budeme riešiť dynamickým programovaním.
 
-Podproblém $V[i,u]$ je pravdepodobnosť najpravdepodobnejšej cesty končiacej po $i$ krokoch v~stave $u$, pričom vygeneruje $s_1 s_2 \dots s_i$.
+% % \subsection{Viterbiho algoritmus}
+% % Hľadáme najpravdepodobnejšiu postupnosť stavov A, teda $\arg\max_A \Pr(A, S)$. Úlohu budeme riešiť dynamickým programovaním.
 
-\begin{subequations}
-Rekurentné vzťahy pre náš algoritmus sú nasledovné:
-\begin{align}
-        \label{eq:viterbi-init}
-        V[1,u] &= \pi_u e_{s_1, u}\\
-        \label{eq:viterbi-step}
-        V[i,u] &= \max_w V[i-1, w] a_{w,u} e_{s_i, u}
-\end{align}
-\end{subequations}
+% % Podproblém $V[i,u]$ je pravdepodobnosť najpravdepodobnejšej cesty končiacej po $i$ krokoch v~stave $u$, pričom vygeneruje $s_1 s_2 \dots s_i$.
 
-Algoritmus funguje takto:
-Nech $n$ je dĺžka reťazca a $m$ je počet stavov.
+% % \begin{subequations}
+% % Rekurentné vzťahy pre náš algoritmus sú nasledovné:
+% % \begin{align}
+% %         \label{eq:viterbi-init}
+% %         V[1,u] &= \pi_u e_{s_1, u}\\
+% %         \label{eq:viterbi-step}
+% %         V[i,u] &= \max_w V[i-1, w] a_{w,u} e_{s_i, u}
+% % \end{align}
+% % \end{subequations}
 
-\begin{lstlisting}[escapechar=\%]
-%Nainicializuj $V[1,i]\, \forall i$ podľa \ref{eq:viterbi-init}%
-for i in range(2, n):
-    for u~in range(1, m):
-        %vypočítaj V[i, u] pomocou \ref{eq:viterbi-step}%
-\end{lstlisting}
-Maximálne V[n,j] je pravdepodobnosť najpravdepodobnejšej cesty
-Aby sme vypísali anotáciu, pamätáme si pre každé V[i,u] stav w, ktorý viedol k~maximálnej hodnote vo vzorci \ref{eq:viterbi-step}.
+% % Algoritmus funguje takto:
+% % Nech $n$ je dĺžka reťazca a $m$ je počet stavov.
 
-Časová zložitosť tohto algoritmu je $O(nm^2)$, kde $n$ je dĺžka sekvencie a $m$ počet stavov.
+% % \begin{lstlisting}[escapechar=\%]
+% % %Nainicializuj $V[1,i]\, \forall i$ podľa \ref{eq:viterbi-init}%
+% % for i in range(2, n):
+% %     for u~in range(1, m):
+% %         %vypočítaj V[i, u] pomocou \ref{eq:viterbi-step}%
+% % \end{lstlisting}
+% % Maximálne V[n,j] je pravdepodobnosť najpravdepodobnejšej cesty
+% % Aby sme vypísali anotáciu, pamätáme si pre každé V[i,u] stav w, ktorý viedol k~maximálnej hodnote vo vzorci \ref{eq:viterbi-step}.
 
-Poznámka: pre dlhé sekvencie budú čísla V[i,u] veľmi malé a môže dôjsť k~podtečeniu. V~praxi teda používame zlogarimované hodnoty a namiesto násobenia súčet.
+% % Časová zložitosť tohto algoritmu je $O(nm^2)$, kde $n$ je dĺžka sekvencie a $m$ počet stavov.
 
-\subsection{Nastavenie parametrov HMM}
-\label{subsec:hmmtraining}
-Ak máme oanotované trénovacie sekvencie, môžme z~nich parametre odvodiť frekvenčnou analýzou. Emisie získame tak, že vyfiltrujeme symboly s~príslušným stavom a spočítame frekvencie pre každý stav zvlášť a tranzície získame tak, že pre každý stav spočítame frekvencie nasledujúcich stavov. Tento postup sa volá \textit{metóda maximálnej vierohodnosti (v~angličtine maximum likelihood estimation)}. \cite{ durbin, wiki:mle}
+% % Poznámka: pre dlhé sekvencie budú čísla V[i,u] veľmi malé a môže dôjsť k~podtečeniu. V~praxi teda používame zlogarimované hodnoty a namiesto násobenia súčet.
 
-\subsection{Párové zarovnávanie pomocou HMM}
+% \subsection{Nastavenie parametrov HMM}
+% \label{subsec:hmmtraining}
+% Ak máme oanotované trénovacie sekvencie, môžme z~nich parametre odvodiť frekvenčnou analýzou. Emisie získame tak, že vyfiltrujeme symboly s~príslušným stavom a spočítame frekvencie pre každý stav zvlášť a tranzície získame tak, že pre každý stav spočítame frekvencie nasledujúcich stavov. Tento postup sa volá \textit{metóda maximálnej vierohodnosti (v~angličtine maximum likelihood estimation)}. \cite{ durbin, wiki:mle}
+
+\subsection{Zarovnávanie pomocou párových skrytých Markovovských modelov (pHMM)}
 \label{subsec:hmm-alignment}
-\todo mic odporúča rovno popísať párové hmm a aj viterbiho rovno naňom, takže to asi prepíšem
+% \todo mic odporúča rovno popísať párové hmm a aj viterbiho rovno naňom, takže to asi prepíšem
 
-V~časti \ref{subsec:affine-gap-scoring} sme si ukázali jednoduchý algoritmus na globálne zarovnávanie s~afínnym skórovaním medzier. K~tomuto algoritmu sme si uviedli aj jednoduchý stavový automat (Obr. \ref{fig:alignment-fsa}). Tento automat vieme previesť na HMM.
+\textit{Párové skryté Markovovské modely (pHMM)} sa od tých obyčajných líšia v tom, že namiesto jednej sekvencie generujú dvojicu sekvencií. Na pHMM sa dajú použiť podobné algoritmy ako na HMM, ale treba ich upraviť tak, aby pracovali v dvoch rozmeroch.
 
-Na to aby sme automat previedli na HMM, musíme urobiť niekoľko zmien - musíme nastaviť emisné a prechodové pravdepodobnosti, tak aby sčítavali do jedna. Pre jednoduchosť pridáme aj prechody medzi stavmi $X a Y$. Ak ich pravdepodobnosti nastavíme na 0, máme model ekvivalentný predchádzajúcemu.
+V~časti \ref{subsec:affine-gap-scoring} sme si ukázali jednoduchý algoritmus na globálne zarovnávanie s~afínnym skórovaním medzier. K~tomuto algoritmu sme si uviedli aj jednoduchý stavový automat (Obr. \ref{fig:alignment-fsa}). Tento automat vieme previesť na pHMM.
+
+Na to aby sme automat previedli na HMM, musíme urobiť niekoľko zmien - musíme nastaviť emisné a prechodové pravdepodobnosti, tak aby sčítavali do jedna. Pre jednoduchosť pridáme aj prechody medzi stavmi $X a Y$. Ak ich pravdepodobnosti nastavíme na 0, máme model ekvivalentný predchádzajúcemu. \cite{durbin}
 
 \begin{figure}[htp]
     \centering
@@ -359,12 +362,60 @@ Na to aby sme automat previedli na HMM, musíme urobiť niekoľko zmien - musím
     \label{fig:simple-model}
 \end{figure}
 
-Dostaneme model podobný HMM s~tým rozdielom, že namiesto jedného symbolu emitujeme dvojicu symbolov. Takýto model sa nazýva \textit{Párový skrytý Markovovský model}. Na tento model môžme použiť mierne modifikovaný Viterbiho algoritmus na nájdenie najpravdepodobnejšej postupnosti stavov, čo nám dá najpravdepodobnejšie zarovnanie.
+\subsection{Viterbiho algoritmus na pHMM}
+Hľadáme najpravdepodobnejšiu postupnosť stavov A ak máme dané sekvecnie $X$ a $Y$, teda $\arg\max_A \Pr(A, X, Y)$. Úlohu budeme riešiť dynamickým programovaním.
 
-Parametre modelu môžme ľahko natrénovať z~existujúcich párových zarovnaní.
+Podproblém $V[i, j, u]$ je pravdepodobnosť najpravdepodobnejšej postupnosti stavov končiacej v $X[i]$ a $Y[j]$ v~stave $u$.
 
-Nech dĺžky oboch sekvencií sú $O(n)$, a $m$ je počet stavov. Potom Viterbiho algoritmus na Párovom HMM bude bežať v~čase $O(n^2m^2)$.
+Inicializácia:
+\begin{equation}
+\label{eq:viterbi-init}
+V[0,0,M] = 1 \wedge V[i,0,*] = 0, V[0,j,*] = 0\quad \forall i, j
+\end{equation}
+
+Rekurentné vzťahy:
+\begin{align}
+\label{eq:viterbi-recM}
+V[i,j,M] &= e_{M, (x_i, y_j)} \max \left\{
+\begin{array}{l}
+a_{M,M} V[i-1,j-1,M]\\
+a_{I_x,M} V[i-1,j-1,I_x]\\
+a_{I_y,M} V[i-1,j-1, I_y]
+\end{array} \right.\\
+\label{eq:viterbi-recX}
+V[i,j, I_x] &= e_{I_x, x_i}\max \left\{
+\begin{array}{l}
+a_{M, I_x} V[i-1,j,M]\\
+a_{I_x, I_x} V[i-1,j,I_x]\\
+a_{I_y, I_x} V[i-1,j,I_y]
+\end{array} \right.\\
+\label{eq:viterbi-recY}
+V[i,j, I_y] &= e_{I_y, y_j}\max \left\{
+\begin{array}{l}
+a_{M, I_y} V[i,j-1,M]\\
+a_{I_y, I_y} V[i,j-1,I_y]\\
+a_{I_x, I_y} V[i,j-1,I_x]
+\end{array} \right.
+\end{align}
+
+Algoritmus funguje takto:
+Nech $n$ a $m$ sú dĺžky sekvencií $X$ a $Y$.
+Na začiatku nainicializuje hodnoty pre $V[0,*,*]$ a $V[*,0,*]$ podľa \ref{eq:viterbi-init}.
+Potom postupne pre všetky $i = 1\dots n$, $j = 1\dots m$ a $u \in \{M, I_x, I_y\}$ dynamicky vypočíta $V[i, j, u]$ podľa \ref{eq:viterbi-recM}, \ref{eq:viterbi-recX} a \ref{eq:viterbi-recY}.
+
+Maximálne $V[n, m, u]\, \forall u \in \{M, I_x, I_y\}$ je pravdepodobnosť najpravdepodobnejšej postupnosti stavov.
+Aby sme stavy vedeli zrekonstruovať, pamätáme si pre každé $V[i, j, u]$ stav $w$, ktorý viedol k~maximálnej hodnote. Táto postupnosť stavov nám udáva najpravdepodobnejšie zarovnanie.
+
+Časová zložitosť tohto algoritmu je $O(nm)$.
+
+Poznámka: pre dlhé sekvencie budú čísla $V[i, j, u]$ veľmi malé a môže dôjsť k~podtečeniu. V~praxi teda používame zlogarimované hodnoty a namiesto násobenia súčet.
 \cite{durbin}
+
+\subsection{Nastavenie parametrov pHMM}
+\label{subsec:hmmtraining}
+Ak máme oanotované trénovacie sekvencie, môžme z~nich parametre odvodiť frekvenčnou analýzou. Emisie získame tak, že vyfiltrujeme symboly s~príslušným stavom a spočítame frekvencie pre každý stav zvlášť, pričom v Match stave počítame frekvencie dvojíc symbolov. Tranzície získame tak, že pre každý stav spočítame frekvencie nasledujúcich stavov. Tento postup sa volá \textit{metóda maximálnej vierohodnosti (v~angličtine maximum likelihood estimation)}. \cite{ durbin, wiki:mle}
+
+Parametre modelu môžme teda ľahko natrénovať z~existujúcich párových zarovnaní.
 
 \section[Štat. významnosť ]{Štatistická významnosť zarovnania}
 Smith-Watermanov algoritmus nájde najlepšie lokálne zarovnanie, pre ľubovoľné dve sekvencie. Treba však rozhodnúť, či je zarovnanie dostatočne vierohodné na to, aby predstavovalo skutočnú podobnosť sekvencií a nie len najlepšie zarovnanie dvoch nesúvisiacich sekvencií.
