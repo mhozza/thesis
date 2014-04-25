@@ -1,0 +1,6 @@
+dalsia metrika:
+zhody v zavislosti od vzdialenosti (este sa porozpravat s micom)
+skontorolovat meranie zhody, simulator, data
+pouzit maticu zhod v klasifikatore
+
+
