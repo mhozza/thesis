@@ -3,22 +3,13 @@
  % Uvod ku kapitole (necislovany): Popises, preco chces byt schopny klasifikovat jednotlive pozicie a nadskrtnes, ako to bude neskor suvisiet s nejakym zapracovanim do HMM. Zakladna myslienka je, ze klasifikator ti dava moznost akymsi sposobom zhrnut informaciu vyplyvajucu zo sekvencie, anotacii a kontextu do jedneho cisla, ktore potom v ramci HMM mozes transparentne pouzit. Tuto ideu tam treba zdoraznit a vysvetlit to tak, aby citatelovi bolo jasne, na co to vsetko je dobre. Proste tento uvod musi celu kapitolu zasadit do kontextu celeje prace. Na zaver nadskrtnes strukturu kapitoly a v kratkosti (jedna/dve vety) zhrnies hlavne vysledky (t.j. ze pri vhodnej volbe atributov dostanes slusne klasifikatory).
 Cieľom našej práce bolo zahrnúť dodatočnú informáciu do zarovnávania sekvencií, ktorá je poskytnutá formou anotácií k~príslušným bázam. Keďže náš zarovnávač je založený na pHMM (sekcia \ref{subsec:hmm-alignment}), potrebujeme nejak určit emisné pravdepodobnosti v jednotlivých stavoch. Keďže chceme okrem jednotlivých báz zahrnúť aj iné informácie, rozhodli sme sa na tento účel využiť klasifikátory. Klasifikátory určujú, ktoré pozície sa majú zarovnať k sebe a túto informáciu zakomponovávame do výsledného zarovnávača pomocou modelov, ktoré si popíšeme v kapitole \ref{chap:models}.
 
+V tejto kapitole sa budeme venovať výberu klasifikátora a jeho vstupných atribútov. Najskôr si stručne popíšeme algoritmus klasifikátora, potom typy vstupných atribútov, ktoré sme navrhli a nakoniec sa budeme venovať vlastnostiam klasifikátora s danými typmi atribútov a výberu finálneho klasifikátora pre použitie v našich modeloch.
+
 \section{Náhodné lesy}
-
-% Takze podkapitola by sa mohla napr. volat "Klasifikacna metoda Random Forests".
-
-% V podkapitole chces popisat nasledujuce veci:
-% - Preco si si vybral prave tuto klasifikacnu metodu (lepsie zdovodnenie ako "je mi sympaticka")
-% - V strucnosti popisat, ako funguje klasifikator (algoritmus trenovania a klasifikacie), ake su jeho vystupy (cislo na intervale [0,1] a co take cislo znamena)
-% - Popisat metody vyhodnocovania uspesnosti a akym sposobom sa meria "dolezitost atributov"
-
-% Ako klasifikátor sme si vybrali \textit{náhodný les (Random forest)}, pretože patria v súčasnosti medzi najlepšie klasifikátory. V tejto sekcii si popíšeme základný algoritmus a najdôležitejšie vlastnosti.
-
-% \todo
-
 \input random_forest.tex
 
 \section[Použitie náh. lesov v zarovnaní]{Použitie náhodných lesov na klasifikáciu zarovnaní}
+\label{sec:use-rf-alignment}
 
 % - Popisat dva typy klasifikatov (Match, Indel) a zdovodnit, preco budujeme dva klasifikatory a nie jeden alebo tri.
 % - Vyber atributov: Popisat potrebu vytiahnut z dat nejake atributy, ktore mozno klasifikatoru podhodit. Popisat styri typy extrakcie atributov a oznacit ich (ja by som ich oznacil A,B,C,D, nie 1-4, aby sa to potom neplietlo s inymi cislovanymi vecami); je vhodne si jednotlive atributy kompaktne oznacit, aby sa potom dalo jednoduchsie o nich diskutovat (napr. stredova pozicia moze byt 0, pozicie nalavo mozu byt -1,-2 a napravo 1,2; takze potom mozes mat atributy typu x_0,x_{-1} a pod.; pri inserte jednoducho v y nemas 0; anotaciu v x mozes mat napr. a_0, a_{-1} a pod.; anotaciu v y mozes mat b_0, b_1 a pod.; no a rovnost mozes oznacovat napr. m_{0,0} alebo nieco podobne)
@@ -38,7 +29,7 @@ Tieto pravdepodobnosti sú akousi mierou istoty daného klasifikátora, a keďž
 
 \subsection{Výber atribútov}
 
-Klasifikátor dokáže pracovať len z poľom číselných atribútov, preto bolo treba najskôr dáta dať do tejto podoby. Navyše bolo treba rozhodnúť, aké dáta klasifikátoru podstrčíme. Potrebovali sme, aby klasifikátor videl bázy a ich anotácie na daných pozíciách. Navyše sme sa rozhodli pridať ako pomôcku aj okolie daných báz spolu s anotáciami. Toto okolie budeme volať \textit{okno}. Navyše sme vyskúšali štyri rôzne formy okna a zisťovali sme, ktorá forma je pre klasifikátor najvhodnejšia. Na to sme mali dve miery: úspešnosť klasifikátora a dôležitosť atribútov. Pri úspešnosti sme sledovali rozdelenie výstupu klasifikátora pre pozitívne a negatívne atribúty. Dôležitosť atribútov sme mali hlavne na kontrolu a vizualizáciu ktoré dáta považuje klasifikátor za dôležité.
+Klasifikátor dokáže pracovať len z poľom číselných atribútov, preto bolo treba najskôr dáta dať do tejto podoby. Navyše bolo treba rozhodnúť, aké dáta klasifikátoru podstrčíme. Potrebovali sme, aby klasifikátor videl bázy a ich anotácie na daných pozíciách. Navyše sme sa rozhodli pridať ako pomôcku aj okolie daných báz spolu s anotáciami. Toto okolie budeme volať \textit{okno}. Vyskúšali sme štyri rôzne formy okna a zisťovali sme, ktorá forma je pre klasifikátor najvhodnejšia. Na to sme mali dve miery: úspešnosť klasifikátora a dôležitosť atribútov. Pri úspešnosti sme sledovali rozdelenie výstupu klasifikátora pre pozitívne a negatívne atribúty. Dôležitosť atribútov sme mali hlavne na kontrolu a vizualizáciu ktoré dáta považuje klasifikátor za dôležité.
 
 \subsubsection{Definícia okna}
 Okno veľkosti $w$ pozostáva z~$2w$ blokov veľkosti $k = (1+\#\text{anotácií})$.
@@ -68,79 +59,6 @@ Predpokladajme teraz, že $X$ je sekvencia s bázou. Okno Indel klasifikátora v
 
 Ako prvý typ dát sme zobrali okno tak, ako sme ho definovali v~predošlej sekcii. Dáta obsahujú priamo všetky bázy a anotácie tak, ako sú v~okne.
 
-% \begin{figure}[htp]
-%         \centering
-%         \begin{subfigure}[t]{0.4\textwidth}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest5_bars}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest5_heatmap}
-%                 \caption{Match klasifikátor}
-%                 \label{fig:datatype1-m}
-%         \end{subfigure}%
-%         \qquad\qquad %add desired spacing between images, e. g. ~, \quad, \qquad etc.
-%           %(or a blank line to force the subfigure onto a new line)
-%         \begin{subfigure}[t]{0.4\textwidth}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest5_indel_bars}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest5_indel_heatmap}
-%                 \caption{InDel klasifikátor}
-%                 \label{fig:datatype1-i}
-%         \end{subfigure}
-%         \caption[Dôležitosť atribútov pre typ dát č. 1]{
-%         \textbf{Dôležitosť atribútov pre typ dát č. 1} - hodnoty sú normalizované aby súčet bol 1, modrý pásik označuje štandardnú odchýlku cez jednotlivé stromy v~Random foreste.
-%         Pod grafom je tepelná mapa pre lepšiu vizualizáciu. Okno je veľkosti 5, takže aktuálne sa pýtame na 3tie pozície v~okne t.j. bázy $x_3$, $y_3$ a ich anotácie $ax_3$ $ay_3$ (resp. v~InDel klasifikátore len bázu $x_3$ a anotáciu $ax_3$)
-%         Atribúty v~Match klasifikátore sú číslované nasledovne:\\
-%         {\footnotesize
-%         \begin{tabular}{c|cccccccccc}
-%             & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9\\
-%             \hline
-%             0 & $x_1$ & $ax_1$ & $x_2$ & $ax_2$ & $x_3$ & $ax_3$ & $x_4$ & $ax_4$ & $x_5$ & $ax_5$\\
-%             1 & $y_1$ & $ay_1$ & $y_2$ & $ay_2$ & $y_3$ & $ay_3$ & $y_4$ & $ay_4$ & $y_5$ & $ay_5$
-%         \end{tabular}
-%         }\\
-%         a atribúty v~InDel klasifikátore sú číslované takto:\\
-%         {\footnotesize
-%         \begin{tabular}{c|cccccccccc}
-%             & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9\\
-%             \hline
-%             0 & $x_1$ & $ax_1$ & $x_2$ & $ax_2$ & $x_3$ & $ax_3$ & $x_4$ & $ax_4$ & $x_5$ & $ax_5$\\
-%             1 & $y_1$ & $ay_1$ & $y_2$ & $ay_2$ & $y_3$ & $ay_3$ & $y_4$ & $ay_4$ & &
-%         \end{tabular}
-%         },\\
-%         pričom v~tepelnej mape sú bázy a anotácie 3 a 4 posunuté doprava a medzi ne je vsunutá medzera.
-%         }
-%         \label{fig:datatype1}
-
-% \end{figure}
-
-
-% Na obrázku \ref{fig:datatype1} si môžme všimnúť, že klasifikátory sa zamerali najmä na bázy a anotácie skoro nebral do úvahy.
-% Toto správanie zodpovedá tomu, že v~praxi bázy majú podstatne väčší význam pri zarovnávaní sekvencií.
-
-% \begin{figure}[htp]
-%         \centering
-%         \begin{subfigure}[t]{0.4\textwidth}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest5_test}
-%                 \caption{Match klasifikátor}
-%                 \label{fig:datatype1-out-m}
-%         \end{subfigure}%
-%         \qquad\qquad %add desired spacing between images, e. g. ~, \quad, \qquad etc.
-%           %(or a blank line to force the subfigure onto a new line)
-%         \begin{subfigure}[t]{0.4\textwidth}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest5_indel_test}
-%                 \caption{InDel klasifikátor}
-%                 \label{fig:datatype1-out-i}
-%         \end{subfigure}
-%         \caption[Distribúcia výstupu z~klasifikátora pri type dát č. 1]{Distribúcia výstupu z~klasifikátora pri type dát č. 1 -- modré sú pozitívne príklady a zelené sú negatívne. Na $x$-ovej osi je výstup klasifikátora a na $y$-je počet inštancií, pre ktoré výstup z~klasifikátora padol do daného chlievika}
-%         \label{fig:datatype1-out}
-% \end{figure}
-
-% Na obrázku \ref{fig:datatype1-out} je graf distribúcie výstupu klasifikátora pre pozitívne a negatívne príklady.
-% Môžme si všimnúť, že klasifikátory sa natrénovali dobre -- teda pozitívne príklady (modrá) sa nachádzajú v~ľavej časti a negatívne (zelená) sa nachádzajú v~pravej časti.
-% Pri Match klasifikátore (obr. \ref{fig:datatype1-out-m}) dáva klasifikátor dokonca pre väčšinu pozitívnych príkladov hodnoty blízke 1 a naopak pre negatívne dáva najviac hodnoty blízke 0.
-% InDel klasifikátor (obr. \ref{fig:datatype1-out-i}) má výsledky trochu horšie, čo je celkom pochopiteľné, pretože pri medzerách sa pozitívne príklady identifikujú ťažšie.
-
-% Celková úspešnosť Match klasifikátora bola na trénovacej vzorke 93,07\% a na testovacej vzorke 83,57\%.
-% Úspešnosť Indel klasifikátora bola na trénovacej vzorke 88,51\% a na testovacej 74,13\%.
-
 \subsubsection{Typ dát B - zhody v~stĺpcoch okna}
 
 Druhý typ dát obsahuje aktuálnu bázu spolu s~jej anotáciami a navyše pole veľkosti $k*w$,
@@ -148,210 +66,15 @@ ktoré má na $i$-tom mieste jedna ak $okno_X[i] = okno_Y[i]$, ináč nula
 ($w$ je veľkosť okna, $k$ je veľkosť bloku, $okno_X$ je časť okna zodpovedajúca sekvencii $X$ a $okno_Y$ sekvencii $Y$).
 V~Indel klasifikátore je jedna malá zmena: pozícia 0 aj 1 v~$x$-ovej sekvencii sú porovnávané s~pozíciou 1 v~$y$-ovej a pozícia 2 v~$x$-ovej sa porovnáva s~pozíciou 2 v~$y$-ovej.
 Pozíciu 1 v~$y$-ovej sekvencii sme zopakovali pre to, že sme experimentom zistili, že pre klasifikátor je dôležitá.
- % -- vidno to aj na obrázku \ref{fig:datatype2-i}.
-
-% \begin{figure}[htp]
-%         \centering
-%         \begin{subfigure}[t]{0.4\textwidth}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest_cmp_5_bars}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest_cmp_5_heatmap}
-%                 \caption{Match klasifikátor}
-%                 \label{fig:datatype2-m}
-%         \end{subfigure}%
-%         \qquad\qquad %add desired spacing between images, e. g. ~, \quad, \qquad etc.
-%           %(or a blank line to force the subfigure onto a new line)
-%         \begin{subfigure}[t]{0.4\textwidth}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest_cmp_5_indel_bars}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest_cmp_5_indel_heatmap}
-%                 \caption{InDel klasifikátor}
-%                 \label{fig:datatype2-i}
-%         \end{subfigure}
-%         \caption[Dôležitosť atribútov pre typ dát č. 2]{
-%         \textbf{Dôležitosť atribútov pre typ dát č. 2} - hodnoty sú normalizované aby súčet bol 1, modrý pásik označuje štandardnú odchýlku cez jednotlivé stromy v~Random foreste.
-%         Pod grafom je tepelná mapa pre lepšiu vizualizáciu. Okno je veľkosti 5. Bázy a anotácie na ktoré sa pýtame sú na začiatku - pozície 0-3 (resp. v~InDel klasifikátore pozície 0-1)
-%         }
-%         \label{fig:datatype2}
-% \end{figure}
-
-% % Pri tomto type dát sa podľa obrázku \ref{fig:datatype2-m} Match klasifikátor najviac zameral na zhodu v bázach v centre okna potom v susedných a nakoniec na krajných bázach zhody v anotáciach mu neprišli vôbec dôležité.
-% % Toto zodpovedá aj našej intuitívnej predstave o dôležitosti daných pozícií, akurát sme očakávali trochu väčšie zapojenie anotácií.
-% % InDel klasifikátor podľa obrázku \ref{fig:datatype2-i} považoval za najdôležitejšiu zhodu na strednej pozícii a v bázach na v ľavej časti, ďalej považoval za dôležité aj aktuálnu bázu a hlavne jej anotáciu, potom ostatné bázy.
-% % Čiže môžme pozorovať správanie podobné ako pri predošlom type dát.
-
-% Pri tomto type dát to podľa obrázka \ref{fig:datatype2} dopadlo veľmi podobne ako pri type popísanom v~predchádzajúcej sekcii (\ref{subsec:datatype1}).
-% Pri Indel klasifikátore (obr. \ref{fig:datatype2-i}) sa nám potvrdila naša hypotéza, že vzťah pozície 3 v~$x$-ovej a $y$-ovej sekvencii je dôležitý.
-% Zhoda na týchto pozíciách totiž pomáha identifikovať negatívne príklady.
-% Zaujímavosťou v~tomto prípade je, že atribúty z~pravej časti okna klasifikátoru neprišli zaujímavé.
-
-% \begin{figure}[htp]
-%         \centering
-%         \begin{subfigure}[t]{0.4\textwidth}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest_cmp_5_test}
-%                 \caption{Match klasifikátor}
-%                 \label{fig:datatype2-out-m}
-%         \end{subfigure}%
-%         \qquad\qquad %add desired spacing between images, e. g. ~, \quad, \qquad etc.
-%           %(or a blank line to force the subfigure onto a new line)
-%         \begin{subfigure}[t]{0.4\textwidth}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest_cmp_5_indel_test}
-%                 \caption{InDel klasifikátor}
-%                 \label{fig:datatype2-out-i}
-%         \end{subfigure}
-%         \caption[Distribúcia výstupu z~klasifikátora pri type dát č. 2]{Distribúcia výstupu z~klasifikátora pri type dát č. 2 -- modré sú pozitívne príklady a zelené su negatívne. Na $x$-ovej osi je výstup klasifikátora a na $y$-je počet inštancií, pre ktoré výstup z~klasifikátora padol do daného chlievika}
-%         \label{fig:datatype2-out}
-% \end{figure}
-
-% Rovnako ako v~prípade dát typu 1, aj pri tomto type dát vedeli klasifikátory rozlíšiť pozitívne a negatívne príklady.
-% Pri Match klasifikátore (obr. \ref{fig:datatype2-out-m}) však funkcia početnosti príkladov v~závislosti od vzdialenosti od cieľovej hodnoty už nie je klesajúca ako to bolo v~predošlom type dát (obr. \ref{fig:datatype1-out-m}).
-% Distribúcia Indel klasifikátora (obr. \ref{fig:datatype2-out-i}) však vyzerá lepšie ako v~predošlom prípade.
-
-% Celková úspešnosť Match klasifikátora na trénovacej množine bola 84,05\% a na testovacej 84.31\%.
-% Úspešnosť Indel klasifikátora na trénovacej množine bola 77,17\% a na testovacej 75,75\%.
-% Trénovacia chyba bola teda väčšia ale testovacia mierne menšia ako v~predošlom prípade.
-% Podobnosť trénovacej a testovacej chyby značí, že v~tomto prípade nedošlo k~pretrénovaniu, ale klasifikátor sa už nedokáže lepšie naučiť rozlišovať pozitívne a negatívne príklady.
 
 \subsubsection{Typ dát C - matica zhôd v~okne}
 
 Tretí typ dát je podobný ako typ B. Rozdiel je v~tom, že teraz pole obsahuje nie len zhody po dvojiciach ale celú maticu zhôd. Teda opäť máme aktuálne bázy s~anotáciami a pole má veľkosť $k*w^2$. Každý riadok sa skladá z~jednotlivých blokov a v~tabuľke v~$x$-tom riadku, $y$-tom stĺpci a $i$-tom mieste v~bloku je jedna práve
 vtedy, keď $okno_X[x+i] = okno_Y[y+i]$.
 
-% \begin{figure}[htp]
-%         \centering
-%         \begin{subfigure}[t]{0.4\textwidth}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest_fullcmp_5_bars}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest_fullcmp_5_heatmap}
-%                 \caption{Match klasifikátor}
-%                 \label{fig:datatype3-m}
-%         \end{subfigure}%
-%         \qquad\qquad %add desired spacing between images, e. g. ~, \quad, \qquad etc.
-%           %(or a blank line to force the subfigure onto a new line)
-%         \begin{subfigure}[t]{0.4\textwidth}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest_fullcmp_5_indel_bars}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest_fullcmp_5_indel_heatmap}
-%                 \caption{InDel klasifikátor}
-%                 \label{fig:datatype3-i}
-%         \end{subfigure}
-%         \caption[Dôležitosť atribútov pre typ dát č. 3]{
-%         \textbf{Dôležitosť atribútov pre typ dát č. 3} - hodnoty sú normalizované aby súčet bol 1, modrý pásik označuje štandardnú odchýlku cez jednotlivé stromy v~Random foreste.
-%         Pod grafom je tepelná mapa pre lepšiu vizualizáciu. Bázy na ktoré sa pýtame sa spolu s~anotáciami nachádzajú na začiatku -- pozície 0-3 (resp. 0-1 v~Indel klasifikátore) a v~tepelnej mape sme ich pre prehľadnosť vynechali.
-%         V~Indel klasifikátore samozrejme chýba stredná pozícia v~$y$-ovej sekvencii.
-%         }
-%         \label{fig:datatype3}
-% \end{figure}
-
-% Keďže v~tomto prípade máme veľa atribútov na vyhodnotenie okrem obrázka \ref{fig:datatype3}, ktorý nie je dostatočne prehľadný, pomôžeme aj tabuľkou \ref{tab:datatype3}.
-% \begin{table}[htp]
-% \centering
-% \begin{subtable}{\textwidth}
-% \centering
-% \begin{tabular}{r|cccc}
-% Poradie & atribút & dôležitosť & pozície v~sekvencii (x, y) & báza/anotácia\\
-% \hline
-% 1. & 4 & 0.183560 & (0, 0) & báza\\
-% 2. & 52 & 0.140056 & (4, 4) & báza\\
-% 3. & 17 & 0.139246 & (1, 1) & anotácia\\
-% 5. & 41 & 0.128264 & (3, 3) & anotácia\\
-% 4. & 28 & 0.117699 & (2, 2) & báza\\
-% \end{tabular}
-% \caption{Match klasifikátor}
-% \end{subtable}
-
-% \begin{subtable}{\textwidth}
-% \centering
-% \begin{tabular}{r|cccc}
-% Poradie & atribút & dôležitosť & pozície v~sekvencii (x, y) & báza/anotácia\\
-% \hline
-% 1. & 33 & 0.255190 & (3, 3) & anotácia\\
-% 2. & 2 & 0.177749 & (0, 0) & báza\\
-% 4. & 22 & 0.123246 & (2, 2) & báza\\
-% 3. & 13 & 0.086060 & (1, 1) & anotácia\\
-% 5. & 0 & 0.081229 & x:3 & báza\\
-% \end{tabular}
-% \caption{Indel klasifikátor}
-% \end{subtable}
-% \caption[Najdôležitejšie atribúty pre typ dát č. 3]{Najdôležitejšie atribúty pre typ dát č. 3}
-% \label{tab:datatype3}
-% \end{table}
-
-% Všimnime si, že najdôležitejšie atribúty sú na uhlopriečke, čo zodpovedá typu dát č. 1 (sekcia \ref{subsec:datatype1}), ibaže v~tomto prípade sa nám vyskytli na niektorých pozíciách anotácie namiesto báz.
-% Avšak ak sa nám tam vyskytla anotácia, bázu už klasifikátor nepovažoval za dôležitú a aj naopak.
-% Indel klasifikátor navyše považoval za dôležitejšiu aj bázu na aktuálnej pozícii a jej anotáciu.
-% Pri tomto type dát narozdiel od ostatných klasifikátor viac berie do úvahy aj anotácie.
-
-% \begin{figure}[htp]
-%         \centering
-%         \begin{subfigure}[t]{0.4\textwidth}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest_fullcmp_5_test}
-%                 \caption{Match klasifikátor}
-%                 \label{fig:datatype3-out-m}
-%         \end{subfigure}%
-%         \qquad\qquad %add desired spacing between images, e. g. ~, \quad, \qquad etc.
-%           %(or a blank line to force the subfigure onto a new line)echo -n 0000:00:02.2 > unbind
-%         \begin{subfigure}[t]{0.4\textwidth}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest_fullcmp_5_indel_test}
-%                 \caption{InDel klasifikátor}
-%                 \label{fig:datatype3-out-i}
-%         \end{subfigure}
-%         \caption[Distribúcia výstupu z~klasifikátora pri type dát č. 3]{Distribúcia výstupu z~klasifikátora pri type dát č. 3 -- modré sú pozitívne príklady a zelené su negatívne. Na $x$-ovej osi je výstup klasifikátora a na $y$-je počet inštancií, pre ktoré výstup z~klasifikátora padol do daného chlievika}
-%         \label{fig:datatype3-out}
-% \end{figure}
-
-% Distribúcie výstupu klasifikátorov (obr. \ref{fig:datatype3-out}) majú očakávané vlastnosti, ale Match klasifikátor mal menej veľmi dobre klasifikovaných\footnote{pozitívnych, ktoré majú hodnotu blízku 1 alebo negatívnych s~hodnotou blízko 0} a viac zle klasifikovaných dát ako s~predchádzajúcimi typmi dát.
-% To sa odrazilo aj na úspešnosti, kde Match klasifikátor dosiahol 80,44\% na trénovacej množine a 79,79\% na testovacej a Indel klasifikátor dosiahol 78,03\% na trénovacej a 75,03\% na testovacej množine.
-
 \subsubsection{Typ dát D - kombinácia A a B}
 
 Posledný typ dát je kombináciou typov dát A a B. Dáta opäť obsahujú všetky bázy a anotácie tak ako v type A a navyše sme pridali pole zhôd z~dát typu B. Táto informácia je síce redundantná a klasifikátor by si ju mal vedieť odvodiť aj sám, no experimenty ukázali, že to pomôže.
-
-% \begin{figure}[htp]
-%         \centering
-%         \begin{subfigure}[t]{0.4\textwidth}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest_combined_5_bars}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest_combined_5_heatmap}
-%                 \caption{Match klasifikátor}
-%                 \label{fig:datatype4-m}
-%         \end{subfigure}%
-%         \qquad\qquad %add desired spacing between images, e. g. ~, \quad, \qquad etc.
-%           %(or a blank line to force the subfigure onto a new line)
-%         \begin{subfigure}[t]{0.4\textwidth}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest_combined_5_indel_bars}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest_combined_5_indel_heatmap}
-%                 \caption{InDel klasifikátor}
-%                 \label{fig:datatype4-i}
-%         \end{subfigure}
-%         \caption[Dôležitosť atribútov pre typ dát č. 4]{
-%         \textbf{Dôležitosť atribútov pre typ dát č. 4} - hodnoty sú normalizované aby súčet bol 1, modrý pásik označuje štandardnú odchýlku cez jednotlivé stromy v~Random foreste.
-%         Pod grafom je tepelná mapa pre lepšiu vizualizáciu. Okno je veľkosti 5, takže aktuálne sa pýtame na 3tie pozície v~okne t.j. bázy $x_3$, $y_3$ a ich anotácie $ax_3$ $ay_3$ (resp. v~InDel klasifikátore len bázu $x_3$ a anotáciu $ax_3$)
-%         }
-%         \label{fig:datatype4}
-% \end{figure}
-
-
-% Na obrázku \ref{fig:datatype4} si môžme všimnúť, že klasifikátory uprednostnili dáta typu 2 oproti dátam typu 1.
-% Avšak aj bázy z~dát typu 1 sa klasifikátoru zdajú dôležité.
-% Pri InDel klasifikátore si môžme všimnúť, tento graf je vlastne zložením grafov z~dát typu 1 (obr. \ref{fig:datatype1-i}) a 2 (obr. \ref{fig:datatype2-i}).
-
-% \begin{figure}[htp]
-%         \centering
-%         \begin{subfigure}[t]{0.4\textwidth}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest_combined_5_test}
-%                 \caption{Match klasifikátor}
-%                 \label{fig:datatype4-out-m}
-%         \end{subfigure}%
-%         \qquad\qquad %add desired spacing between images, e. g. ~, \quad, \qquad etc.
-%           %(or a blank line to force the subfigure onto a new line)
-%         \begin{subfigure}[t]{0.4\textwidth}
-%                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest_combined_5_indel_test}
-%                 \caption{InDel klasifikátor}
-%                 \label{fig:datatype4-out-i}
-%         \end{subfigure}
-%         \caption[Distribúcia výstupu z~klasifikátora pri type dát č. 4]{Distribúcia výstupu z~klasifikátora pri type dát č. 4 -- modré sú pozitívne príklady a zelené su negatívne. Na $x$-ovej osi je výstup klasifikátora a na $y$-je počet inštancií, pre ktoré výstup z~klasifikátora padol do daného chlievika}
-%         \label{fig:datatype4-out}
-% \end{figure}
-
-% Podľa obrázku \ref{fig:datatype4-out} je vidno, že spojenie 2 typov dát klasifikátoru pomohlo a dostali sme najlepšiu distribúciu spomedzi všetkých typov aj v~Match aj v~Indel klasifikátore.
-% Aj úspešnosť je maximum z~prezentovaných typov dát -- match klasifikátor dosiahol 93,65\% na trénovacej množine a 84,32\% na testovacej.
-% Indel klasifikátor dosiahol 88,78\% na trénovacej a 46,46\% na testovacej množine.
 
 \subsection{Trénovanie a testovanie klasifikátorov}
 
@@ -392,6 +115,42 @@ Indel klasifikátor sme chceli natrénovať tak, aby pre miesta, ktoré majú by
 % - Potom uz len popisujes ZAUJIMAVE ukazy z tabulky, pricom grafy a pod. uvadzas len pre tie priklady, kde potrebujes dalsiu evidenciu navyse oproti udajom, ktore uz su uvedene vo velkej tabulke. NEZAUJIMAVE ukazy (t.j. ak je vsetko tak, ako by clovek priamo ocakaval) popisovat netreba.
 % - Asi sa chces venovat aj nejakym sposobom distribuciam skore, ale tam chces zasa len ukazat porovnanie najlepsieho a najhorsieho grafu. (Kedze toto je asi dolezite pre vyber "finalneho" klasifikatora, ktory pojde do HMM...)
 
+Použili sme klasifikátory tak, ako sme popísali v sekcii \ref{sec:use-rf-alignment} a výsledky sa nachádzajú v tabuľke \ref{tab:clf-results}.
+
+Atribúty sme označili takto: stredná pozícia je 0, pozície naľavo sú -1, -2 a pozície napravo 1 a 2, pričom v Indel klasifikátore v sekvencii s medzerou pozícia 0 chýba. Bázy v sekvencii $X$ označujeme $x_i$ a v $Y$ $y_i$. Anotácie v sekvencii $X$ označujeme $a_i$ a v $Y$ $b_i$. Zhody medzi bázami $i,\, j$ budeme označovať $m_{i, j}$, pričom označenie zhôd v type dát B a D zjednodušíme na $m_i$. Podobne zhody menzi anotáciami označíme $l_{i, j}$ (resp. $l_i$).
+
+\begin{table}[htp]
+\centering
+\begin{subtable}{\textwidth}
+\centering
+\begin{tabular}{c|cccc}
+& \multicolumn{2}{c}{chyba} & \multicolumn{2}{c}{atribúty}\\
+Typ dát & trénovacia & testovacia & najvýznamnejšie & najnevýznamnejšie\\
+\hline
+A & 93,07\% & 83,57\% & $x_0,\, y_{-1},\, y_{1},\, x_*,\, y_*$ & $\{a,b\}_*$\\
+B & 84,05\% & 84.31\% & $m_{-1},\, m_0,\, m_*$ & $l_*$ \\
+C & 80,44\% & 79,79\% & $m_{-2,-2},\, m_{2,2}, l_{-1,-1}, l_{1,1}, m_{0,0}$ & ostatné\\
+D & 93,65\% & 84,32\% & $m_0, m_{-1}, m_1, m_2, m{-2}$ & $l_*,\, \{a,b\}_*$
+\end{tabular}
+\caption{Match klasifikátor}
+\end{subtable}
+
+\begin{subtable}{\textwidth}
+\centering
+\begin{tabular}{c|cccc}
+& \multicolumn{2}{c}{chyba} & \multicolumn{2}{c}{atribúty}\\
+Typ dát & trénovacia & testovacia & najvýznamnejšie & najnevýznamnejšie\\
+\hline
+A & 88,51\% & 74,13\% & $x_0,\, x_{1},\, x_{-1},\, x_*, y_*$ & $\{a,b\}_*$\\
+B & 77,17\% & 75,75\% & $m_0,\, m_{-1},\, m_{-2}$ & $l_*,\, m_1,\, m_2$ \\
+C & 78,03\% & 75,03\% & $l_{2,2},\,m_{-2,-2},\,m_{0,1},\,l_{-1,-1},\, x_0,\,a_0$ & ostatné\\
+D & 88,78\% & 76,46\% & $m_0, m_{-1}, m_{-2}, x_1, \{x, y\}_*$ & $\{l,a,b\}_*$\\
+\end{tabular}
+\caption{Indel klasifikátor}
+\end{subtable}
+\caption[Porovnanie vlastností klasifikátorov]{Porovnanie vlastností klasifikátorov pri rôznych typoch dát.}
+\label{tab:clf-results}
+\end{table}
 \todo
 
 
