@@ -12,11 +12,13 @@ Cieľom našej práce bolo zahrnúť dodatočnú informáciu do zarovnávania se
 % - V strucnosti popisat, ako funguje klasifikator (algoritmus trenovania a klasifikacie), ake su jeho vystupy (cislo na intervale [0,1] a co take cislo znamena)
 % - Popisat metody vyhodnocovania uspesnosti a akym sposobom sa meria "dolezitost atributov"
 
-Ako klasifikátor sme si vybrali \textit{náhodný les (Random forest)}, pretože patria v súčasnosti medzi najlepšie klasifikátory. V tejto sekcii si popíšeme základný algoritmus a najdôležitejšie vlastnosti.
+% Ako klasifikátor sme si vybrali \textit{náhodný les (Random forest)}, pretože patria v súčasnosti medzi najlepšie klasifikátory. V tejto sekcii si popíšeme základný algoritmus a najdôležitejšie vlastnosti.
 
-\todo
+% \todo
 
-\section{Použitie náhodných lesov na klasifikáciu zarovnaní}
+\input random_forest.tex
+
+\section[Použitie náh. lesov v zarovnaní]{Použitie náhodných lesov na klasifikáciu zarovnaní}
 
 % - Popisat dva typy klasifikatov (Match, Indel) a zdovodnit, preco budujeme dva klasifikatory a nie jeden alebo tri.
 % - Vyber atributov: Popisat potrebu vytiahnut z dat nejake atributy, ktore mozno klasifikatoru podhodit. Popisat styri typy extrakcie atributov a oznacit ich (ja by som ich oznacil A,B,C,D, nie 1-4, aby sa to potom neplietlo s inymi cislovanymi vecami); je vhodne si jednotlive atributy kompaktne oznacit, aby sa potom dalo jednoduchsie o nich diskutovat (napr. stredova pozicia moze byt 0, pozicie nalavo mozu byt -1,-2 a napravo 1,2; takze potom mozes mat atributy typu x_0,x_{-1} a pod.; pri inserte jednoducho v y nemas 0; anotaciu v x mozes mat napr. a_0, a_{-1} a pod.; anotaciu v y mozes mat b_0, b_1 a pod.; no a rovnost mozes oznacovat napr. m_{0,0} alebo nieco podobne)
@@ -392,11 +394,6 @@ Indel klasifikátor sme chceli natrénovať tak, aby pre miesta, ktoré majú by
 
 \todo
 
-\section{Zhrnutie}
-% - Chces v prvom rade zhrnut, co sme v tejto kapitole urobili
-% - Ktory klasifikator je najlepsi pre nase dalsie ucely? Preco?
-
-\todo
 
 % \section{Vstupné dáta}
 
@@ -722,35 +719,37 @@ Indel klasifikátor sme chceli natrénovať tak, aby pre miesta, ktoré majú by
 % Aj úspešnosť je maximum z~prezentovaných typov dát -- match klasifikátor dosiahol 93,65\% na trénovacej množine a 84,32\% na testovacej.
 % Indel klasifikátor dosiahol 88,78\% na trénovacej a 46,46\% na testovacej množine.
 
-% \subsection{Zhrnutie}
+\section{Zhrnutie}
 
 % Ako sme už načrtli v~predošlej sekcii (\ref{subsec:datatype4}), najlepšie dáta pre klasifikátor vyšli dáta typu 4.
 % V~tabuľke \ref{tab:datatype-all} je prehľad úspešností na testovacej množine pre Match aj Indel klasifikátory.
 
-% \begin{table}[htp]
-% \centering
-% \begin{tabular}{r|cc}
-% Typ dát & Match & Indel\\
-% \hline
-% 1 & 83,57\% & 74,13\%\\
-% 2 & 84,31\% & 75,75\%\\
-% 3 & 79,79\% & 75,03\%\\
-% 4 & 84,32\% & 76,46\%\\
-% \end{tabular}
-% \caption[Úspešnosť klasifikátorov pri rôznych typoch dát]{Úspešnosť Match a Indel klasifikátorov pri rôznych spôsoboch predspracovania dát}
-% \label{tab:datatype-all}
-% \end{table}
+\todo
 
-% Úspešnosť Match aj InDel klasifikátora je najlepšia a aj distribúcia má požadované vlastnosti. Preto sme sa rozhodli použiť tento typ dát pre naše experimenty.
-% % priemerna chyba:
-% % 0.2403726344
-% % 0.346871684933
-% % 0.222888392854
-% % 0.294330744256
-% % 0.272360239051
-% % 0.307907204941
-% % 0.200376387084
-% % 0.297418688142
+\begin{table}[htp]
+\centering
+\begin{tabular}{c|cc}
+Typ dát & Match & Indel\\
+\hline
+A & 83,57\% & 74,13\%\\
+B & 84,31\% & 75,75\%\\
+C & 79,79\% & 75,03\%\\
+D & 84,32\% & 76,46\%\\
+\end{tabular}
+\caption[Úspešnosť klasifikátorov pri rôznych typoch dát]{Úspešnosť Match a Indel klasifikátorov pri rôznych spôsoboch predspracovania dát}
+\label{tab:datatype-all}
+\end{table}
+
+% Úspešnosť Match aj Indel klasifikátora je najlepšia a aj distribúcia má požadované vlastnosti. Preto sme sa rozhodli použiť tento typ dát pre naše experimenty.
+% priemerna chyba:
+% 0.2403726344
+% 0.346871684933
+% 0.222888392854
+% 0.294330744256
+% 0.272360239051
+% 0.307907204941
+% 0.200376387084
+% 0.297418688142
 
 % \section{Trénovanie}
 
