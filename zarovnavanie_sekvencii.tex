@@ -5,7 +5,7 @@ V~tejto kapitole si stručne popíšeme čo je to globálne a lokálne zarovnani
 \section{Podobnosť sekvencií, sekvenčná homológia a zarovnanie}
 V~prírode vznikajú evolúciou nové sekvencie modifikáciou už existujúcich. Preto môžme často spozorovať podobnosť medzi neznámou sekvenciou a sekvenciou o~ktorej už niečo vieme. Ak zistíme podobnosti medzi sekvenciami, môžeme preniesť informácie o~štruktúre a/alebo funkcii na novú sekvenciu.
 
-Podobné sekvencie, ktoré sa vyvinuli mutáciami so sekvencie v~spoločnom predkovi sa nazývajú \textit{homologické} a pod pojmom \textit{hľadanie homológov} rozumieme hľadanie takých podobností, ktoré s~veľkou pravdepodobnosťou vznikli práve zdieľanou evolučnou históriou.
+Podobné sekvencie, ktoré sa vyvinuli mutáciami zo sekvencie v~spoločnom predkovi sa nazývajú \textit{homologické} a pod pojmom \textit{hľadanie homológov} rozumieme hľadanie takých podobností, ktoré s~veľkou pravdepodobnosťou vznikli práve spoločnou evolučnou históriou.
 
 %Na prvý pohľad rozhodnutie podobnosti dvoch biologických sekvencií nie je nič iné, ako rozhodnutie podobnosti dvoch textových reťazcov.
 %--Tuto vetu tam nechceme--Mnoho metód analýzy biologických sekvencií je preto zakorenená v informatike, kde je už mnoho literatúry týkajúcej sa tejto problematiky.
@@ -121,7 +121,7 @@ Iným typom skórovacej schémy je napríklad \textit{párový skrytý markvovsk
 
 \section[Algoritmy]{Algoritmy na hľadanie zarovnaní}
 Pre danú skórovaciu schému potrebujeme algoritmus, ktorý nájde optimálne zarovnanie dvoch sekvencií.
-Budeme uvažovať zarovnávanie s~medzerami. Medzery používame na znázornenie delécie v~danej sekvencii, alebo inzercie v~druhej sekvencii. Na označenie medzier používame pomlčku {\tt'-'} a medzeru do sekvencie medzi 2 bázy pridáme tak, že medzi 2 bázy napíšeme jednu alebo viac pomlčiek - počet pomlčiek zodpovedá poctu medzier a teda aj počtu báz, ktoré má na danom mieste jedna sekvencia navyše oproti druhej. Do sekvencie môžeme pridať ľubovoľne veľa medzier, aby sme dosiahli lepšie skóre. Pre 2 sekvencie dĺžky $n$ existuje
+Budeme uvažovať zarovnávanie s~medzerami. Medzery používame na znázornenie delécie v~danej sekvencii, alebo inzercie v~druhej sekvencii. Na označenie medzier používame pomlčku {\tt'-'} a medzeru do sekvencie medzi 2 bázy pridáme tak, že medzi 2 bázy napíšeme jednu alebo viac pomlčiek - počet pomlčiek zodpovedá počtu medzier a teda aj počtu báz, ktoré má na danom mieste jedna sekvencia navyše oproti druhej. Do sekvencie môžeme pridať ľubovoľne veľa medzier, aby sme dosiahli lepšie skóre. Pre 2 sekvencie dĺžky $n$ existuje
 $$ {2n \choose n}  = \frac{(2n)!}{(n!)^2} \simeq \frac{2^{2n}}{\sqrt{\pi n}} $$
 možných globálnych zarovnaní. \cite{durbin} Čiže nie je možné v~rozumnom čase nimi prejsť.
 
@@ -175,7 +175,7 @@ A[i,j-1]-d
 \end{array} \right.$$
 Maticu vieme vypĺňať po riadkoch, pričom každé políčok vieme vypočítať z~troch políčok, ktoré už sú vypočítané. Políčko $A[0, 0] = 0$ a krajné políčka potom vieme vypočítať ako $A[i,0] = A[i-1,j]-d$ a $A[0, j] = A[i,j-1]-d$
 
-Ak nás zaujíma aj zarovnanie -- nie len jeho skóre -- vieme si pre každé políčko zapamätať ktorá z~3 možností dosiahla maximálnu hodnotu
+Ak nás zaujíma aj zarovnanie -- nie len jeho skóre -- vieme si pre každé políčko zapamätať ktorá z~troch možností dosiahla maximálnu hodnotu
 (červené šípky na Obr. \ref{fig:global-align}). Na základe tejto informácie potom vieme zrekonštruovať zarovnanie tak, že postupne z~posledného políčka ($A[n,m]$) budeme prechádzať na políčko, z~ktorého sme vypočítali aktuálnu hodnotu.
 
 Časová zložitosť je $O(nm)$, pretože vypĺňame $nm$ políčok, každé v~konštantnom čase. Zjavne aj pamäťová zložitosť je $O(nm)$.
@@ -294,8 +294,8 @@ Tieto vzťahy vieme popísať stavovým diagramom na obrázku \ref{fig:alignment
 \section[Zarovnávanie s~pHMM]{Zarovnávanie pomocou skrytých Markovovských modelov}
 \label{sec:hmm-alignment}
 
-\subsection{Skryté Markovovské modely (HMM)}
-\textit{Skrytý Markovovský model (hidden Markov model, HMM)} je pravdepodobnostný model, ktorý generuje náhodnú sekvenciu spolu s~jej anotáciou (stavmi). HMM si môžme predstaviť ako konečný automat. Skladá sa z~niekoľkých stavov, prechodov medzi nimi a emisií. Narozdiel od bežných konečných automatov, HMM emitujú symboly v~stave, nie počas prechodu.
+\subsection{Skryté markovovské modely (HMM)}
+\textit{Skrytý markovovský model (Hidden Markov Model, HMM)} je pravdepodobnostný model, ktorý generuje náhodnú sekvenciu spolu s~jej anotáciou (stavmi). HMM si môžme predstaviť ako konečný automat. Skladá sa z~niekoľkých stavov, prechodov medzi nimi a emisií. Na rozdiel od bežných konečných automatov, HMM emitujú symboly v~stave, nie počas prechodu.
 HMM sa skladá z~3 distribúcií
 \begin{itemize}
 \item distribúcia začiatočných stavov (HMM začne v~stave $i$)
@@ -345,7 +345,7 @@ Výpočet vyzerá nasledovne: $$P[X=x | S=s] = \pi_{s_1} e_{s_1,x1} a_{s_1,s_2} 
 % \label{subsec:hmmtraining}
 % Ak máme oanotované trénovacie sekvencie, môžme z~nich parametre odvodiť frekvenčnou analýzou. Emisie získame tak, že vyfiltrujeme symboly s~príslušným stavom a spočítame frekvencie pre každý stav zvlášť a tranzície získame tak, že pre každý stav spočítame frekvencie nasledujúcich stavov. Tento postup sa volá \textit{metóda maximálnej vierohodnosti (v~angličtine maximum likelihood estimation)}. \cite{ durbin, wiki:mle}
 
-\subsection{Zarovnávanie pomocou párových skrytých Markovovských modelov (pHMM)}
+\subsection{Zarovnávanie pomocou párových skrytých markovovských modelov (pHMM)}
 \label{subsec:hmm-alignment}
 % \todo mic odporúča rovno popísať párové hmm a aj viterbiho rovno naňom, takže to asi prepíšem
 
@@ -353,7 +353,7 @@ Výpočet vyzerá nasledovne: $$P[X=x | S=s] = \pi_{s_1} e_{s_1,x1} a_{s_1,s_2} 
 
 V~časti \ref{subsec:affine-gap-scoring} sme si ukázali jednoduchý algoritmus na globálne zarovnávanie s~afínnym skórovaním medzier. K~tomuto algoritmu sme si uviedli aj jednoduchý stavový automat (Obr. \ref{fig:alignment-fsa}). Tento automat vieme previesť na pHMM.
 
-Na to aby sme automat previedli na HMM, musíme urobiť niekoľko zmien - musíme nastaviť emisné a prechodové pravdepodobnosti, tak aby sčítavali do jedna. Pre jednoduchosť pridáme aj prechody medzi stavmi $X a Y$. Ak ich pravdepodobnosti nastavíme na 0, máme model ekvivalentný predchádzajúcemu. \cite{durbin}
+Na to aby sme automat previedli na pHMM, musíme urobiť niekoľko zmien -- musíme nastaviť emisné a prechodové pravdepodobnosti, tak aby sčítavali do jedna. Pre jednoduchosť pridáme aj prechody medzi stavmi $X$ a $Y$. Ak ich pravdepodobnosti nastavíme na nula, máme model ekvivalentný predchádzajúcemu. \cite{durbin}
 
 \begin{figure}[htp]
     \centering
@@ -363,7 +363,7 @@ Na to aby sme automat previedli na HMM, musíme urobiť niekoľko zmien - musím
 \end{figure}
 
 \subsection{Viterbiho algoritmus na pHMM}
-Hľadáme najpravdepodobnejšiu postupnosť stavov A~ak máme dané sekvecnie $X$ a $Y$, teda $\arg\max_A \Pr(A, X, Y)$. Úlohu budeme riešiť dynamickým programovaním.
+Hľadáme najpravdepodobnejšiu postupnosť stavov A~ak máme dané sekvencie $X$ a $Y$, teda $\arg\max_A \Pr(A, X, Y)$. Úlohu budeme riešiť dynamickým programovaním.
 
 Podproblém $V[i, j, u]$ je pravdepodobnosť najpravdepodobnejšej postupnosti stavov končiacej v~$X[i]$ a $Y[j]$ v~stave $u$.
 
@@ -404,11 +404,11 @@ Na začiatku nainicializuje hodnoty pre $V[0,*,*]$ a $V[*,0,*]$ podľa \ref{eq:v
 Potom postupne pre všetky $i = 1\dots n$, $j = 1\dots m$ a $u \in \{M, I_x, I_y\}$ dynamicky vypočíta $V[i, j, u]$ podľa \ref{eq:viterbi-recM}, \ref{eq:viterbi-recX} a \ref{eq:viterbi-recY}.
 
 Maximálne $V[n, m, u]\, \forall u \in \{M, I_x, I_y\}$ je pravdepodobnosť najpravdepodobnejšej postupnosti stavov.
-Aby sme stavy vedeli zrekonstruovať, pamätáme si pre každé $V[i, j, u]$ stav $w$, ktorý viedol k~maximálnej hodnote. Táto postupnosť stavov nám udáva najpravdepodobnejšie zarovnanie.
+Aby sme stavy vedeli zrekonštruovať, pamätáme si pre každé $V[i, j, u]$ stav $w$, ktorý viedol k~maximálnej hodnote. Táto postupnosť stavov nám udáva najpravdepodobnejšie zarovnanie.
 
 Časová zložitosť tohto algoritmu je $O(nm)$.
 
-Poznámka: pre dlhé sekvencie budú čísla $V[i, j, u]$ veľmi malé a môže dôjsť k~podtečeniu. V~praxi teda používame zlogarimované hodnoty a namiesto násobenia súčet.
+Poznámka: pre dlhé sekvencie budú čísla $V[i, j, u]$ veľmi malé a môže dôjsť k~podtečeniu. V~praxi teda používame zlogaritmované hodnoty a namiesto násobenia súčet.
 \cite{durbin}
 
 \subsection{Nastavenie parametrov pHMM}
@@ -418,7 +418,7 @@ Ak máme oanotované trénovacie sekvencie, môžme z~nich parametre odvodiť fr
 Parametre modelu môžme teda ľahko natrénovať z~existujúcich párových zarovnaní.
 
 \section[Štat. významnosť ]{Štatistická významnosť zarovnania}
-Smith-Watermanov algoritmus nájde najlepšie lokálne zarovnanie, pre ľubovoľné dve sekvencie. Treba však rozhodnúť, či je zarovnanie dostatočne vierohodné na to, aby predstavovalo skutočnú podobnosť sekvencií a nie len najlepšie zarovnanie dvoch nesúvisiacich sekvencií.
+Smith-Watermanov algoritmus nájde najlepšie lokálne zarovnanie pre ľubovoľné dve sekvencie. Treba však rozhodnúť, či je zarovnanie dostatočne vierohodné nato, aby predstavovalo skutočnú podobnosť sekvencií a nie len najlepšie zarovnanie dvoch nesúvisiacich sekvencií.
 Ako vodítko pri rozhodnutí sa používajú identifikátory \textit{štatistickej významnosti} zarovnania: \textit{P-hodnota (P-value)} alebo \textit{E-hodnota (E-value)}.
 
 \begin{figure}[htp]
@@ -430,7 +430,7 @@ Ako vodítko pri rozhodnutí sa používajú identifikátory \textit{štatistick
 
 P-hodnota zarovnania je pravdepodobnosť, že medzi náhodne generovanými sekvenciami tej istej dĺžky by sme našli zarovnanie s~rovnakým skóre alebo vyšším. Keďže P-hodnota závisí od dĺžok sekvencií a skóre, musíme ju počítať pri každom zarovnaní. Je však časovo náročné robiť to generovaním veľkého množstva zarovnaní, preto sa používajú matematicky odvodené vzorce na odhad tejto hodnoty. (\cite{Karlin}, \cite{Mitrophanov}).
 
-E-hodnota vyjadruje strednú hodnotu počtu zarovnaní so skóre aspoň takým ako má naše zarovnanie medzi náhodne generovanými sekvenciami. E-hodnota teda môže byť aj väčšia ako jedna. Ak je E-hodnota väčšia ako jedna, tak čisto náhodou by sme očakávali aspoň 1 také silné zarovnanie a teda zarovnania s~takouto (a nižšou) E-hodnotou nebudeme považovať za štatisticky významné.
+E-hodnota vyjadruje strednú hodnotu počtu zarovnaní so skóre aspoň takým ako má naše zarovnanie medzi náhodne generovanými sekvenciami. E-hodnota teda môže byť aj väčšia ako jedna. Ak je E-hodnota väčšia ako jedna, tak čisto náhodou by sme očakávali aspoň jedno také silné zarovnanie, a teda zarovnania s~takouto (a nižšou) E-hodnotou nebudeme považovať za štatisticky významné.
 
 V~štatistike sa v~rôznych testoch štandardne používajú prahy na P-hodnotu $0.05$ alebo $0.01$.
 Pri zarovnávaní sekvencií však často používame ešte nižší prah, teda uvažujeme len zarovnania s~P-hodnotou menšou ako napr. $10^{-5}$. Pri malých hodnotách sú P-hodnota a E-hodnota približne rovnaké, teda taký istý prah môžme použiť aj na E-hodnotu.

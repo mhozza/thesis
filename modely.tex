@@ -69,19 +69,25 @@ Diskretizovať hodnoty môžme 2 spôsobmi, buď priamo -- spočítať histogram
 
 Alternatíva k~predošlej metóde je použiť spojitý HMM. Hlavný rozdiel medzi spojitými a diskrétnymi HMM je, že spojité HMM nepočítajú s~pravdepodobnosťou, ale s~hustotou. Hodnota hustoty v~danom bode narozdiel od pravdepodobnosti môže byť aj väčšia ako jedna. Jedným zo štandardných spôsobov reprezentácie hustoty v~spojitých HMM je zmes gausiánov. \cite{huang1989multiple}, takže využijeme interpoláciu takouto distribúciou a to budeme brať ako hustotu výstupu klasifikátora (obr. \ref{fig:clf-discretisation-2}).
 
-\begin{table}[htp]
+Ako vidíme z~tabuľky \ref{tab:success-b-tape}, spojitá verzia modelu sa nám neosvedčila. Má totiž nedostatok, že distribučná funkcia nedosahuje maximum pri výstupe klasifikátora rovnom jedna, ale kúsok predtým, čo znamená istú penalizáciu v~prípade, že si je klasifikátor príliš istý. To, či použijeme vyhladenie pomocou gausiánu až tak nezaváži, ale rozhodli sme sa ho predsa len využiť, pretože úspešnosť bola trochu vyššia takmer na všetkých testovaných sekvenciách.
+
+
+\begin{table}[h]
+\catcode`\-=12
 \centering
-\begin{tabular}{c|r@{,}lr@{,}lr@{,}l}
-& \multicolumn{2}{c}{Histogram}  & \multicolumn{2}{c}{Nasekaný gausián} & \multicolumn{2}{c}{Zmes gausiánov}\\
-\hline
-Úspešnosť & 82 & 25\% & 82 & 98\% & 65 & 59\%\\
+\begin{tabular}{cc}
+\toprule
+& Úspešnosť\\
+\midrule
+Histogram & 82,25\%\\
+Nasekaný gausián & 82,98\%\\
+Zmes gausiánov & 65,59\%\\
+\bottomrule
 \end{tabular}
 \vspace{0.5cm}
 \caption[Porovnanie úspešností pri rôznom spracovaní pásky]{Porovnanie úspešností modelu B pri rôznom spracovaní pásky.}
 \label{tab:success-b-tape}
 \end{table}
-
-Ako vidíme z~tabuľky \ref{tab:success-b-tape}, spojitá verzia modelu sa nám neosvedčila. Má totiž nedostatok, že distribučná funkcia nedosahuje maximum pri výstupe klasifikátora rovnom jedna, ale kúsok predtým, čo znamená istú penalizáciu v~prípade, že si je klasifikátor príliš istý. To, či použijeme vyhladenie pomocou gausiánu až tak nezaváži, ale rozhodli sme sa ho predsa len využiť, pretože úspešnosť bola trochu vyššia takmer na všetkých testovaných sekvenciách.
 
 \section{Trénovanie modelov}
 
@@ -117,7 +123,23 @@ Emisie môžme teda natrénovať zvlášť pre každú dvojicu báz (resp. pre k
 
 V~tejto sekcii sa budeme zaoberať len množinami pre trénovanie parametrov modelu. Množiny pre trénovanie klasifikátora sme si popísali v~kapitole \ref{subsec:clf-training-sets}.
 
+V~prípade simulovaných dát 1 a 2 boli trénovacie množiny pre naše modely jedno zarovnanie dĺžky 10000. Testovacie množiny boli 6 zarovnaní dĺžky 1000. Zarovnania boli vygenerované našim simulátorom. V~tabuľke \ref{tab:sim-params} uvádzame pravdepodobnosť mutácie pre jednotlivé dáta.
 
+\begin{table}
+\centering
+\begin{tabular}{cccc}
+\toprule
+anotácia $X$ & anotácia $Y$ & sim1 & sim2\\
+\midrule
+1 & 1 & 0,20 & 0,01\\
+1 & 0 & \multirow{2}{*}{0,35} & \multirow{2}{*}{0,30}\\
+0 & 1\\
+0 & 0 & 0,40 & 0,99\\
+\bottomrule
+\end{tabular}
+\caption[Pravdepodobnosť mutácie v~našich datasetoch]{Pravdepodobnosť mutácie v~simulovaných dátach 1 a 2}
+\label{tab:sim-params}
+\end{table}
 
 \section{Výsledky experimentov}
 
@@ -129,14 +151,16 @@ Model A~emituje len na základe natrénovaného klasifikátora, takže čokoľve
 
 \begin{table}
 \centering
-\begin{tabular}{cc|r@{,}l}
-bázy & výstup klasifikátora & \multicolumn{2}{c}{emis. pravd.}\\
-\hline
-AA & 0.96 & 0 & 09398720286410\\
-AG & 0.96 & 0 & 00512870137097\\
-AA & 0.42 & 0 & 00729190980568\\
-AA & 0.26 & 0 & 00410698647573\\
-AG & 0.02 & 0 & 00167788321643\\
+\begin{tabular}{ccc}
+\toprule
+bázy & výstup klasifikátora & emis. pravd.\\
+\midrule
+AA & 0.96 & 0,09399\\
+AG & 0.96 & 0,00513\\
+AA & 0.42 & 0,00729\\
+AA & 0.26 & 0,00411\\
+AG & 0.02 & 0,00168\\
+\bottomrule
 \end{tabular}
 \caption[Porovnanie emisných pravdepodobností]{Porovnanie emisných pravdepodobností pre rôzne bázy a výstup natrénovaného klasifikátora}
 \label{tab:emission-prob}
@@ -144,15 +168,20 @@ AG & 0.02 & 0 & 00167788321643\\
 
 Ako môžme v~tabuľke \ref{tab:emission-prob} vidieť, pre rovnaký výstup klasifikátora, ale rôzne bázy sa emisná pravdepodobnosť môže líšiť. Dokonca aj pre značne nižší výstup klasifikátora pri rovnakých bázach môže byť pravdepodobnosť emisie stále vyššia ako pri rôznych bázach s~vysokým výstupom z~klasifikátora. Na druhej strane si môžme tiež všimnúť, že pri nižšom výstupe klasifikátora emisná pravdepodobnosť rapídne klesá a pri dostatočne nízkom výstupe klasifikátora pri rovnakých bázach už je emisná pravdepodobnosť nižšia, ako pri rôznych bázach s~vysokým výstupom klasifikátora.
 
+
+
 \begin{table}[htp]
+\todo pregenerovať s~oknom 9\\
 \centering
-\begin{tabular}{c|r@{,}lr@{,}lr@{,}l}
-& \multicolumn{2}{c}{Model A}  & \multicolumn{2}{c}{Model B} & \multicolumn{2}{c}{Ref. model}\\
-\hline
-Simulované 1 & 73 & 95\% & 82 & 98\% & 85 & 78\%\\
-Simulované 2 & 72 & 62\% & 18 & 57\% & 6 & 78\% \\
+\begin{tabular}{crrr}
+\toprule
+& Model A~& Model B & Ref. model\\
+\midrule
+Simulované 1 & 79,75\% & 84,35\% & 85,78\%\\
+Simulované 2 & 72,62\% & 18,57\% & 6,78\% \\
+\bottomrule
 \end{tabular}
-% \vspace{0.5cm}
+
 \caption[Porovnanie úspešností modelov]{Porovnanie úspešností modelov. Referenčný model je obyčajný pHMM na zarovnávanie DNA sekvencií. Úspešnosť je počítaná ako percentuálna zhoda originálneho a nového zarovnania. Simulované dáta 1 sa snažia napodobňovať biologické procesy, Simulované dáta 2 nezodpovedajú biologickým dátam a sú zložitejšie na natrénovanie pre referenčný model.}
 \label{tab:success-compare}
 \end{table}
@@ -161,11 +190,14 @@ V~tabuľke \ref{tab:success-compare} sme porovnávali, ako sa modely dokážu pr
 
 \subsection{Rôzne veľkosti okna}
 
+V~tejto sekcii sme sa venovali hľadaniu optimálnej veľkosti okna. Vyskúšali sme viacero možností a výsledky sme zapísali do tabuľke \ref{tab:window-compare}.
+
 \begin{table}[htp]
 \centering
-\begin{tabular}{c|cc}
+\begin{tabular}{ccc}
+\toprule
 Veľkosť okna & Model A~& Model B\\
-\hline
+\midrule
 1 & 76,95\% & 57,86\%\\
 3 & 70,62\% & 81,42\%\\
 5 & 73,95\% & 82,98\%\\
@@ -174,17 +206,80 @@ Veľkosť okna & Model A~& Model B\\
 11 & 79,28\% & 83,57\%\\
 13 & 80,58\% & 83,98\%\\
 15 & 81,62\% & 83,98\%\\
-19 & \% & ----\\
+\bottomrule
 \end{tabular}
-\caption[Porovnanie úspešností pri rôznej veľkosti okna]{Porovnanie úspešností pri rôznej veľkosti okna. }
-\label{tab:success-compare}
+\caption[Porovnanie úspešností pri rôznej veľkosti okna]{Porovnanie úspešností modelov pri rôznej veľkosti okna.}
+\label{tab:window-compare}
 \end{table}
 
-\subsection{Vplyv anotácie}
+Z~tabuľky vidíme, že pre model B je optimálna veľkosť okna 7-9, pri väčších oknách už úspešnosť nerastie. Pri modeli A~rástla úspešnosť až po veľkosť okna 15. Optimálnu hodnotu pre model A~sme na základe tabuľky určili na 9-15.
+
+\subsection{Vplyv dodatočnej informácie na zarovnanie}
+
+V~tejto sekcii sme zisťovali, aký vplyv má dodatočná informácia na zarovnanie. Vyskúšali sme zakázať anotácie pri veľkosti okna jedna a 9. Pri veľkosti okna rovnej jedna nemáme okrem anotácie žiadnu ďalšiu informáciu. Pri veľkosti okna 9 máme aj okolie sekvencie.
+
+\begin{table}[htp]
+\centering
+\begin{tabular}{cccc}
+\toprule
+Veľkosť okna & Anotácia & Model A~& Model B\\
+\midrule
+1 & nie & 74,42\% & 18,35\%\\
+1 & áno & 76,95\% & 57,86\%\\
+9 & nie & 78,43\% & 82,67\%\\
+9 & áno & 79,75\% & 84,35\%\\
+\bottomrule
+\end{tabular}
+\caption[Vplyv dodatočnej informácie na zarovnanie]{Vplyv dodatočnej informácie na zarovnanie.}
+\label{tab:annotation-compare}
+\end{table}
+
+V~tabuľke \ref{tab:annotation-compare} si môžme všimnúť, že zatiaľ čo pri modeli A~je úspešnosť veľmi podobná, hoci aj anotácie aj väčšie okno mierne pomohli. Naopak pri modeli B sú rozdiely výrazne väčšie, vidíme, že aj samotná anotácia výrazne pomohla a väčšie okno je pre tento model nutnosťou.
 
 \subsection{Použitie jedného klasifikátora pre Match aj Inzert stav}
 
+V~tejto sekcii sme vyskúšali nahradenie Indel klasifikátora Match klasifikátorom, ktorý vracia opačné hodnoty. Teda trénujeme len jeden klasifikátor.
+
+\begin{table}[htp]
+\centering
+\begin{tabular}{ccc}
+\toprule
+ & Model A~& Model B\\
+\midrule
+1 klasifikátor & 74,53\% & 82,72\%\\
+2 klasifikátory & 79,75\% & 84,35\%\\
+\bottomrule
+\end{tabular}
+\caption[Porovnanie použitia jedného alebo dvoch typov klasifikátorov]{Porovnanie použitia jedného alebo dvoch typov klasifikátorov.}
+\label{tab:1clf-compare}
+\end{table}
+
+Z~tabuľky \ref{tab:1clf-compare} vidno, že použitie dvoch typov klasifikátorov má svoje opodstatnenie, hoci naše modeli dokášu fungovať aj z~jedným.
+
 \subsection{Porovnanie modelov s~existujúcimi zarovnávačmi}
 
-\section{Záver}
+V~tejto sekcii sme porovnali naše výsledky s~výsledkami referenčného modelu a zarovnávača \textit{muscle} \cite{edgar2004muscle}.
 
+\begin{table}[htp]
+\catcode`\-=12
+\centering
+\begin{tabular}{lcccccccc}
+\toprule
+\multirow{2}{*}{Dáta} &
+\multicolumn{2}{c}{Model A} &
+\multicolumn{2}{c}{Model B } &
+\multicolumn{2}{c}{Ref. Model } &
+\multicolumn{2}{c}{Muscle} \\
+\cmidrule(r){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(l){8-9}
+& Zhoda & Tranz. & Zhoda & Tranz. & Zhoda & Tranz. & Zhoda & Tranz.\\
+\midrule
+Simulované 1 & 79,75\% & 44,97\% & 84,35\% & 56,5\% & 85,78\% & 61,03\%\\
+Simulované 2 &  & & \\
+Biologické &  & & \\
+\bottomrule
+\end{tabular}
+\caption[Porovnanie s~existujúcimi zarovnávačmi]{Porovnanie našich modelov s~referenčným modelom a zarovnávačom muscle.}
+\label{tab:window-compare}
+\end{table}
+
+\section{Zhrnutie}

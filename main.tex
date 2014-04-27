@@ -24,6 +24,8 @@
 \usepackage{fancyvrb}
 \usepackage{wasysym}
 \usepackage{placeins}
+\usepackage{multirow}
+\usepackage{booktabs}
 
 \ifpdf
   \usepackage{pdfpages}
@@ -106,9 +108,6 @@
 \thispagestyle{empty}
 
 \noindent
-%\begin{minipage}{0.20\textwidth}
-%\includegraphics[width=0.9\textwidth]{komlogo-new}
-%\end{minipage}
 \begin{center}
 \begin{minipage}{0.8\textwidth}
 \centerline{\renewcommand\baselinestretch{1.3} \LARGE\sc\mfuniversity}
@@ -119,34 +118,31 @@
 \vfill
 \begin{center}
 \begin{minipage}{1\textwidth}
-%\hrule
-\bigskip\bigskip
 \begin{center}
 \linespread{1}\LARGE\sc\mftitle
 \end{center}
 \smallskip
 \centerline{\mfthesistype}
-\bigskip
-\bigskip
-%\centerline{\large\sc\mfauthor}
-\bigskip\bigskip
-%\hrule
 \end{minipage}
 \end{center}
 \vfill
-{\bf\mfdate\\
-\indent\mfauthor}
-%{\bf Vedúci:} \mfadvisor
+{\bf
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+~\mfdate
+\end{flushleft}
+\end{minipage}
+\begin{minipage}{0.59\textwidth}
+\begin{flushright} \large
+\mfauthor
+\end{flushright}
+\end{minipage}
+}
 \eject % EOP i
-
-% \thispagestyle{empty}~\vfill\eject % EOP ii % zadna strana obalu je prazdna
 
 \thispagestyle{empty}
 
 \noindent
-%\begin{minipage}{0.20\textwidth}
-%\includegraphics[width=0.9\textwidth]{komlogo-new}
-%\end{minipage}
 \begin{center}
 \begin{minipage}{0.8\textwidth}
 \centerline{\LARGE\sc\mfuniversity}
@@ -157,7 +153,6 @@
 \vfill
 \begin{center}
 \begin{minipage}{1\textwidth}
-%\hrule
 \bigskip\bigskip
 \begin{center}
 \linespread{1}\LARGE\sc\mftitle
@@ -166,9 +161,7 @@
 \centerline{\mfthesistype}
 \bigskip
 \bigskip
-%\centerline{\large\sc\mfauthor}
 \bigskip\bigskip
-%\hrule
 \end{minipage}
 \end{center}
 \vfill
@@ -181,29 +174,20 @@
 Konzultant:&   \mfconsultant \\
 \end{tabular}
 \end{minipage}
-\begin{center}
-\end{center}
 \vfill
-{\bf\mfplacedate\\
-\indent\mfauthor}
-%{\bf Vedúci:} \mfadvisor
+{\bf
+\begin{minipage}{0.4\textwidth}
+\begin{flushleft} \large
+~\mfplacedate
+\end{flushleft}
+\end{minipage}
+\begin{minipage}{0.59\textwidth}
+\begin{flushright} \large
+\mfauthor
+\end{flushright}
+\end{minipage}
+}
 \eject % EOP iii
-
-% \thispagestyle{empty}~\vfill\eject % EOP iv % zadna strana titulky je prazdna
-
-% {~}\vspace{12cm}
-%
-% \noindent
-% \begin{minipage}{0.25\textwidth}~\end{minipage}
-% \begin{minipage}{0.68\textwidth}
-% Čestne prehlasujem, že som túto diplomovú prácu vypracoval(a) samostatne s použitím citovaných zdrojov.
-%
-% \bigskip\bigskip
-%
-% \hfill\hbox to 6cm{\dotfill}
-% \end{minipage}
-% \vfill\eject % EOP v
-% ~\vfill\eject % EOP vi % zadna strana prehlasenia je prazdna
 
 %\includepdf{zadanie.pdf}
 

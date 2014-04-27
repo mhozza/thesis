@@ -60,19 +60,7 @@ Máme vygenerovanú master postupnosť a z~nej teraz vyrobíme dve postupnosti p
 
 \subsubsection{Simulácia mutácie}
 
-Máme vygenerovanú sekvenciu a ideme vyrobiť zmutovanú sekvenciu. Spravíme to tak, že s~určitou pravdepodobnosťou sa nahradí báza z~pôvodnej sekvencie inou bázou. Pravdepodobnosť závisí aj od toho, či je na danej pozícii gén v~oboch sekvenciách, v~jednej, alebo v~žiadnej. Na rozhodnutie používame jednu z~troch falošných mincí podľa toho, ktorá z~možností nastala (tabuľka \ref{tab:mutation-prob}).
-
-\begin{table}[h]
-\catcode`\-=12 %kvoli babelu a pomlcke
-\centering
-\begin{tabular}{lcccc}
-Gén A~& 0 & 0 & 1 & 1\\
-Gén B & 0 & 1 & 0 & 1\\
-Pravdepodobnosť & $0,35$ & $0,3$ & $0,3$ & $0,2$\\
-\end{tabular}
-\caption{Pravdepodobnosti mutácie}
-\label{tab:mutation-prob}
-\end{table}
+Máme vygenerovanú sekvenciu a ideme vyrobiť zmutovanú sekvenciu. Spravíme to tak, že s~určitou pravdepodobnosťou sa nahradí báza z~pôvodnej sekvencie inou bázou. Pravdepodobnosť závisí aj od toho, či je na danej pozícii gén v~oboch sekvenciách, v~jednej, alebo v~žiadnej. Na rozhodnutie používame jednu z~troch falošných mincí podľa toho, ktorá z~možností nastala (gén v~oboch sekvenciách, v~jednej, alebo žiadnej).
 
 \subsubsection{Simulácia delécie}
 Deléciu simulujeme opäť pomocou Markovovskej reťaze, pretože pri evolúcii majú tendenciu vypadávať súvislé úseky. Pravdepodobnosť, že začneme mazať je $0,01$ a že prestaneme $0,1$.
