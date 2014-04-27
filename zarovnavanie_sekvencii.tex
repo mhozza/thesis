@@ -349,7 +349,7 @@ Výpočet vyzerá nasledovne: $$P[X=x | S=s] = \pi_{s_1} e_{s_1,x1} a_{s_1,s_2} 
 \label{subsec:hmm-alignment}
 % \todo mic odporúča rovno popísať párové hmm a aj viterbiho rovno naňom, takže to asi prepíšem
 
-\textit{Párové skryté Markovovské modely (pHMM)} sa od tých obyčajných líšia v tom, že namiesto jednej sekvencie generujú dvojicu sekvencií. Na pHMM sa dajú použiť podobné algoritmy ako na HMM, ale treba ich upraviť tak, aby pracovali v dvoch rozmeroch.
+\textit{Párové skryté Markovovské modely (pHMM)} sa od tých obyčajných líšia v~tom, že namiesto jednej sekvencie generujú dvojicu sekvencií. Na pHMM sa dajú použiť podobné algoritmy ako na HMM, ale treba ich upraviť tak, aby pracovali v~dvoch rozmeroch.
 
 V~časti \ref{subsec:affine-gap-scoring} sme si ukázali jednoduchý algoritmus na globálne zarovnávanie s~afínnym skórovaním medzier. K~tomuto algoritmu sme si uviedli aj jednoduchý stavový automat (Obr. \ref{fig:alignment-fsa}). Tento automat vieme previesť na pHMM.
 
@@ -363,9 +363,9 @@ Na to aby sme automat previedli na HMM, musíme urobiť niekoľko zmien - musím
 \end{figure}
 
 \subsection{Viterbiho algoritmus na pHMM}
-Hľadáme najpravdepodobnejšiu postupnosť stavov A ak máme dané sekvecnie $X$ a $Y$, teda $\arg\max_A \Pr(A, X, Y)$. Úlohu budeme riešiť dynamickým programovaním.
+Hľadáme najpravdepodobnejšiu postupnosť stavov A~ak máme dané sekvecnie $X$ a $Y$, teda $\arg\max_A \Pr(A, X, Y)$. Úlohu budeme riešiť dynamickým programovaním.
 
-Podproblém $V[i, j, u]$ je pravdepodobnosť najpravdepodobnejšej postupnosti stavov končiacej v $X[i]$ a $Y[j]$ v~stave $u$.
+Podproblém $V[i, j, u]$ je pravdepodobnosť najpravdepodobnejšej postupnosti stavov končiacej v~$X[i]$ a $Y[j]$ v~stave $u$.
 
 Inicializácia:
 \begin{equation}
@@ -413,7 +413,7 @@ Poznámka: pre dlhé sekvencie budú čísla $V[i, j, u]$ veľmi malé a môže 
 
 \subsection{Nastavenie parametrov pHMM}
 \label{subsec:hmmtraining}
-Ak máme oanotované trénovacie sekvencie, môžme z~nich parametre odvodiť frekvenčnou analýzou. Emisie získame tak, že vyfiltrujeme symboly s~príslušným stavom a spočítame frekvencie pre každý stav zvlášť, pričom v Match stave počítame frekvencie dvojíc symbolov. Tranzície získame tak, že pre každý stav spočítame frekvencie nasledujúcich stavov. Tento postup sa volá \textit{metóda maximálnej vierohodnosti (v~angličtine maximum likelihood estimation)}. \cite{ durbin, wiki:mle}
+Ak máme oanotované trénovacie sekvencie, môžme z~nich parametre odvodiť frekvenčnou analýzou. Emisie získame tak, že vyfiltrujeme symboly s~príslušným stavom a spočítame frekvencie pre každý stav zvlášť, pričom v~Match stave počítame frekvencie dvojíc symbolov. Tranzície získame tak, že pre každý stav spočítame frekvencie nasledujúcich stavov. Tento postup sa volá \textit{metóda maximálnej vierohodnosti (v~angličtine maximum likelihood estimation)}. \cite{ durbin, wiki:mle}
 
 Parametre modelu môžme teda ľahko natrénovať z~existujúcich párových zarovnaní.
 
