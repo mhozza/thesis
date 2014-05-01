@@ -1,6 +1,6 @@
 \chapter{Implementácia}
 
-V tejto kapitole si popíšeme dôvody pre výber jazyka a knižníc a niektoré časti nášho zarovnávača.
+V tejto kapitole sa budeme zaoberať implementáciou nášho riešenia. Popíšeme si dôvody pre výber jazyka a knižníc a niektoré časti nášho zarovnávača slúžiace na predspracovanie dát, klasifikáciu a zarovnávanie. Potom si popíšeme dôležité pomocné programy -- simulátor a program na trénovanie modelov -- a nakoniec si popíšeme použitie, konfiguráciu a možnosti rozšírenia programu.
 
 \section{Výber jazyka a použité knižnice}
 %daky pokec o~tom ze som to pisal v~pythone a preco je python super
@@ -9,13 +9,13 @@ Ako jazyk pre písanie nášho zarovnávača sme si vybrali Python (vo verzii 2.
 \subsection{Realigner}
 \label{subsec:realigner}
 
-\textit{Realigner} je zarovnávač, ktorý napísal Michal Nánási pre potreby \cite{nanasi2013probabilistic}. Umožňuje prezarovnanie\footnote{modifikáciu existujúceho zarovnania} sekvencií pomocou párových HMM a Viterbiho algoritmu. Prezarovnanie dokáže robiť aj vrámci lokálneho okolia okolo pôvodného zarovnania. Program je rozšíriteľný o nové modely, čo sme využili pre naše potreby.
+\textit{Realigner} je program na zarovnávanie a prezarovnávanie\footnote{modifikáciu existujúceho zarovnania}, ktorý napísal Michal Nánási pre potreby \cite{nanasi2013probabilistic}. Umožňuje prezarovnanie sekvencií pomocou párových HMM a Viterbiho algoritmu. Prezarovnanie dokáže robiť aj v rámci lokálneho okolia okolo pôvodného zarovnania. Program je rozšíriteľný o nové modely, čo sme využili pre naše potreby.
 
 \subsection{Pythonové knižnice}
 %  python kniznice - najma scikit-learn, numpy, track
-V našom programe sme sa rozhodli využiť niekoľko knižníc. Najdôležitejšími boli knižnice \textit{numpy}, \textit{scipy}, \textit{scikit-learn}, \textit{pyplot}, \textit{track} a \textit{pandas}.
+V našom programe sme sa okrem štandardnej knižnice jazyka Python rozhodli využiť niekoľko knižníc. Najdôležitejšími boli knižnice \textit{numpy}, \textit{scipy}, \textit{scikit-learn}, \textit{pyplot}, \textit{track} a \textit{pandas}.
 
-Numpy je matematická knižnica, ktorá obsahuje množstvo užitočných matematických funkcií. Pre nás z nej boli dôležité hlavne štatistické funkcie, napr. generovanie náhodných čísel z rôznych rozdelení a počítanie štandardnej odchýlky. Okrem toho je táto knižnica základom aj pre väčšinu ostatných knižníc.
+Numpy je matematická knižnica, ktorá obsahuje množstvo užitočných matematických funkcií. Pre nás z nej boli dôležité hlavne štatistické funkcie, napr. generovanie náhodných čísel z rôznych rozdelení a počítanie štandardnej odchýlky. Okrem toho je táto knižnica základom aj pre väčšinu ostatných použitých knižníc.
 
 Scipy obsahuje funkcie pre pokročilejšie vedecké výpočty. My sme z nej využili hlavne funkciu na odhad rozdelenia pomocou gausiánov.
 
@@ -38,16 +38,15 @@ V tejto sekcii si popíšeme najdôležitejšie triedy, ktoré sme doplnili do p
 Na predspracovanie dát nám slúžili triedy \textit{DataPreparer}, \textit{ComparingDataPreparer}, \textit{FullComparingDataPreparer}, \textit{CombinedDataPreparer},
 \textit{IndelDataPreparer}, \textit{ComparingIndelDataPreparer}, \textit{FullComparingIndelDataPreparer} a \textit{CombinedIndelDataPreparer} (obr \ref{fig:classdiagram-preparers}).
 
-Trieda DataPreparer je rodičovskou triedou pre ostatné triedy, takže si popíšeme najmä ju. Trieda IndelDataPreparer je rodičom Indel verzií tried. Triedy majú dve hlavné úlohy: Prvá je predpríprava dát na klasifikáciu a druhá je predspracovanie trénovacej množiny.
+Trieda DataPreparer je rodičovskou triedou pre ostatné triedy, takže si popíšeme najmä ju. Trieda IndelDataPreparer je rodičom Indel verzií tried. Tieto triedy majú dve hlavné úlohy: Prvá je predpríprava dát na klasifikáciu a druhá je výroba trénovacej množiny zo sekvencií.
 
-Pri predpríprave dát je úlohou dať dáta do formy vhodnej pre klasifikátor. To znamená získať okno a anotácie a ďalšie atribúty tak ako sme ich popísali v kapitole \ref{subsec:attribute-selection}. Naše štyri typy tried sa líšia iba v tejto úlohe a zodpovedajú štyrom typom dát. Najdôležitejšia práca sa vykoná v metóde \method{\_prepare\_sequence}, ktorá pripraví dáta pre jednu sekvenciu, a potom zlepia dáta z volania tejto funkcie pre obe sekvencie. Indel verzie tried obsahujú príslušné úpravy aby v sekvencii s medzerou použili kratšie okno.
+Pri predpríprave dát je úlohou dať dáta do formy vhodnej pre klasifikátor. To znamená získať okno a anotácie a ďalšie atribúty tak ako sme ich popísali v kapitole \ref{subsec:attribute-selection} a previesť ich do číselnej podoby. Naše štyri typy tried, ktoré zodpovedajú štyrom typom dát, sa líšia iba v tejto úlohe. Najdôležitejšia práca sa vykoná v metóde \method{\_prepare\_sequence}, ktorá pripraví dáta pre jednu sekvenciu, a potom zlepia dáta z volania tejto funkcie pre obe sekvencie. Indel verzie tried obsahujú príslušné úpravy aby v sekvencii s medzerou použili kratšie okno.
 
-Pri predspracovaní trénovacej množiny treba zo zarovnaní vytvoriť pozitívne a negatívne príklady. Táto metóda je implementovaná len v DataPreparer a IndelDataPreparer triede, ostatné ju zdedia. Pri výbere pozitívnych príkladov v triede DataPreparer označujeme pozície v sekvencii, ktoré sú zarovnané. To má na starosti metóda \method{prepare\_positive\_data}. Metóda \method{prepare\_negative\_data} vyberá negatívne príklady použitím zarovnaných pozícií z pozitívnych príkladov a náhodne ich poposúva podľa vzorca spomenutého v sekcii \ref{subsec:clf-training}. Okrem toho sme implementovali aj alternatívny výber negatívnych dát v metóde \method{prepare\_negative\_data\_random}, kde negatívne príklady vyberáme náhodne z nezarovnaných pozícií s tým, že vyberieme rovnako veľa negatívnych ako pozitívnych príkladov. V Indel klasifikátore sa oba typy príkladov vyberajú v metóde \method{prepare\_training\_data}, pričom jedna sekvencia sa zvolí za medzerovú a za pozitívne príklady sa vezme všetko čo je zarovnané k medzere v medzerovej sekvencii. Za negatívne sa vezme rovnako veľa náhodných zarovnaných pozícií.
+Pri predspracovaní trénovacej množiny treba zo zarovnaní vytvoriť pozitívne a negatívne príklady. Táto metóda je implementovaná len v DataPreparer a IndelDataPreparer triede, ostatné ju zdedia. Pri výbere pozitívnych príkladov v triede DataPreparer označujeme pozície v sekvencii, ktoré sú zarovnané. To má na starosti metóda \method{prepare\_positive\_data}. Metóda \method{prepare\_negative\_data} vyberá negatívne príklady použitím zarovnaných pozícií z pozitívnych príkladov a náhodne ich poposúva podľa vzorca spomenutého v sekcii \ref{subsec:clf-training}. Okrem toho sme implementovali aj nahodný výber negatívnych dát v metóde \method{prepare\_negative\_data\_random}, kde negatívne príklady vyberáme náhodne z nezarovnaných pozícií s tým, že vyberieme rovnako veľa negatívnych ako pozitívnych príkladov. V Indel klasifikátore sa oba typy príkladov vyberajú v metóde \method{prepare\_training\_data}, pričom jedna sekvencia sa zvolí za medzerovú a za pozitívne príklady sa vezme všetko čo je zarovnané k medzere v medzerovej sekvencii. Za negatívne sa vezme rovnako veľa náhodných zarovnaných pozícií.
 
 \subsection{Abstrakcia klasifikátora}
 \label{subsec:pairclassifier}
-V pre väčšiu modularitu sme sa rozhodli naprogamovať vrstvu medzi klasifikátorom a zvyškom programu. Trieda sprostredkúvajúca túto vrstvu sa volá \textit{PairClassifier}. Poskytuje metódy také ako klasifikátor a niekoľko navyše.
-
+V pre väčšiu modularitu sme sa rozhodli naprogamovať vrstvu medzi klasifikátorom a zvyškom programu. Trieda sprostredkúvajúca túto vrstvu sa volá \textit{PairClassifier}. PairClassifier poskytuje niekoľko metód navyše oproti tým, ktoré poskytuje klasifikátor.
 Jej hlavnými výhodami sú:
 
 \begin{itemize}
@@ -61,70 +60,65 @@ Jej hlavnými výhodami sú:
 \subsection{HMM stavy s~klasifikátorom}
 \label{subsec:hmm-states}
 
-V zarovnávači bol implementovaný Viterbiho algoritmus, ktorý pracoval s párovými HMM. Tento algoritmus pracoval s triedou \textit{GeneralizedPairState}, ktorá poskytovala metódu \method{emission} vracajúcu emisiu báz na daných pozíciách. Od tejto triedy dedia naše triedy \textit{ClassifierState}, \textit{ClassifierIndelState} a preťažili sme metódu \method{emission} tak, aby vracala hodnoty z klasifikátora. Museli sme však urobiť niekoľko zmien. Viterbiho algoritmus si pýta emisie po jednej. Avšak volanie C-čkovej funkcie z knižnice scikit-learn z Pythonu je pomalé, takže pre dlhé sekvencie by zarovnanie trvalo veľmi dlho. Preto sme si najskôr naraz počas jedného volania funkcie predpočítali emisie pre všetky pozície a tie sme potom vracali v momente, keď si ich Viterbiho algoritmus vypýtal. Na to sme využili možnosť hromadnej klasifikácie v našej triede PairClassifier (sekcie \ref{subsec:pairclassifier}). Tieto dve triedy sa líšia iba v použitej triede na predspracovanie dát.
+V zarovnávači bol implementovaný Viterbiho algoritmus, ktorý pracoval s párovými HMM. Tento algoritmus pracoval s triedou \textit{GeneralizedPairState}, ktorá poskytovala metódu \method{emission} vracajúcu emisiu báz na daných pozíciách. Od tejto triedy dedia naše triedy \textit{ClassifierState}, \textit{ClassifierIndelState}, ktoré tvoria náš model~A a preťažili sme metódu \method{emission} tak, aby vracala hodnoty z klasifikátora. Museli sme však urobiť niekoľko zmien. Viterbiho algoritmus si pýta emisie po jednej. Avšak volanie C-čkovej funkcie z knižnice scikit-learn z Pythonu je pomalé, takže pre dlhé sekvencie by zarovnanie trvalo veľmi dlho. Preto sme si najskôr naraz, počas jedného volania funkcie predpočítali emisie pre všetky pozície a tie sme potom zapamätali a vracali v momente, keď si ich Viterbiho algoritmus vypýtal. Na to sme využili možnosť hromadnej klasifikácie v našej triede PairClassifier (sekcie \ref{subsec:pairclassifier}). Tieto dve triedy sa líšia iba v použitej triede na predspracovanie dát.
 
-Od tried ClassifierState a ClassiFierIndelState potom dedia triedy \textit{ClassifierAnnotationState} a \textit{ClassifierAnnotationIndelState}, ktoré tvoria diskrétnu verziu nášho modelu B. Triedy mali v súbore uložené tabuľky emisií a podľa aktuálnych pozícií si zistili bázy a aktuálny výstup klasifikátora, ktoré slúžili ako indexy do tabuľky. Tieto triedy navyše obsahujú metódy trénovanie emisií.
+Od tried ClassifierState a ClassiFierIndelState potom dedia triedy \textit{ClassifierAnnotationState} a \textit{ClassifierAnnotationIndelState}, ktoré tvoria diskrétnu verziu nášho modelu~B. Triedy mali v súbore uložené tabuľky emisií a podľa aktuálnych pozícií si zistili bázy a aktuálny výstup klasifikátora, ktoré slúžili ako indexy do tabuľky. Tieto triedy navyše obsahujú metódy na trénovanie emisií.
 
-Od tried ClassifierAnnotationState a ClassifierAnnotationIndelState dedia triedy \textit{ContignuousClassifierAnnotationState} a \textit{ContignuousClassifierAnnotationIndelState}, ktoré stvárňujú spojitú verziu modelu B. Tieto triedy majú v tabuľke emisií pre každú dvojicu báz uloženú serializovanú verziu objektu \textit{gaussian\_kde}, ktorý tvorí distribúciu výstupu klasifikátora. Konkrétnu hodnotu potom získa volaním príslušného objektu k danej dvojici báz (resp. báze pri IndelState) s hodnotou klasifikátora. Tieto triedy takisto obsahujú aj metôdy na trénovanie emisií.
+Od tried ClassifierAnnotationState a ClassifierAnnotationIndelState dedia triedy \textit{ContignuousClassifierAnnotationState} a \textit{ContignuousClassifierAnnotationIndelState}, ktoré stvárňujú spojitú verziu modelu~B. Tieto triedy majú v tabuľke emisií pre každú dvojicu báz uloženú serializovanú verziu objektu \textit{gaussian\_kde} (viac detailov je v sekcii \ref{subsec:impl-model-traioning}), ktorý obsahuje distribúciu výstupu klasifikátora. Konkrétnu hodnotu potom získa volaním príslušného objektu k danej dvojici báz (resp. báze pri IndelState) s hodnotou klasifikátora. Tieto triedy takisto obsahujú aj metódy na trénovanie emisií.
 
-Od triedy \textit{GeneralizedPairState} navyše dedia aj naše triedy pre referenčný model -- \textit{SimpleMatchState} a \textit{SimpleIndelState}, triedu GeneralizedPairState rozširujú o metódy na trénovanie emisných pravdepodobností.
+Od triedy \textit{GeneralizedPairState} navyše dedia aj naše triedy pre referenčný model -- \textit{SimpleMatchState} a \textit{SimpleIndelState}, ktoré triedu GeneralizedPairState rozširujú o metódy na trénovanie emisných pravdepodobností.
 
 \todo obrazok classdiagramu
 
 \section{Pomocné programy}
+V tejto sekcii sa budeme venovať dvom hlavným pomocným programom. Prvým z nich je náš simulátor, ktorý nám umožňuje generovať zarovnania a druhým je program na trénovanie zarovnaní. Okrem toho sme implementovali množstvo programov na tvorbu vizualizácií pre túto prácu, alebo konverziu dát z rôznych zdrojov do formátov podporovaných našim zarovnávačom, o ktorých si však hovoriť nebudeme.
 \subsection{Simulátor}
 
-Simulátor slúži na overenie funkčnosti zarovnávača. Náhodne vygeneruje 2 sekvencie, ktoré vznikli zo spoločného predka a vyrobí korektné zarovnanie. Okrem toho vyrobí aj nejaké dodatočné informácie ktoré majú pomôcť pri zarovnávaní.
+Simulátor slúži na generovanie zarovnaní pre naše experimenty. Náhodne vygeneruje tri\footnote{aby sme vedeli počítať tranzitivitu} sekvencie, ktoré vznikli zo spoločného predka a vyrobí korektné spoločné zarovnanie všetkých troch sekvencií. Okrem toho vyrobí aj dodatočné informácie, ktoré majú pomôcť pri zarovnávaní.
 
 \subsubsection{Algoritmus}
-Simulátor vygeneruje informáciu o~tom, ktoré časti sekvencie prislúchajú génom a ktoré nie. Informácia má podobu boolovského vektora.
-Simulátor najskôr vygeneruje \textit{základnú (master) postupnosť} a z~nej odvodí dve ďalšie postupnosti, ktoré zodpovedajú sekvenciám.
+Ako prvé simulátor vygeneruje informáciu o~tom, ktoré časti sekvencie prislúchajú génom a ktoré nie. Informácia má podobu boolovského vektora.
+Najskôr sa informácia vygeneruje pre \textit{základnú (master) sekvenciu} a z nej sa potom skopíruje do troch dcérskych sekvencií, pričom s určitou pravdepodobnosťou niektoré sa niektoré gény zmažú (jednotky sa prepíšu na nulu). Táto informácia bude tvoriť pásku s anotáciou o géne.
 
-Okrem toho simulátor vygeneruje dve sekvencie, pričom prvú vyrobí náhodne a druhú odvodí z~nej pomocou mutácie a inzercie/delécie.
-V~našom prípade sme inzerciu vynechali a simulujeme ju ako deléciu v~druhej sekvencii.
-Pri odvodzovaní bude používať aj informáciu o~tom, ktorá časť je gén a ktorá nie.
+Potom simulátor vygeneruje základnú sekvenciu a z~nej následne pomocou mutácie a delécie (inzercia = delécia v zvyšných sekvenciách) odvodí tri ďalšie sekvencie. Mutácia má rôzne pravdepodobnosti v prípade, že ide o gén v jednej, či druhej sekvencii alebo oboch.
+Simulátor rovno generuje zarovnanie tým, že keď robí deléciu, nahradzuje bázy pomlčkami.
 
-Keďže simulátor vie spôsob akým generoval druhú sekvenciu z~prvej, vie aj korektné zarovnanie.
-
-Simulátor má vopred daných niekoľko konštánt -- pravdepodobnosti udalostí, ktoré môžu nastať.
+% Simulátor má vopred daných niekoľko konštánt -- pravdepodobnosti udalostí, ktoré môžu nastať.
 
 \subsubsection{Generovanie informácie o~génoch}
-Ak sa na danom mieste nachádza gén, označíme to $1$ inak $0$.
+% Ak sa na danom mieste nachádza gén, označíme to $1$ inak $0$.
 Gény bývajú súvislé úseky, takže ich treba generovať tak, že niekedy začneme gén, potom generujeme 1, potom skončíme gén a generujeme 0. Potom môžme opäť začať gén atď.
 
 \begin{figure}[htp]
     \centering
-    \includegraphics[width=.3\textwidth]{images/markov_chain}
-    \caption{Markovova reťaz použitá na generovanie informácie o~génoch}
+    \includegraphics[width=.7\textwidth]{images/markov_chain}
+    \caption{Markovova reťaz použitá na generovanie informácie o~génoch. $p$ je pravdepodobnosť, že začneme generovať gén, $q$ je pravdepodobnosť, že prestaneme generovať gén.}
     \label{fig:markov-chain}
 \end{figure}
 
-Generovanie robíme pomocou \textit{Markovovskej reťaze (Markov Chain)} obr. \ref{fig:markov-chain}. Generujeme podľa aktuálneho stavu a v~každom kroku sa podľa pravdepodobnosti rozhodneme či sa prepneme do iného stavu alebo ostaneme v~tom istom. Rozhodnutie robíme pomocou \textit{falošnej mince (biased coin)}, kde hlava padne s~určitou pravdepodobnosťou, ktorú vopred nastavíme.
+Generovanie robíme pomocou \textit{Markovovskej reťaze (Markov Chain)} obr. \ref{fig:markov-chain}. Generujeme podľa aktuálneho stavu a v~každom kroku sa náhodne rozhodneme, či sa prepneme do iného stavu, alebo ostaneme v~tom istom. Rozhodnutie robíme pomocou \textit{falošnej mince (biased coin)}, kde hlava padne s danou pravdepodobnosťou, ktorú nastavíme ako parameter. V našom prípade je to $p$ pre stav 0 a $q$ pre stav 1.
 
 %TODO ak bude treba zabrat miesto, tak sem drbnut nejake zdrojaky
 
-Máme vygenerovanú master postupnosť a z~nej teraz vyrobíme dve postupnosti pre sekvencie tak, že skopírujeme master sekvenciu, pričom každú 1 s~určitou pravdepodobnosťou (v~našom prípade $0,1$) zmeníme na 0.
+\subsubsection{Simulácia mutácie a delécie}
 
-\subsubsection{Simulácia mutácie}
+Ak už máme vygenerovanú základnú sekvenciu a vyrobíme zmutovanú sekvenciu tak, že s~určitou pravdepodobnosťou nahradíme bázu zo~základnej sekvencie inou bázou. Pravdepodobnosť závisí aj od toho, či je na danej pozícii gén v~oboch sekvenciách, v~jednej, alebo v~žiadnej. Na rozhodovanie máme pre každú možnosť jednu falošnú mincu a podľa toho, ktorá z~možností nastala, hodíme si príslušnou mincou.
 
-Máme vygenerovanú sekvenciu a ideme vyrobiť zmutovanú sekvenciu. Spravíme to tak, že s~určitou pravdepodobnosťou sa nahradí báza z~pôvodnej sekvencie inou bázou. Pravdepodobnosť závisí aj od toho, či je na danej pozícii gén v~oboch sekvenciách, v~jednej, alebo v~žiadnej. Na rozhodnutie používame jednu z~troch falošných mincí podľa toho, ktorá z~možností nastala (gén v~oboch sekvenciách, v~jednej, alebo žiadnej).
-
-\subsubsection{Simulácia delécie}
-Deléciu simulujeme opäť pomocou Markovovskej reťaze, pretože pri evolúcii majú tendenciu vypadávať súvislé úseky. Pravdepodobnosť, že začneme mazať je $0,01$ a že prestaneme $0,1$.
-Ak mažeme, nahradzujeme danú bázu znakom {\verb+'-'+}.
+Deléciu simulujeme opäť pomocou podobnej Markovovskej reťaze, pretože počas evolúcie majú tendenciu vypadávať súvislé úseky. Stav nul bude, že nemažeme a stav jedna, že mažeme teda nahradzujeme danú bázu znakom {\verb+'-'+}.
 
 \subsubsection{Využitie}
 
 Simulátor je prvá vec, ktorú sme implementovali a slúžil na väčšinu našich experimentov. Simulované dáta majú totiž oproti biologickým niekoľko výhod. Prvou je, že poznáme správnu odpoveď a teda môžme objektívne zhodnotiť úspešnosť našich modelov. Druhou je možnosť zvoliť si parametre, ktoré menia závislosť mutácií na anotácii a testovať, správanie modelov ak zvýšime túto závislosť. Ďalšou výhodou je, že si môžme vygenerovať ľubovoľne veľa ľubovoľne dlhých sekvencií.
 
 \subsection{Trénovanie modelov}
+\label{subsec:impl-model-traioning}
 
 Trénovanie modelov má na starosti trieda \textit{ModelTraining} a je urobené pomocou metódy maximálnej vierohodnosti (kapitola \ref{subsec:hmmtraining}).
-Trénovanie prechodových pravdepodobností je pre všetky modely spoločné. Trénovanie emisných pravdepodobností má každý stav spravené zvlášť, pretože stavy emitujú rôzne symboly.
+Trénovanie prechodových pravdepodobností je pre všetky modely spoločné. Trénovanie emisných pravdepodobností je v každom stave spravené zvlášť, pretože stavy emitujú rôzne symboly a jdenotlivé stavy majú rôzne spôsoby trénovania.
 Trieda ModelTraining najskôr načíta model z ktorého zistí stavy.
 Potom načíta trénovacie sekvencie a oanotuje ich stavmi. Následne vypočíta prechodové pravdepodobnosti. Spočíta všetky výskyty nasledujúcich stavov vo všetkých sekvenciách pre každý stav zvlášť. To vydelí celkovým počtom výskytov daného stavu. Potom oanotované sekvencie predloží jednotlivým stavom, aby vypočítali emisné pravdepodobnosti.
 
-Máme štyri základné typy stavov, ktoré sme si popísali v časti \ref{subsec:hmm-states}:
+Máme štyri základné typy stavov, ktoré sme si popísali v časti \ref{subsec:hmm-states} a pre každý máme triedu pre Match a Inzert verziu:
 \begin{itemize}
     \item SimpleMatchState, SimpleIndelState
     \item ClassifierState, ClassifierIndelState
@@ -132,19 +126,180 @@ Máme štyri základné typy stavov, ktoré sme si popísali v časti \ref{subse
     \item ContignuousClassifierAnnotationState, ContignuousClassifierAnnotationIndelState
 \end{itemize}
 
-V SimpleMatchState, SimpleIndelState je algoritmus priamočiary spočíta výskyty príslušných dvojíc báz (resp. báz) a vydelí celkovým počtom výskytu stavu.
+V SimpleMatchState, SimpleIndelState je algoritmus priamo spočíta výskyty príslušných dvojíc báz (resp. báz) a vydelí celkovým počtom výskytu stavu.
 V ClassifierState, ClassifierIndelState sa emisie netrénujú, takže tabuľka bude prázdna.
-V ClassifierAnnotationState, ClassifierAnnotationIndelState sa pre každý stav a pre každú dvojicu báz (resp. bázu) spočítajú hodnoty z klasifikátora a tie sa následne aproximujú pomocou gausiánov. Na toto využijeme funkciu \method{gaussian\_kde} z modulu \method{scipy.stats}. Táto metóda robí odhad distribučnej funkcie a má parameter -- šírku pásma. Šírku pásma sme nechali na predvolenej hodnote -- "scott". Tá nastavuje šírku pásma podľa vzorca:
+V ClassifierAnnotationState, ClassifierAnnotationIndelState sa pre každý stav a pre každú dvojicu báz (resp. bázu) spočítajú hodnoty z klasifikátora a tie sa následne aproximujú pomocou gausiánov. Na toto využijeme funkciu \method{gaussian\_kde} z modulu \method{scipy.stats}. Táto metóda robí odhad distribučnej funkcie z množiny hodnôt. Šírku pásma (parameter, ktorý určuje hladkosť výslednej funkcie) sme nechali na predvolenej hodnote -- ,,scott''. Tá nastavuje šírku pásma podľa vzorca:
 $$n^{-1/(d+4)},$$
-kde $n$ je počet vstupov a $d$ je počet dimenzií (v našom prípade $d = 1$). Viac detailov je v \cite{scipydoc} alebo \cite{wiki:kde}. Následne túto funkciu diskretizujeme na $k$ hodnôt. To spravíme pomocou určitého integrálu, na čo nám slúži metóda \method{integrate\_box(a, b)}, ktorá spočíta určitý integrál od $a$ po $b$.
-Keďže gaussian\_kde je definovaný na intervale $\left<-\infty, \infty \right>$ a $$\int_{-\infty}^\infty \! gaussian\_kde(x) \mathrm{d}x = 1,$$ orezaním definičného oboru na $\left<0,1\right>$ sa môže stať, že $$\int_0^1 \! gaussian\_kde(x) \mathrm{d}x < 1.$$ V tom prípade výslednú hodnotu ešte musíme normalizovať vydelením hodnotou $$norm = \int_0^1 \! gaussian\_kde(x) \mathrm{d}x.$$ Ako sme si ukázali v \ref{sec:model-training} výslednú pravdepodobnosť dopočítame vynásobením diskretizovanej pravdepodobnosti daného výstupu klasifikátora v prípade daných báz a pravdepodobnosti daných báz.
-V ContignuousClassifierAnnotationState, ContignuousClassifierAnnotationIndelState postupujeme rovnako ako v predchádzajúcom prípade, ale distribúciu už nediskretizujeme. Namiesto toho si ju uložíme do súboru ako $g$ spolu s číslom $p/norm$, kde $p$ je pravdepodobnosť daných báz a $norm$ je normalizačná konštanta -- tá istá ako v predchádzajúcom prípade. Hustotu emisie potom v stave vypočítame tak, že zoberieme parametre pre danú dvojicu báz (resp. bázu) -- $g$ a $p/norm$ -- a pre výstup klasifikátora $c$ bude hustota $g(c)*p/norm.$
+kde $n$ je počet vstupov a $d$ je počet dimenzií (v našom prípade $d = 1$). Viac detailov je v \cite{scipydoc} alebo \cite{wiki:kde}. Následne túto funkciu diskretizujeme na $k$ hodnôt. To spravíme pomocou určitého integrálu, pomocou metódy \method{integrate\_box(a, b)}, ktorá spočíta určitý integrál od $a$ po $b$.
+Keďže gaussian\_kde je definovaný na intervale $\left<-\infty, \infty \right>$ a $$\int_{-\infty}^\infty \! gaussian\_kde(x) \mathrm{d}x = 1,$$ orezaním definičného oboru na $\left<0,1\right>$ sa môže stať, že $$\int_0^1 \! gaussian\_kde(x) \mathrm{d}x < 1.$$ V tom prípade výslednú hodnotu ešte musíme normalizovať vydelením hodnotou $$\mu = \int_0^1 \! gaussian\_kde(x) \mathrm{d}x.$$ Ako sme si ukázali v \ref{sec:model-training} výslednú pravdepodobnosť dopočítame vynásobením diskretizovanej pravdepodobnosti daného výstupu klasifikátora v prípade daných báz a pravdepodobnosti daných báz.
+V ContignuousClassifierAnnotationState, ContignuousClassifierAnnotationIndelState postupujeme rovnako, ako v predchádzajúcom prípade, ale distribúciu už nediskretizujeme. Namiesto toho si ju uložíme do súboru ako $g$ spolu s číslom $\lambda = p/\mu$, kde $p$ je pravdepodobnosť daných báz a $\mu$ je normalizačná konštanta -- tá istá ako v predchádzajúcom prípade. Hustotu emisie potom v stave vypočítame tak, že zoberieme parametre pre danú dvojicu báz (resp. bázu) -- $g$ a $\lambda$ -- a pre výstup klasifikátora $c$ bude hustota $f(c) = \lambda g(c).$
 % \subsection{Testovanie klasifikátora}
 % \todo random\_forest\_evaluation.py
 
 \section{Použitie}
-\todo v~kratkosti o~tom ako to vobec spustit so svojimi sekvenciami a modelmi...
 
-\todo mozno sem dat aj moznosti rozsirenia
+Hlavný program sa spúšťa príkazom
 
-\todo konfiguracia - constants.py a config.py
+\begin{verbatim}
+PYHONPATH=. python bin/Realigner.py\
+     --mathType LogNum --algorithm viterbi --beam_width 30\
+     --model data/models/ClassificationHMM.js\
+     --sequence_regexp ^sequence1$ ^sequence2$\
+     --annotation_model annotations.js
+     input_alignment.fa output_alignment.fa
+\end{verbatim}
+
+Význam parametrov
+\begin{itemize}
+    \item \method{mathtype}: float/LogNum -- označuje, či sa má počítať s logaritmovanými hodnotami alebo s reálnymi
+    \item \method{algorithm}: viterbi -- v našich modeloch je podporovaný len viterbi
+    \item \method{beam\_width}: číslo -- šírka okolo lúča vstupného zarovnania, ktorá sa má prehľadávať vo viterbiho algoritme
+    \item \method{model}: ClassificationHMM.js/OracleHMM.js/SimpleHMM2.js/vlastný -- model, ktorý sa má použiť (naše modely sa nachádzajú v data/models)
+    \item \method{sequence\_regexp}: sekvenciaX sekvenciaY regulárne výrazy na vyfiltrovanie dvoch sekvencií zo vstupného súboru zarovnania
+    \item \method{annotation\_model}: súbor.js -- súbor s konfiguráciou anotácií pre jednotlivé sekvencie
+    \item \method{1}: vstup -- súbor so vstupným zarovnaním
+    \item \method{2}: výstup -- súbor kam sa má uložiť výstupné zarovnanie
+\end{itemize}
+
+Predtým, ako prvý krát spustíme zarovnávač, je nutné model najskôr natrénovať. To spravíme spustením programu
+\begin{verbatim}
+python model\_training.py\
+    data/models/OracleHMM.js data/sequences/model\_training/bio,
+\end{verbatim}
+kde prvý parameter je model, ktorý chceme trénovať a druhý je adresár s trénovacími sekveniciami. Ak ešte nemáme natrénovaný klasifikátor, tak sa natrénuje automaticky z dát ktoré sa nachádzajú v priečinku {\tt data/sequences/train\_sequences}. Klasifikátor sa potom uloží do {\tt data/clf} odkiaľ sa bude automaticky načítavať aj pri trénovaní modelov aj pri zarovnávaní. Pokiaľ treba klasifikátor natrénovať odznovu, je nutné ho z {\tt data/clf} vymazať.
+
+\subsection{Konfigurácia a Formáty súborov}
+Konfigurácia našich modelov sa nachádza v dvoch súboroch:
+\begin{itemize}
+    \item {\tt classifier\_alignment/constants.py} -- tu sa dá zmeniť veľkosť okna a či sú povolené anotácie
+    \item {\tt classifier\_alignment/config.py} -- tu sa dá zmeniť klasifikátor, datapreparer a  či sa má použiť ten istý klasifikátor aj na Match aj na Inzert stav alebo nie. V tomto súbore sú preddefinované klasifikátory a datapreparer-y takže stačí zmeniť index označujúci, ktorý z nich sa má použiť.
+\end{itemize}
+
+Súbory zarovnania sú vo formáte FASTA (\url{http://en.wikipedia.org/wiki/FASTA_format}). Súbory anotácií sú vo formáte BED (\url{http://genome.ucsc.edu/FAQ/FAQformat.html#format1}).
+
+Súbory modelov sú vo formáte JSON\footnote{JavaScript object notation}, nasledujúceho tvaru:
+
+\begin{lstlisting}
+{
+  "model": {
+    "states": [
+      {
+        "name": "Match",
+        "durations": [[[1, 1], 1.0]],
+        "startprob": 0.33,
+        "endprob": 1.0,
+        "emission": [],
+        "onechar": "M",
+        "__name__": "SimpleMatchState"
+      },
+      {
+        "name": "InsertX",
+        "durations": [[[1, 0], 1.0]],
+        "startprob": 0.33,
+        "endprob": 1.0,
+        "emission": [],
+        "onechar": "X",
+        "__name__": "SimpleIndelState"
+      },
+      {
+        "name": "InsertY",
+        "durations": [[[0, 1], 1.0]],
+        "startprob": 0.33,
+        "endprob": 1.0,
+        "emission": [],
+        "onechar": "Y",
+        "__name__": "SimpleIndelState"
+      }
+    ],
+    "__name__": "GeneralizedPairHMM",
+    "transitions": []
+  }
+}
+\end{lstlisting}
+
+% [["A", "A"], 0.16829558998808106],
+% [["A", "T"], 0.026758045292014303],
+% [["T", "T"], 0.17806912991656734],
+% [["T", "A"], 0.026758045292014303],
+% [["G", "G"], 0.17234803337306318],
+% [["C", "T"], 0.027234803337306317],
+% [["T", "C"], 0.027234803337306317],
+% [["G", "A"], 0.02437425506555423],
+% [["G", "T"], 0.027234803337306317],
+% [["A", "C"], 0.02497020262216925],
+% [["A", "G"], 0.02437425506555423],
+% [["G", "C"], 0.024493444576877233],
+% [["C", "C"], 0.17115613825983314],
+% [["T", "G"], 0.027234803337306317],
+% [["C", "G"], 0.024493444576877233],
+% [["C", "A"], 0.02497020262216925]
+
+% ["A", 0.2526041666666667],
+% ["C", 0.23046875],
+% ["T", 0.25390625],
+% ["G", 0.2630208333333333]
+
+% ["A", 0.2526041666666667],
+% ["C", 0.23046875],
+% ["T", 0.25390625],
+% ["G", 0.2630208333333333]'
+
+Emisné a prechodové tabuľky sa vyplnia pri trénovaní modelu. Zaujímavé sú pre nás len položky \method{\_\_name\_\_} v jednotlivých stavoch. Tam treba vložiť meno príslušnej triedy pre stav.
+
+Súbor pre konfiguráciu anotácií je JSON následujúceho tvaru:
+\begin{lstlisting}
+{
+  "__name__": "Annotations",
+  "annotations": ["gene"],
+  "sequences": [
+    {
+      "name": "sequence1", "annotations": [
+        {
+          "id": "gene",
+          "file": "data/sequences/simulated/simulated_alignment_sequence1_gene.bed"
+          "offset": 47
+        }
+      ]
+    },
+    {
+      "name": "sequence2", "annotations": [
+        {
+          "id": "gene",
+          "file": "data/sequences/simulated/simulated_alignment_sequence2_gene.bed"
+          "offset": 47
+        }
+      ]
+    },
+    {
+      "name": "sequence3", "annotations": [
+        {
+          "id": "gene",
+          "file": "data/sequences/simulated/simulated_alignment_sequence3_gene.bed"
+          "offset": 47
+        }
+      ]
+    }
+  ]
+}
+\end{lstlisting}
+Do \method{annotations} treba dať zoznam anotácií ktoré sa majú použiť a do \method{sequences} treba dať zoznam sekvencií -- meno musí byť rovnaké ako vo FASTA súbore. Pre každú sekvenciu treba vyplniť v \method{annotations} pre každú anotáciu (id musí byť rovnaké ako v zozname anotácií) zdrojový súbor, odkiaľ sa má daná anotácia načítať. Navyše je možné špecifikovať \method{offset} v prípade, že sekvencia, ktorú chceme zarovnať nezačína v genóme na pozícii 0 a anotácie sú číslované podľa pozícií v genóme.
+
+\section{Rozšírenie programu}
+
+Program je možné ľahko rozšíriť rôznymi spôsobmi. Je možné pridať:
+\begin{itemize}
+    \item novú triedu pre stav
+    \item nový DataPreparer
+    \item nový klasifikátor
+\end{itemize}
+
+Nová trieda pre stav musí dediť od GeneralizedPairState, alebo niektorého z jej potomkov. Najdôležitejšiou metódou je emission, ktorá dostane dve pozície, dve sekvencie a dve hodnoty, ktoré označujú koľko symbolov z ktorej sekvencie treba vygenerovať, jej výstupom je pravdepodobnosť, že sa vygenerujú dané znaky z daných sekvnecií od daných pozícií. Ak chceme túto triedu použiť v modeli, musíme ju ešte zaregistrovať do triedy \textit{HMMLoader} pomocou metódy \method{addFunction}.
+
+Nový DataPreparer musí dediť od triedy DataPreparer, alebo niektorej z jej potomkov. Najdôležitejšou je metóda \method{prepare\_data}, ktorá dostane obe sekvencie, anotácie a aj dve pozície v sekvenciách. Výstupom musí byť pole číselných atribútov. Preťažením metódy \method{prepare\_training\_data} sa dá zmeniť generovanie trénovacej množiny.
+
+Nový klasifikátor musí implementovať nasledujúce metódy:
+\begin{itemize}
+    \item \method{fit(X, y)} -- dostane pole trénovacích vektorov a pole cieľových hodnôt, z ktorých natrénuje svoje parametre
+    \item \method{predict\_proba(X)} -- dostane pole vstupných vektorov a výstupom je dvojrozmerné pole -- pre každý vstupný vektor a každú triedu pravdepodobnosť, že vektor patrí do danej triedy
+\end{itemize}
+Navyše musí byť serializovateľný pomocou modulu \textit{pickle}.
