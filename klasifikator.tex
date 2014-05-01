@@ -1,7 +1,7 @@
 \chapter[Klasifikácia]{Klasifikácia na základe lokálnej informácie}
 
  % Uvod ku kapitole (necislovany): Popises, preco chces byt schopny klasifikovat jednotlive pozicie a nadskrtnes, ako to bude neskor suvisiet s nejakym zapracovanim do HMM. Zakladna myslienka je, ze klasifikator ti dava moznost akymsi sposobom zhrnut informaciu vyplyvajucu zo sekvencie, anotacii a kontextu do jedneho cisla, ktore potom v ramci HMM mozes transparentne pouzit. Tuto ideu tam treba zdoraznit a vysvetlit to tak, aby citatelovi bolo jasne, na co to vsetko je dobre. Proste tento uvod musi celu kapitolu zasadit do kontextu celeje prace. Na zaver nadskrtnes strukturu kapitoly a v kratkosti (jedna/dve vety) zhrnies hlavne vysledky (t.j. ze pri vhodnej volbe atributov dostanes slusne klasifikatory).
-Cieľom našej práce bolo zahrnúť dodatočnú informáciu do zarovnávania sekvencií, ktorá je poskytnutá formou anotácií k~príslušným bázam. Keďže náš zarovnávač je založený na pHMM (sekcia \ref{subsec:hmm-alignment}), potrebujeme nejak určiť emisné pravdepodobnosti v~jednotlivých stavoch. Keďže chceme okrem jednotlivých báz zahrnúť aj iné informácie, rozhodli sme sa na tento účel využiť klasifikátory. Klasifikátory určujú, ktoré pozície sa majú zarovnať k~sebe a túto informáciu zakomponovávame do výsledného zarovnávača pomocou modelov, ktoré si popíšeme v~kapitole \ref{chap:models}.
+Cieľom našej práce bolo zahrnúť dodatočnú informáciu do zarovnávania sekvencií, ktorá je poskytnutá formou anotácií k~príslušným bázam. Keďže náš zarovnávač je založený na pHMM (sekcia \ref{subsec:hmm-alignment}), potrebujeme nejako určiť emisné pravdepodobnosti v~jednotlivých stavoch. Keďže chceme okrem jednotlivých báz zahrnúť aj iné informácie, rozhodli sme sa na tento účel využiť klasifikátory. Klasifikátory určujú, ktoré pozície sa majú zarovnať k~sebe a túto informáciu zakomponovávame do výsledného zarovnávača pomocou modelov, ktoré si popíšeme v~kapitole \ref{chap:models}.
 
 V~tejto kapitole sa budeme venovať výberu klasifikátora a jeho vstupných atribútov. Najskôr si stručne popíšeme algoritmus klasifikátora, potom typy vstupných atribútov, ktoré sme navrhli a nakoniec sa budeme venovať vlastnostiam klasifikátora s~danými typmi atribútov a výberu finálneho klasifikátora pre použitie v~našich modeloch.
 
@@ -28,8 +28,9 @@ Tieto pravdepodobnosti sú akousi mierou istoty daného klasifikátora, a keďž
 \end{itemize}
 
 \subsection{Výber atribútov}
+\label{subsec:attribute-selection}
 
-Klasifikátor dokáže pracovať len z~poľom číselných atribútov, preto bolo treba najskôr dáta dať do tejto podoby. Navyše bolo treba rozhodnúť, aké dáta klasifikátoru podstrčíme. Potrebovali sme, aby klasifikátor videl bázy a ich anotácie na daných pozíciách. Navyše sme sa rozhodli pridať ako pomôcku aj okolie daných báz spolu s~anotáciami. Toto okolie budeme volať \textit{okno}. Vyskúšali sme štyri rôzne formy okna a zisťovali sme, ktorá forma je pre klasifikátor najvhodnejšia. Na to sme mali dve miery: úspešnosť klasifikátora a dôležitosť atribútov. Pri úspešnosti sme sledovali rozdelenie výstupu klasifikátora pre pozitívne a negatívne atribúty. Dôležitosť atribútov sme mali hlavne na kontrolu a vizualizáciu ktoré dáta považuje klasifikátor za dôležité.
+Klasifikátor dokáže pracovať len s~poľom číselných atribútov, preto bolo treba najskôr dáta dať do tejto podoby. Navyše bolo treba rozhodnúť, aké dáta klasifikátoru podstrčíme. Potrebovali sme, aby klasifikátor videl bázy a ich anotácie na daných pozíciách. Navyše sme sa rozhodli pridať ako pomôcku aj okolie daných báz spolu s~anotáciami. Toto okolie budeme volať \textit{okno}. Vyskúšali sme štyri rôzne formy okna a zisťovali sme, ktorá forma je pre klasifikátor najvhodnejšia. Na to sme mali dve miery: úspešnosť klasifikátora a dôležitosť atribútov. Pri úspešnosti sme sledovali rozdelenie výstupu klasifikátora pre pozitívne a negatívne atribúty. Dôležitosť atribútov sme mali hlavne na kontrolu a vizualizáciu, ktoré dáta považuje klasifikátor za dôležité.
 
 \subsubsection{Definícia okna}
 Okno veľkosti $w$ pozostáva z~$2w$ blokov veľkosti $k = (1+\#\text{anotácií})$.
@@ -49,7 +50,7 @@ Predpokladajme teraz, že $X$ je sekvencia s~bázou. Okno Indel klasifikátora v
           %(or a blank line to force the subfigure onto a new line)
         \begin{subfigure}[b]{0.35\textwidth}
                 \includegraphics[width=\textwidth]{images/window_i}
-                \caption{InDel klasifikátor}
+                \caption{Indel klasifikátor}
                 \label{fig:window-i}
         \end{subfigure}
         \caption[Okno klasifikátora]{Okno klasifikátora pre pozície $i = 6$ a $j = 3$}
@@ -65,11 +66,11 @@ Druhý typ dát obsahuje aktuálnu bázu spolu s~jej anotáciami a navyše pole 
 ktoré má na $i$-tom mieste jedna ak $okno_X[i] = okno_Y[i]$, ináč nula
 ($w$ je veľkosť okna, $k$ je veľkosť bloku, $okno_X$ je časť okna zodpovedajúca sekvencii $X$ a $okno_Y$ sekvencii $Y$).
 V~Indel klasifikátore je jedna malá zmena: pozícia 0 aj 1 v~$x$-ovej sekvencii sú porovnávané s~pozíciou 1 v~$y$-ovej a pozícia 2 v~$x$-ovej sa porovnáva s~pozíciou 2 v~$y$-ovej.
-Pozíciu 1 v~$y$-ovej sekvencii sme zopakovali pre to, že sme experimentom zistili, že pre klasifikátor je dôležitá.
+Pozíciu 1 v~$y$-ovej sekvencii sme zopakovali preto, že sme experimentom zistili, že pre klasifikátor je dôležitá.
 
 \subsubsection{Typ dát C - matica zhôd v~okne}
 
-Tretí typ dát je podobný ako typ B. Rozdiel je v~tom, že teraz pole obsahuje nie len zhody po dvojiciach ale celú maticu zhôd. Teda opäť máme aktuálne bázy s~anotáciami a pole má veľkosť $k*w^2$. Každý riadok sa skladá z~jednotlivých blokov a v~tabuľke v~$x$-tom riadku, $y$-tom stĺpci a $i$-tom mieste v~bloku je jedna práve
+Tretí typ dát je podobný ako typ B. Rozdiel je v~tom, že teraz pole obsahuje nielen zhody po dvojiciach ale celú maticu zhôd. Teda opäť máme aktuálne bázy s~anotáciami a pole má veľkosť $k*w^2$. Každý riadok sa skladá z~jednotlivých blokov a v~tabuľke v~$x$-tom riadku, $y$-tom stĺpci a $i$-tom mieste v~bloku je jedna práve
 vtedy, keď $okno_X[x+i] = okno_Y[y+i]$.
 
 \subsubsection{Typ dát D - kombinácia A~a B}
@@ -77,10 +78,10 @@ vtedy, keď $okno_X[x+i] = okno_Y[y+i]$.
 Posledný typ dát je kombináciou typov dát A~a~B. Dáta opäť obsahujú všetky bázy a anotácie tak ako v~type A~a navyše sme pridali pole zhôd z~dát typu~B. Táto informácia je síce redundantná a klasifikátor by si ju mal vedieť odvodiť aj sám, no experimenty ukázali, že to pomôže.
 
 \subsection{Trénovanie a testovanie klasifikátorov}
-
+\label{subsec:clf-training}
 Pre oba typy klasifikátorov sme sa snažili nájsť vhodné pozitívne a negatívne trénovacie príklady. Z~oboch sme do trénovacej množiny zahrnuli rovnako, aby bola trénovacia množina vyvážená. Ak by sme nemali vyváženú trénovaciu množinu, klasifikátory by zvýhodnili triedu, ktorej príkladov by bolo viacej. Napríklad, keby sme pri Indel klasifikátore zobrali všetky pozície s~medzerou ako pozitívne a všetky zarovnané pozície ako negatívne príklady, klasifikátor, ktorý by dával hodnotu nula, by mal pomerne vysokú úspešnosť, pretože zarovnaných pozícií je rádovo viac ako pozícií s~medzerou. Preto by natrénovaný klasifikátor mal tendenciu dávať nižšie hodnoty, aby znížil trénovaciu chybu a tomu sa chceme vyhnúť.
 
-Výber pozitívnych príkladov bol v~oboch prípadoch intuitívny. Pri výbere negatívnych príkladoch sme sa museli zamyslieť nad vhodným protipólom k~pozitívnym dátam.
+Výber pozitívnych príkladov bol v~oboch prípadoch intuitívny. Pri výbere negatívnych príkladov sme sa museli zamyslieť nad vhodným protipólom k~pozitívnym dátam.
 
 \subsubsection{Výber pozitívnych a negatívnych príkladov pre Match klasifikátor}
 % \label{subsec:matchtraining}
@@ -96,9 +97,9 @@ Ako negatívne príklady sme vyskúšali dva prístupy: \textit{náhodné dáta}
 Preto sme sa rozhodli pristúpiť k~inému spôsobu výberu negatívnych vzoriek.
 
 \paragraph{Dáta s~posunom:} Dáta s~posunom sme vyberali posunutím jednej z~dvoch pozícií v~zarovnanom okne.
-Počas zarovnávania sa totiž väčšinou lokálne rozhodujeme, či zarovnať dané pozície k~sebe, alebo vložiť medzeru. Ak by sme vložili medzeru, nastal by posun v~jednej zo sekvencií. Rozhodli sme sa teda sa týmto inšpirovať a vyrábať negatívne príklady posunom zarovnaných pozícií. Pre každú zarovnanú pozíciu si najskôr rovnomerne náhodne vyberieme sekvenciu, ktorú budeme posúvať a potom z~exponenciálneho rozdelenia náhodne vyberieme veľkosť posunu. Presný vzťah pre výpočet posunu $\Delta$ je
+Počas zarovnávania sa totiž väčšinou lokálne rozhodujeme, či zarovnať dané pozície k~sebe, alebo vložiť medzeru. Ak by sme vložili medzeru, nastal by posun v~jednej zo sekvencií. Rozhodli sme sa teda týmto inšpirovať a vyrábať negatívne príklady posunom zarovnaných pozícií. Pre každú zarovnanú pozíciu si najskôr rovnomerne náhodne vyberieme sekvenciu, ktorú budeme posúvať a potom z~exponenciálneho rozdelenia náhodne vyberieme veľkosť posunu. Presný vzťah pre výpočet posunu $\Delta$ je
 $$\Delta = \left(2D-1\right)\cdot \left(1+\lfloor S\rfloor\right)\qquad D\sim Alt(0.5),\, S\sim Exp(0.75),$$
-kde prvý člen nám určuje smer posunu (čo je to isté ako: ktorá sekvencia sa bude posúvať) a druhý člen určuje veľkosť posunu (chceme celočíselnú hodnotu $\leq 1$).
+kde prvý člen nám určuje smer posunu (čo je to isté ako: ktorá sekvencia sa bude posúvať) a druhý člen určuje veľkosť posunu (chceme celočíselnú hodnotu $\geq 1$).
 
 \subsubsection{Výber pozitívnych a negatívnych príkladov pre Indel klasifikátor}
 
@@ -106,8 +107,8 @@ Indel klasifikátor sme chceli natrénovať tak, aby pre miesta, ktoré majú by
 
 \subsubsection{Parametre trénovacej a testovacej množiny}
 \label{subsec:clf-training-sets}
-Dáta pre naše experimenty pochádzajú z~nášho simulátora. Trénovacia sada sa skladá z~20 zarovnaní sekvencií, pričom každé zarovnanie má dĺžku 10000. Celá trénovacia pre Match klasifikátor sada má 329428 príkladov. Pre Indel klasifikátor má sada 34150 príkladov.
-Testovacia sada sa skladá z~jedného zarovnania s~dĺžkou 10000. Pričom pre Match klasifikátor obsahuje 16498 príkladov. Pre Indel klasifikátor obsahuje 1674 príkladov.
+Dáta pre naše experimenty pochádzajú z~nášho simulátora. Trénovacia sada sa skladá z~20 zarovnaní sekvencií, pričom každé zarovnanie má dĺžku 10000. Celá trénovacia sada pre Match klasifikátor má 329428 príkladov. Pre Indel klasifikátor má sada 34150 príkladov.
+Testovacia sada sa skladá z~jedného zarovnania s~dĺžkou 10000. Pre Match klasifikátor obsahuje 16498 príkladov. Pre Indel klasifikátor obsahuje 1674 príkladov.
 Vo všetkých sadách je polovica príkladov pozitívnych a polovica negatívnych.
 
 \section{Výsledky experimentov}
@@ -165,10 +166,10 @@ D & 88,78\% & 76,46\% & $m_0, m_{-1}, m_{-2}, x_1, \{x, y\}_*$ & $\{l,a,b\}_*$\\
 
 Atribúty sme označili takto: stredná pozícia je 0, pozície naľavo sú -1, -2 a pozície napravo 1 a 2, pričom v~Indel klasifikátore v~sekvencii s~medzerou pozícia 0 chýba. Bázy v~sekvencii $X$ označujeme $x_i$ a v~$Y$ $y_i$. Anotácie v~sekvencii $X$ označujeme $a_i$ a v~$Y$ $b_i$. Zhody medzi bázami $i,\, j$ budeme označovať $m_{i, j}$, pričom označenie zhôd v~type dát B a D zjednodušíme na $m_i$. Podobne zhody medzi anotáciami označíme $l_{i, j}$ (resp. $l_i$).
 
-V~tabuľke \ref{tab:clf-results} si môžeme všimnúť, že klasifikátory sa zamerali najmä na bázy a okrem prípadu C, anotácie skoro nebrali do úvahy.
+V~tabuľke \ref{tab:clf-results} si môžeme všimnúť, že klasifikátory sa zamerali najmä na bázy a okrem prípadu C anotácie skoro nebrali do úvahy.
 Toto správanie zodpovedá tomu, že v~praxi bázy majú podstatne väčší význam pri zarovnávaní sekvencií.
 
-V~prípade dát typu A~a B sa klasifikátory Match klasifikátory nezamerali na stredné bázy ako by sme to čakali, ale všetky bázy brali približne s~rovnakou váhou. Indel klasifikátory na tom boli podobne, hoci v~prípade dát typu B je vidieť výraznejšiu preferenciu atribútu zhody báz $x_0, y_1$ ($l_0$), avšak atribúty $l_1$ a $l_2$ klasifikátoru neprišli dôležité.
+V~prípade dát typu A~a B sa Match klasifikátory nezamerali na stredné bázy ako by sme to čakali, ale všetky bázy brali približne s~rovnakou váhou. Indel klasifikátory na tom boli podobne, hoci v~prípade dát typu B je vidieť výraznejšiu preferenciu atribútu zhody báz $x_0, y_1$ ($l_0$), avšak atribúty $l_1$ a $l_2$ klasifikátoru neprišli dôležité.
 
 Pri type dát C si môžeme všimnúť, že najdôležitejšie atribúty sú na uhlopriečke, čo zodpovedá typu dát B, ibaže v~tomto prípade sa nám vyskytli na niektorých pozíciách anotácie namiesto báz.
 Avšak ak sa nám tam vyskytla anotácia, bázu už klasifikátor nepovažoval za dôležitú a aj naopak.
@@ -188,7 +189,7 @@ Indel klasifikátor navyše považoval za dôležitejšiu aj bázu na aktuálnej
         \begin{subfigure}[t]{0.4\textwidth}
                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest_combined_5_indel_bars}
                 \includegraphics[width=\textwidth]{images/clf_fi/randomforest_combined_5_indel_heatmap}
-                \caption{InDel klasifikátor}
+                \caption{Indel klasifikátor}
                 \label{fig:datatype4-i}
         \end{subfigure}
         \caption[Dôležitosť atribútov pre typ dát D]{
@@ -198,7 +199,7 @@ Indel klasifikátor navyše považoval za dôležitejšiu aj bázu na aktuálnej
 \end{figure}
 
 
-Pri dátach typu D sme dostali v~prípade match klasifikátora očakávanú distribúciu dôležitosti atribútov (obr. \ref{fig:datatype4}). Dáta typu B boli uprednostnené voči typu~A, avšak aj bázy z~typu A~boli dôležité. Pri Indel klasifikátore sme dostali graf, ktorý je zložením grafov z~dát typu A~a~B. Zaujímavosťou je, že pri tomto type dát má výraznejšiu úlohu práve zhoda na stredovej pozícii, teda pozície už nie sú také rovnocenné ako to bolo v~type~B.
+Pri dátach typu D sme dostali v~prípade Match klasifikátora očakávanú distribúciu dôležitosti atribútov (obr. \ref{fig:datatype4}). Dáta typu B boli uprednostnené voči typu~A, avšak aj bázy z~typu A~boli dôležité. Pri Indel klasifikátore sme dostali graf, ktorý je zložením grafov z~dát typu A~a~B. Zaujímavosťou je, že pri tomto type dát má výraznejšiu úlohu práve zhoda na stredovej pozícii, teda pozície už nie sú také rovnocenné ako to bolo v~type~B.
 
 \FloatBarrier
 
