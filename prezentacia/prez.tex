@@ -9,7 +9,7 @@
 % Urobili vela prace, Nebolo to lahke
 
 
-\documentclass[xcolor=dvipsnames, compress, 12pt, t]{beamer}
+\documentclass[xcolor=dvipsnames, compress, 12pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[slovak]{babel}
 \usepackage{lmodern}
@@ -25,6 +25,7 @@
 \usepackage{url}
 \usepackage{hyperref}
 \usepackage{multicol}
+\usepackage{fancyvrb}
 
 \usecolortheme[named=Green]{structure}
 \usetheme{Dresden}
@@ -84,6 +85,11 @@
 
 \newcommand{\lenitem}[2][.6\linewidth]{\parbox[t]{#1}{\strut #2\strut}}
 
+\newtheorem{vt}{Veta}[section]
+\newtheorem{lema}[vt]{Lema}
+\theoremstyle{definition}
+\newtheorem{df}[vt]{Definícia}
+
 \begin{document}
 
 %--- the titlepage frame -------------------------%
@@ -95,13 +101,14 @@
 
 \begin{frame}{Obsah}
   \transdissolve[duration=0.1]
-  \begin{multicols}{2}
+  % \begin{multicols}{2}
   \tableofcontents
-  \end{multicols}
+  % \end{multicols}
 \end{frame}
 
 
 \section{Úvod}
+
 \subsection{Cieľ}
 \begin{frame}{Cieľ}
   % \transdissolve
@@ -111,137 +118,294 @@
   \end{itemize}
 \end{frame}
 
-
 \subsection{Zarovnávanie sekvencií}
-\begin{frame}{Zarovnávanie sekvencií}
-Kľúčové problémy:
+\begin{frame}[fragile]{Zarovnávanie sekvencií}
   \begin{itemize}
-    \pause
-    \item Aké typy zarovnávania by sme mali uvažovať
-    \pause
-    \item Skórovací systém, ktorý použijeme na ohodnotenie zarovnania a trénovanie
-    \pause
-    \item Algoritmus, ktorý použijeme na hľadanie optimálneho alebo dobrého zarovnania podľa skórovacieho systému
-    \pause
-    \item Štatistická významnosť zarovnania.
+      \item jedným zo základných bioinformatických problémov
+      \item identifikuje časti sekvencie, ktoré vznikli z~toho istého predka (zarovnané bázy), inzercie a delécie v~priebehu evolúcie (medzery v~zarovnaní).
   \end{itemize}
-\end{frame}
-
-\section{Modely a Existujúce riešenia}
-\subsection{Modely}
-\begin{frame}{Modely}
-Generatívny:
-\begin{itemize}
-\item sa snaží modelovať proces, ktorý generuje dáta ako pravdepodobnosť $P(X,Y,Z)$
-\item rozložíme ju pomocou nezávislých predpokladov na procese $\longrightarrow$ obmedzujúce
-\end{itemize}
 \pause
-Diskriminačný
-\begin{itemize}
-\item priamo odhaduje $P(Z|X,Y)$ alebo prislúchajúcu diskriminačnú funkciu, a preto sa zamerá na podstatnú časť problému odhadu
-\item Nepotrebuje nezávislosť $\longrightarrow$ silnejšie
-\end{itemize}
+\begin{df}[Globálne zarovnanie]
+Vstupom sú dve sekvencie $X = x_1x_2\dots x_n$ a $Y = y_1y_2\dots y_m$
+Výstupom je zarovnanie celých sekvencií $X$ a $Y$.
+\end{df}
+\pause
+Príklad:
+      \begin{verbatim}
+  GTGGACCGTT------CCTTCCGGCAATCACGAGAAAAGCCACGT
+  GTCGACCGTTTCAGTGACTTGAAGCAATCAGG---AACACCACCT
+      \end{verbatim}
 \end{frame}
 
-
-% ToDo - lepsie popisat existujuce modely
-\subsection{Príbuzné témy}
-\begin{frame}{Príbuzné témy (existujúce riešenia)}
+\begin{frame}{Skryté Markovovské modely}
   \begin{itemize}
-    \item Problém inverzného zarovnania
-    \pause
-    \item Support vector training of protein alignment models
+    \item pravdepodobnostný model inšpirovaný konečnými automatmi
+    \item pozostáva z 3 distribúcií
     \begin{itemize}
-      \item Support Vector Machine (SVM)
-      \item Umožňuje trénovať pomocou rôznych účelových funkcií
+      \item distribúcia začiatočných stavov
+      \item distribúcia prechodov
+      \item distribúcia emisií
     \end{itemize}
     \pause
-    \item Contralign: Discriminative training for protein sequence alignment.
-    \begin{itemize}
-      \item Conditional Random Fields (CRF)
-      \item Neumožnuje trénovať pomocou rôznych účových funkcií
-    \end{itemize}
+    \item pravdepodobnosť, že model vygeneruje sekvenciu $x$ dĺžky $n$ s~anotáciou $s$ je súčin pravdepodobností prechodov a emisií.
+    $$P[X=x | S=s] = \pi_{s_1} e_{s_1,x1} a_{s_1,s_2} e_{s_2,x_2} a_{s_2,s_3} e_{s_3,x_3}\dots a_{s_{n-1},s_n} e_{s_n,x_n}$$
+    \cite{skripta, durbin}
+
   \end{itemize}
 \end{frame}
 
+\begin{frame}{Zarovnávanie sekvencií pomocou pHMM}
+  \mbox{}\hfill\raisebox{-\height}[0pt][0pt]{
+   \includegraphics[width=.30\textwidth]{images/simple_model}
+   }
+  \vspace*{-\baselineskip}
 
-\section{Naše riešenia}
-\subsection{Odlišnosti nášho riešenia}
-\begin{frame}{Odlišnosti nášho riešenia}
   \begin{itemize}
-    \item Korekcia existujúcich zarovnaní
+    \item \lenitem{3 stavový pHMM}
     \begin{itemize}
-      \item Použitie súbežne s~existujúcimi zarovnávačmi
+      \item \lenitem{Match -- emituje dvojice:\\ $AA, AC, AG,\dots, TT$}
+      \item \lenitem{Insert X, Insert Y -- emitujú jednotlivé bázy $A,C,G,T$}
     \end{itemize}
-    \pause
-    \item Rôzne modely využitia klasifikátora
-    \pause
-    \item Rôzne metódy trénovania
-    \pause
-    \item Možnosť učenia bez učiteľa
-    \pause
-    \item Iný klasifikátor
-    \begin{itemize}
-      \item možno porovnanie viac rôznych klasifikátorov
-      \item pípadne abstrakcia od klasifikátora
-    \end{itemize}
+    \item \lenitem{Prechodové a emisné pravdepodobnosti sa trénujú pomocou frekvenčnej tabuľky}
+    \item Najpravdepodobnejšie zarovnanie nájdeme pomocou Viterbiho algoritmu
   \end{itemize}
 \end{frame}
 
+% \begin{frame}{Inverzné zarovnanie}
+%   \begin{df}[Problém inverzného zarovnania]
+%   Vstupom sú dve sekvencie $X$, $Y$ a ich zarovnanie $Z$.
+%   Výstupom sú parametre, podľa ktorých je toto zarovnanie optimálne.
+%   \end{df}
 
-\subsection{Simulátor}
-\begin{frame}{Simulátor}
-  \begin{itemize}
-    \item Model určený na prvotné experimenty
-    \item Program simuluje evolúciu
-    \begin{itemize}
-      \item Generovanie dvojice postupností so správnym zarovnaním
-      \item Generovanie dodatočej informácie
-      \item Simulácia mutácie a delécie
-    \end{itemize}
-  \end{itemize}
-\end{frame}
+%   \begin{itemize}
+%     \item pod parametrami rozumieme skórovací systém -- napr. skórovaciu maticu alebo skrytý markvovský model
+%   \end{itemize}
+% \end{frame}
+
+
+% \begin{frame}{Zarovnávanie sekvencií}
+% Kľúčové problémy:
+%   \begin{itemize}
+%     \pause
+%     \item Aké typy zarovnávania by sme mali uvažovať
+%     \pause
+%     \item Skórovací systém, ktorý použijeme na ohodnotenie zarovnania a trénovanie
+%     \pause
+%     \item Algoritmus, ktorý použijeme na hľadanie optimálneho alebo dobrého zarovnania podľa skórovacieho systému
+%     \pause
+%     \item Štatistická významnosť zarovnania.
+%   \end{itemize}
+% \end{frame}
+
+% \section{Modely a Existujúce riešenia}
+% \subsection{Modely}
+% \begin{frame}{Modely}
+% Generatívny:
+% \begin{itemize}
+% \item sa snaží modelovať proces, ktorý generuje dáta ako pravdepodobnosť $P(X,Y,Z)$
+% \item rozložíme ju pomocou nezávislých predpokladov na procese $\longrightarrow$ obmedzujúce
+% \end{itemize}
+% \pause
+% Diskriminačný
+% \begin{itemize}
+% \item priamo odhaduje $P(Z|X,Y)$ alebo prislúchajúcu diskriminačnú funkciu, a preto sa zamerá na podstatnú časť problému odhadu
+% \item Nepotrebuje nezávislosť $\longrightarrow$ silnejšie
+% \end{itemize}
+% \end{frame}
+
+% % ToDo - lepsie popisat existujuce modely
+% \subsection{Príbuzné témy}
+% \begin{frame}{Príbuzné témy (existujúce riešenia)}
+%   \begin{itemize}
+%     \item Problém inverzného zarovnania
+%     \pause
+%     \item Support vector training of protein alignment models
+%     \begin{itemize}
+%       \item Support Vector Machine (SVM)
+%       \item Umožňuje trénovať pomocou rôznych účelových funkcií
+%     \end{itemize}
+%     \pause
+%     \item Contralign: Discriminative training for protein sequence alignment.
+%     \begin{itemize}
+%       \item Conditional Random Fields (CRF)
+%       \item Neumožnuje trénovať pomocou rôznych účových funkcií
+%     \end{itemize}
+%   \end{itemize}
+% \end{frame}
+
+% \section{Naše riešenia}
+% \subsection{Odlišnosti nášho riešenia}
+% \begin{frame}{Odlišnosti nášho riešenia}
+%   \begin{itemize}
+%     \item Korekcia existujúcich zarovnaní
+%     \begin{itemize}
+%       \item Použitie súbežne s~existujúcimi zarovnávačmi
+%     \end{itemize}
+%     \pause
+%     \item Rôzne modely využitia klasifikátora
+%     \pause
+%     \item Rôzne metódy trénovania
+%     \pause
+%     \item Možnosť učenia bez učiteľa
+%     \pause
+%     \item Iný klasifikátor
+%     \begin{itemize}
+%       \item možno porovnanie viac rôznych klasifikátorov
+%       \item pípadne abstrakcia od klasifikátora
+%     \end{itemize}
+%   \end{itemize}
+% \end{frame}
+
+
+% \subsection{Simulátor}
+% \begin{frame}{Simulátor}
+%   \begin{itemize}
+%     \item Model určený na prvotné experimenty
+%     \item Program simuluje evolúciu
+%     \begin{itemize}
+%       \item Generovanie dvojice postupností so správnym zarovnaním
+%       \item Generovanie dodatočej informácie
+%       \item Simulácia mutácie a delécie
+%     \end{itemize}
+%   \end{itemize}
+% \end{frame}
 
 %ToDo: Obrázok
-\subsection{Modely}
-\begin{frame}{Základný model}
+\section{Naše riešenie}
+\begin{frame}{Naše riešenie}
+  \begin{itemize}
+    \item zarovnávanie s dodatočnou informáciou
+    \item dodatočnú informáciu sme zakomponovali pomocou klasifikátorov
+    \begin{itemize}
+      \item klasifikátory na základe lokálnej informácie rozhodujú, či dané pozície majú byť zarovnané k sebe
+      \item natrénujeme ich na existujúcich zarovnaniach
+    \end{itemize}
+    \item klasifikátory sme zakomponovali do pHMM pre zarovnávanie
+  \end{itemize}
+\end{frame}
+
+
+\subsection{Klasifikácia na základe lokálnej informácie}
+
+\begin{frame}{Klasifikácia na základe lokálnej informácie}
+\begin{itemize}
+  \item Anotácie sme zakomponovali pomocou dvoch typov klasifikátorov
+  \begin{enumerate}
+    \item Match -- rozhoduje či dané pozície majú byť zarovnané k~sebe
+    \item Indel -- rozhoduje či daná pozícia má byť zarovnaná k medzere
+  \end{enumerate}
+  \item Použili sme \emph{náhodný les (angl. Random forest)} \cite{randomForestPaper}
+  \item Výstup $\in \left<0,1\right>$ -- istota klasifikátora, že dané dve pozície majú byť zarovnané k~sebe (v~insert stave, že daná pozícia má  byť zarovnaná k~medzere)
+  \item Atribúty sú okná veľkosti $w$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Okno pre klasifikátor}
+\begin{figure}[h]
+        \centering
+        \begin{subfigure}[b]{0.35\textwidth}
+                \includegraphics[width=\textwidth]{images/window_m}
+                \caption{Match klasifikátor}
+                \label{fig:window-m}
+        \end{subfigure}%
+        \qquad\qquad %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.35\textwidth}
+                \includegraphics[width=\textwidth]{images/window_i}
+                \caption{InDel klasifikátor}
+                \label{fig:window-i}
+        \end{subfigure}
+        \caption[Okno klasifikátora]{Okno klasifikátora pre pozície $i = 6$ a $j = 3$}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Klasifikácia na základe lokálnej informácie}
+  \begin{itemize}
+    \item K~dátam sme pridali informácie o~zhodách na zodpovedajúcich pozíciách, čím sa nám podarilo vylepšiť úspešnosť klasifikátora
+    \item Úspešnosť Match klasifikátora: \textbf{84,32\%}
+    \item Úspešnosť Indel klasifikátora: \textbf{76,46\%}
+    \item Klasifikátor sa dokáže naučiť, ktoré okná majú byť zarovnané k~sebe a ktoré nie
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Úspešnosť klasifikátora}
+\begin{figure}[h]
+        \centering
+        \begin{subfigure}[b]{0.35\textwidth}
+               \includegraphics[width=\textwidth]{images/randomforest_combined_5_test}
+                \caption{Match klasifikátor}
+        \end{subfigure}%
+        \qquad\qquad %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.35\textwidth}
+                \includegraphics[width=\textwidth]{images/randomforest_combined_5_indel_test}
+                \caption{InDel klasifikátor}
+        \end{subfigure}
+        \caption{Distribúcia výstupu klasifikátora pre pozitívne a negatívne príklady.}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Dôležitosť atribútov}
+\begin{figure}[h]
+        \centering
+        \begin{subfigure}[b]{0.35\textwidth}
+                \includegraphics[width=\textwidth]{images/randomforest_combined_5_bars}
+                \caption{Match klasifikátor}
+        \end{subfigure}%
+        \qquad\qquad %add desired spacing between images, e. g. ~, \quad, \qquad etc.
+          %(or a blank line to force the subfigure onto a new line)
+        \begin{subfigure}[b]{0.35\textwidth}
+                \includegraphics[width=\textwidth]{images/randomforest_combined_5_indel_bars}
+                \caption{InDel klasifikátor}
+        \end{subfigure}
+        \caption{Dôležitosť atribútov v~klasifikátore. Na párnych pozíciach sú bázy, na nepárnych anotácia. Prvých 10 atribútov zodpovedá oknu v~prvej sekvencii, druhých 10 (resp. 8 v~Indel klasifikátore) zodpovedá oknu v~druhej sekvencii a posledných 10 zodpovedá zhodám na príslušných pozíciách (v~Indel klasifikátore sa namiesto medzery zopakuje báza, čo je za ňou)}
+\end{figure}
+\end{frame}
+
+\subsection{Zakomponovanie výsledkov klasifikácie do pHMM}
+\begin{frame}{Zakomponovanie výsledkov klasifikácie do pHMM}
+
+\begin{itemize}
+  \item Vymysleli sme dva modely pre zarovnanie sekvencií s~anotáciami za pomoci klasifikátora
+  \begin{enumerate}
+    \item Model s~klasifikátorom ako emisiou
+    \item Model s~klasifikátorovou páskou
+  \end{enumerate}
+  \item Založené na párových skrytých Markovovských modeloch.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Model s klasifikátorom ako emisiou}
   \mbox{}\hfill\raisebox{-\height}[0pt][0pt]{
    \includegraphics[width=.30\textwidth]{images/zakladny_model}
    }
   \vspace*{-\baselineskip}
 
   \begin{itemize}
-    \item \lenitem{3 stavový HMM}
-    \begin{itemize}
-      \item \lenitem{Match}
-      \item \lenitem{Insert X, Insert Y}
-    \end{itemize}
-    \item \lenitem{Klasifikátor vidí okolie báz rozšírené o~anotácie}
-    \pause
-    \item \lenitem{V~HMM sa trénujú iba tranzície, klasifikátory sa trenujú zvlášť}
-    \item Viterbiho algoritmus %todo vyzuitie okolia luca
-    \begin{itemize}
-      \item \lenitem{namiesto tabuľky emisných pravdepodobnosti, máme výstup z~natrénovaného klasifikátora}
-      \item Problém výstupy z~klasifikátora nesumujú do 1, čiže model nie je celkom korektný
-    \end{itemize}
+    \item \lenitem{Emisné tabuľky stavov nahradíme výstupom z~klasifikátora}
+    \item \lenitem{Model nie je korektný pravdepodobnostný model, pretože pravdepodobnosti emisií nesčitujú do~1}
+    \item \lenitem{Prechodové pravdepodobnosti sme natrénovali zo zarovnaní z~trénovacej vzorky}
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Distribúcia výstupu z~klasifikátora}{Match stav}
-\begin{figure}[hbtp]
-    \centering
-    \includegraphics[height=0.5\textheight]{images/clf_m_test.png}
-    \caption{Distribúcia výstupu klasifikátora pre zarovnané (modrá) a nezarovnané (zelená) pozície. Klasifikátor pre match stav s~anotáciou a oknom veľkosti 5 (testovacia množina)}
-\end{figure}
-\end{frame}
+% \begin{frame}{Distribúcia výstupu z~klasifikátora}{Match stav}
+% \begin{figure}[hbtp]
+%     \centering
+%     \includegraphics[height=0.5\textheight]{images/clf_m_test.png}
+%     \caption{Distribúcia výstupu klasifikátora pre zarovnané (modrá) a nezarovnané (zelená) pozície. Klasifikátor pre match stav s~anotáciou a oknom veľkosti 5 (testovacia množina)}
+% \end{figure}
+% \end{frame}
 
-\begin{frame}{Distribúcia výstupu z~klasifikátora}{Insert stav}
-\begin{figure}[hbtp]
-    \centering
-    \includegraphics[height=0.5\textheight]{images/clf_i_test.png}
-    \caption{Distribúcia výstupu klasifikátora pre zarovnané pozície (zelená) a pozície zarovnané k~medzere (modrá). Klasifikátor pre insert stav s~anotáciou a oknom veľkosti 5 (testovacia množina)}
-\end{figure}
-\end{frame}
+% \begin{frame}{Distribúcia výstupu z~klasifikátora}{Insert stav}
+% \begin{figure}[hbtp]
+%     \centering
+%     \includegraphics[height=0.5\textheight]{images/clf_i_test.png}
+%     \caption{Distribúcia výstupu klasifikátora pre zarovnané pozície (zelená) a pozície zarovnané k~medzere (modrá). Klasifikátor pre insert stav s~anotáciou a oknom veľkosti 5 (testovacia množina)}
+% \end{figure}
+% \end{frame}
 
 
 %ToDo: Obrázok
@@ -250,32 +414,34 @@ Diskriminačný
    \includegraphics[width=.30\textwidth]{images/model_clf_paska}
    }
   \vspace*{-\baselineskip}
+
   \begin{itemize}
-    \item \lenitem{Opäť rovnaký 3 stavový HMM}
-    \item \lenitem{Okrem 2 sekvencií máme ešte pásku s~výstupom z~klasifikátora}
-    \item \lenitem{Model teda emituje trojicu - dve písmená zo sekvencií (alebo jedno a pomlčku) a výstup z~klasifikátora}
-    \pause
-    \item \lenitem{Tento model je narozdiel od predošlého korektný}
-    \item \lenitem{Trénujú sa aj prechodové aj emisné pravdepodobnosti}
-    \item Pre jednoduchosť budeme emisie výstupu klasifikátora aproximovať pomocou normálneho rozdelenia s~natrénovanými parametrami
+      \item \lenitem{Modelujeme navyše sekvenciu výstupov klasifikátora vo forme pásky}
+      \item \lenitem{Trénujeme všetky parametre na trénovacej vzorke zarovnaní obohatenej o~pásku s~výstupmi z~klasifikátora}
+  \end{itemize}
+
+  \begin{itemize}
+    \item \lenitem{Páska je cesta v~2D tabuľke výstupov klasifikátorov}
+    \item \lenitem{Zhoduje sa s~cestou zarovnania}
+    \item Ak sa pohneme horizontálne, alebo vertikálne, používame Indel klasifikátor a ak sa pohneme diagonálne, tak použijeme Match klasifikátor
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Distribúcia výstupu z~klasifikátora}{Match stav - AA}
-\begin{figure}[hbtp]
-    \centering
-    \includegraphics[height=0.55\textheight]{images/distr_aa.png}
-    \caption{Distribúcia výstupu klasifikátora pre match stav v~prípade báz AA zarovnaných k~sebe. Klasifikátor s~anotáciou a oknom veľkosti 5 (testovacia množina)}
-\end{figure}
-\end{frame}
+% \begin{frame}{Distribúcia výstupu z~klasifikátora}{Match stav - AA}
+% \begin{figure}[hbtp]
+%     \centering
+%     \includegraphics[height=0.55\textheight]{images/distr_aa.png}
+%     \caption{Distribúcia výstupu klasifikátora pre match stav v~prípade báz AA zarovnaných k~sebe. Klasifikátor s~anotáciou a oknom veľkosti 5 (testovacia množina)}
+% \end{figure}
+% \end{frame}
 
-\begin{frame}{Distribúcia výstupu z~klasifikátora}{Match stav - AC}
-\begin{figure}[hbtp]
-    \centering
-    \includegraphics[height=0.55\textheight]{images/distr_ac.png}
-    \caption{Distribúcia výstupu klasifikátora pre match stav v~prípade báz AC zarovnaných k~sebe. Klasifikátor s~anotáciou a oknom veľkosti 5 (testovacia množina)}
-\end{figure}
-\end{frame}
+% \begin{frame}{Distribúcia výstupu z~klasifikátora}{Match stav - AC}
+% \begin{figure}[hbtp]
+%     \centering
+%     \includegraphics[height=0.55\textheight]{images/distr_ac.png}
+%     \caption{Distribúcia výstupu klasifikátora pre match stav v~prípade báz AC zarovnaných k~sebe. Klasifikátor s~anotáciou a oknom veľkosti 5 (testovacia množina)}
+% \end{figure}
+% \end{frame}
 
 %ToDo: Obrázok
 % \begin{frame}{Kombinovaný model}
@@ -330,24 +496,17 @@ Diskriminačný
 
 
 \section{Výsledky}
-\subsection{Metódy vyhodnocovania}
-\begin{frame}{Metódy vyhodnocovania}{Kontrola tranzitivity}
-Ako základnú mieru úspešnosti nášho algoritmu budeme brať kontorlu tranzitivity
-  \begin{itemize}
-    \item Použijeme 3 párové zarovnania 3 sekvencií (každá s~každou)
-    \item Spojíme prvé 2 zarovnania do nového zarovnania
-    \item Porovnáme percentuálne zhody nového s~tretím zarovnaním
-  \end{itemize}
-  % TODO obrazok
-\end{frame}
+% \subsection{Metódy vyhodnocovania}
+% \begin{frame}{Metódy vyhodnocovania}{Kontrola tranzitivity}
+% Ako základnú mieru úspešnosti nášho algoritmu budeme brať kontorlu tranzitivity
+%   \begin{itemize}
+%     \item Použijeme 3 párové zarovnania 3 sekvencií (každá s~každou)
+%     \item Spojíme prvé 2 zarovnania do nového zarovnania
+%     \item Porovnáme percentuálne zhody nového s~tretím zarovnaním
+%   \end{itemize}
+%   % TODO obrazok
+% \end{frame}
 
-\subsection{Simulované dáta}
-\begin{frame}{Dodatočné informácie}
-  \begin{itemize}
-    \item Stopa s~informáciou, či daná pozícia je súčasťou génu
-    \item Ukazuje sa, že dodatočné informácie dokážu pomôcť klasifikátoru v~lepšej klasifikácii`
-  \end{itemize}
-\end{frame}
 
 % \begin{frame}{Dodatočné informácie}
 % \begin{figure}[hbtp]
@@ -379,33 +538,56 @@ Ako základnú mieru úspešnosti nášho algoritmu budeme brať kontorlu tranzi
 
 
 \begin{frame}{Výsledky}
-  \begin{itemize}
-    \item Aktuálne len na simulovaných dátach
-    \item Kontrola tranzitivity:
-    \begin{itemize}
-      \item Referenčný model (3-stavový HMM bez klasifikátora) --~40\%
-      \item Náš základný model (s~1~anotáciou a oknom veľkosti 1) --~\textbf{46\%}
-      \item Náš základný model (s~1~anotáciou a oknom veľkosti 5) --~\textbf{46\%}
-      \item Model s~klasifikátorovou páskou -- ešte nie je dokončený.
-    \end{itemize}
-  \end{itemize}
+
+\begin{table}[htp]
+\centering
+\begin{tabular}{|l|r@{,}lr@{,}l|r@{,}lr@{,}l|}
+\hline
+Dáta &  \multicolumn{4}{|c|}{Simulované 1}  & \multicolumn{4}{|c|}{Simulované 2}\\% & \multicolumn{2}{|c|}{Biologické} \\
+\hline
+Model & \multicolumn{2}{|c}{Zhoda} & \multicolumn{2}{c}{Tranz.} & \multicolumn{2}{|c}{Zhoda} & \multicolumn{2}{c|}{Tranz.}\\% & Zhoda & Tranz.\\
+\hline
+Ref. model & 85 & 78\% & 61 & 03\% & 6 & 78\% & 8 & 87\%\\% & \% & \%\\
+\hline
+Model A~& 73 & 95\% & 38 & 10\% & 72 & 62\% & 39 & 48\%\\% & \% & \%\\
+\hline
+Model A~bez an. & 76 & 07\% & 45 & 63\% &  \multicolumn{2}{|c}{---} & \multicolumn{2}{c|}{---} \\% & \% & \%\\
+\hline
+Model B & 81 & 62\% & 54 & 94\% & 18 & 57\% & 10 & 50\%\\% & \% & \%\\
+\hline
+Model B  bez an.& 81 & 22\% & 54 & 18\% & \multicolumn{2}{|c}{---} & \multicolumn{2}{c|}{---}\\% & \% & \%\\
+\hline
+
+\end{tabular}
+\vspace{0.5cm}
+\caption{Porovnanie úspešností modelov. Zhoda je počítaná ako percentuálna zhoda originálneho a nového zarovnania. Tranzitivita je počítaná z~troch zarovnaní $AB$, $BC$ a $AC$ ako percentuálna zhoda medzi $AB \circ BC$ a $AC$.}
+\label{tab:datatype-all}
+\end{table}
+
 \end{frame}
 
 \section{}
-\begin{frame}{Najbližšie plány}
-  \begin{itemize}
-    \item Dorobiť ostatné modely
-    \item Urobiť experimenty na reálnych dátach
-    \item Experimenty s~deravým oknom, poprípade iné
-    \item V~prvom modeli CRF namiesto HMM?
-  \end{itemize}
-\end{frame}
+% \begin{frame}{Najbližšie plány}
+%   \begin{itemize}
+%     \item Dorobiť ostatné modely
+%     \item Urobiť experimenty na reálnych dátach
+%     \item Experimenty s~deravým oknom, poprípade iné
+%     \item V~prvom modeli CRF namiesto HMM?
+%   \end{itemize}
+% \end{frame}
 
 \begin{frame}[plain, c]
   \transdissolve[duration=5]
   \begin{center}
   \textbf{\color{Green} \LARGE Ďakujem za pozornosť!}
   \end{center}
+
+
+\end{frame}
+
+\begin{frame}[t]{Literatúra}
+  \bibliographystyle{apalike}
+  \bibliography{references}
 \end{frame}
 
 
