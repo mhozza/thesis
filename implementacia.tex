@@ -73,6 +73,7 @@ Od triedy \textit{GeneralizedPairState} navyše dedia aj naše triedy pre refere
 \section{Pomocné programy}
 V tejto sekcii sa budeme venovať dvom hlavným pomocným programom. Prvým z nich je náš simulátor, ktorý nám umožňuje generovať zarovnania a druhým je program na trénovanie zarovnaní. Okrem toho sme implementovali množstvo programov na tvorbu vizualizácií pre túto prácu, alebo konverziu dát z rôznych zdrojov do formátov podporovaných našim zarovnávačom, o ktorých si však hovoriť nebudeme.
 \subsection{Simulátor}
+\label{subsec:simulator}
 
 Simulátor slúži na generovanie zarovnaní pre naše experimenty. Náhodne vygeneruje tri\footnote{aby sme vedeli počítať tranzitivitu} sekvencie, ktoré vznikli zo spoločného predka a vyrobí korektné spoločné zarovnanie všetkých troch sekvencií. Okrem toho vyrobí aj dodatočné informácie, ktoré majú pomôcť pri zarovnávaní.
 
@@ -93,7 +94,7 @@ Gény bývajú súvislé úseky, takže ich treba generovať tak, že niekedy za
 \begin{figure}[htp]
     \centering
     \includegraphics[width=.7\textwidth]{images/markov_chain}
-    \caption{Markovova reťaz použitá na generovanie informácie o~génoch. $p$ je pravdepodobnosť, že začneme generovať gén, $q$ je pravdepodobnosť, že prestaneme generovať gén.}
+    \caption[Markovova reťaz použitá na generovanie informácie o~génoch]{Markovova reťaz použitá na generovanie informácie o~génoch. $p$ je pravdepodobnosť, že začneme generovať gén, $q$ je pravdepodobnosť, že prestaneme generovať gén.}
     \label{fig:markov-chain}
 \end{figure}
 

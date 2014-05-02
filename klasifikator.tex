@@ -1,6 +1,7 @@
 \chapter[Klasifikácia]{Klasifikácia na základe lokálnej informácie}
-
+\label{chap:clf}
  % Uvod ku kapitole (necislovany): Popises, preco chces byt schopny klasifikovat jednotlive pozicie a nadskrtnes, ako to bude neskor suvisiet s nejakym zapracovanim do HMM. Zakladna myslienka je, ze klasifikator ti dava moznost akymsi sposobom zhrnut informaciu vyplyvajucu zo sekvencie, anotacii a kontextu do jedneho cisla, ktore potom v ramci HMM mozes transparentne pouzit. Tuto ideu tam treba zdoraznit a vysvetlit to tak, aby citatelovi bolo jasne, na co to vsetko je dobre. Proste tento uvod musi celu kapitolu zasadit do kontextu celeje prace. Na zaver nadskrtnes strukturu kapitoly a v kratkosti (jedna/dve vety) zhrnies hlavne vysledky (t.j. ze pri vhodnej volbe atributov dostanes slusne klasifikatory).
+
 Cieľom našej práce bolo zahrnúť dodatočnú informáciu do zarovnávania sekvencií, ktorá je poskytnutá formou anotácií k~príslušným bázam. Keďže náš zarovnávač je založený na pHMM (sekcia \ref{subsec:hmm-alignment}), potrebujeme nejako určiť emisné pravdepodobnosti v~jednotlivých stavoch. Keďže chceme okrem jednotlivých báz zahrnúť aj iné informácie, rozhodli sme sa na tento účel využiť klasifikátory. Klasifikátory určujú, ktoré pozície sa majú zarovnať k~sebe a túto informáciu zakomponovávame do výsledného zarovnávača pomocou modelov, ktoré si popíšeme v~kapitole \ref{chap:models}.
 
 V~tejto kapitole sa budeme venovať výberu klasifikátora a jeho vstupných atribútov. Najskôr si stručne popíšeme algoritmus klasifikátora, potom typy vstupných atribútov, ktoré sme navrhli a nakoniec sa budeme venovať vlastnostiam klasifikátora s~danými typmi atribútov a výberu finálneho klasifikátora pre použitie v~našich modeloch.
