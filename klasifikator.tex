@@ -55,7 +55,7 @@ Predpokladajme teraz, že $X$ je sekvencia s~bázou. Okno Indel klasifikátora v
                 \caption{Indel klasifikátor}
                 \label{fig:window-i}
         \end{subfigure}
-        \caption[Okno klasifikátora]{Okno klasifikátora veľkosti 57,86 pre pozície $i = 6$ a $j = 3$}
+        \caption[Okno klasifikátora]{Okno klasifikátora veľkosti 5 pre pozície $i = 6$ a $j = 3$}
 \end{figure}
 
 \subsubsection{Typ dát A~- okno bez úpravy}
@@ -120,7 +120,7 @@ Vo všetkých sadách je polovica príkladov pozitívnych a polovica negatívnyc
 % - Potom uz len popisujes ZAUJIMAVE ukazy z tabulky, pricom grafy a pod. uvadzas len pre tie priklady, kde potrebujes dalsiu evidenciu navyse oproti udajom, ktore uz su uvedene vo velkej tabulke. NEZAUJIMAVE ukazy (t.j. ak je vsetko tak, ako by clovek priamo ocakaval) popisovat netreba.
 % - Asi sa chces venovat aj nejakym sposobom distribuciam skore, ale tam chces zasa len ukazat porovnanie najlepsieho a najhorsieho grafu. (Kedze toto je asi dolezite pre vyber "finalneho" klasifikatora, ktory pojde do HMM...)
 
-Použili sme klasifikátory tak, ako sme popísali v~sekcii \ref{sec:use-rf-alignment} a výsledky sa nachádzajú v~tabuľke \ref{tab:clf-results}.
+Použili sme klasifikátory tak, ako sme popísali v~sekcii \ref{sec:use-rf-alignment} a výsledky sa nachádzajú v~tabuľke \ref{tab:clf-results}. Pre naše experimenty sme použili okno veľkosti päť, ale ako si ukážeme v časti \ref{subsec:window-size} na veľkosti okna pri našich experimentoch nezáleží.
 
 \begin{table}[htp]
 \catcode`\-=12
@@ -200,7 +200,6 @@ Indel klasifikátor navyše považoval za dôležitejšiu aj bázu na aktuálnej
         \label{fig:datatype4}
 \end{figure}
 
-
 Pri dátach typu D sme dostali v~prípade Match klasifikátora očakávanú distribúciu dôležitosti atribútov (obr. \ref{fig:datatype4}). Dáta typu B boli uprednostnené voči typu~A, avšak aj bázy z~typu A~boli dôležité. Pri Indel klasifikátore sme dostali graf, ktorý je zložením grafov z~dát typu A~a~B. Zaujímavosťou je, že pri tomto type dát má výraznejšiu úlohu práve zhoda na stredovej pozícii, teda pozície už nie sú také rovnocenné ako to bolo v~type~B.
 
 \FloatBarrier
@@ -247,6 +246,59 @@ V~tabuľke \ref{tab:clf-results} vidíme, že hoci typ C obsahuje nadmnožinu at
 \end{figure}
 
 \FloatBarrier
+
+\subsection{Nezávislosť typu dát na veľkosti okna}
+\label{subsec:window-size}
+V tejto časti si ukážeme, že výber nášho typu dát nie je závislý na veľkosti okna. A teda môžme najskôr vybrať typ dát a potom sa rozhodnúť, akú veľkosť okna použijeme.
+
+\begin{table}[htp]
+\catcode`\-=12
+\centering
+\begin{subtable}{\textwidth}
+\centering
+\begin{tabular}{ccccc}
+\toprule
+veľkosť okna & typ A & typ B & typ C & typ D\\
+\midrule
+1 &  72,07 & 72,14 & 72,17 & \textbf{71,82}\\
+3 &  79,82 & \textbf{80,07} & 75,29 & 79,43\\
+5 &  83,57 & 84,31 & 79,79 & \textbf{84,32}\\
+7 &  86,81 & 87,51 & 81,66 & \textbf{88,30}\\
+9 &  88,13 & 89,60 & 83,48 & \textbf{89,87}\\
+11 & 88,45 & 90,34 & 86,30 & \textbf{91,62}\\
+13 & 89,35 & 91,06 & 87,85 & \textbf{92,76}\\
+15 & 89,12 & 92,41 & 89,39 & \textbf{93,59}\\
+\bottomrule
+\end{tabular}
+\caption{Match klasifikátor}
+\end{subtable}
+
+\vspace{1cm}
+
+\begin{subtable}{\textwidth}
+\centering
+\begin{tabular}{ccccc}
+\toprule
+veľkosť okna & typ A & typ B & typ C & typ D\\
+\midrule
+1 &  48,81 & 49,16 & 47,61 & \textbf{50,24}\\
+3 &  70,91 & \textbf{75,63} & 73,84 & 70,79\\
+5 &  74,13 & 75,75 & 75,03 & \textbf{76,46}\\
+7 &  76,17 & 78,08 & 76,28 & \textbf{81,24}\\
+9 &  79,51 & 79,87 & 77,06 & \textbf{81,78}\\
+11 & 75,39 & 79,09 & 80,05 & \textbf{81,60}\\
+13 & 76,34 & 81,66 & 81,42 & \textbf{83,51}\\
+15 & 74,13 & 82,56 & 81,36 & \textbf{85,54}\\
+\bottomrule
+\end{tabular}
+\caption{Indel klasifikátor}
+\end{subtable}
+\caption[Porovnanie úspešnosti klasifikátorov pri rôznej veľkosti okna]{Porovnanie úspešnosti klasifikátorov pri rôznej veľkosti okna.}
+\label{tab:clf-window-results}
+\end{table}
+
+Z tabuľky \ref{tab:clf-window-results} vidíme, že klasifikátor s atribútmi typu D je, až na okno veľkosti tri, vždy najlepší. Rovnako zostalo zachované aj poradie ostatných typov dát. Z toho môžme usúdiť, že pri voľbe typu dát nezáleží na veľkosti okna.
+
 \section{Zhrnutie}
 
 V~tejto kapitole sme si predstavili klasifikátory, ktoré použijeme v~našich modeloch. Uviedli sme dva typy klasifikátorov -- pre Match stav a Inzert stav. Venovali sme sa výberu atribútov pre klasifikátory a ich trénovaniu. Predstavili sme si štyri množiny atribútov pre naše klasifikátory, pre ktoré sme porovnali vlastnosti klasifikátora.
