@@ -7,15 +7,22 @@ V~princípe môžme rozlišovať dva typy modelov - \textit{generatívny model} 
 %Pri generatívnom modeli sa snažíme modelovať ako boli dáta generované. Na základe predpokladov o generovaní sa sažíme určiť triedu.
 %Pri diskriminatívnom modeli sa nestaráme o to ako boli dáta generované, jednoducho kategorizuje vstupný vektor. \cite{gendiscmodels}
 
-Konvenčné techniky odhadu pre zarovnávania sa zakladajú na generatívnom modeli. Generatívny model (napr. HMM) sa snaží modelovať proces, ktorý generuje dáta ako pravdepodobnosť $P(X,Y,Z)$, kde $X = x_1x_2\dots x_n$, $Y = y_1y_2\dots y_m$ a Z~je zarovnanie. Ak poznáme $P(X,Y,Z)$ (alebo jej dobrý odhad),
+Konvenčné techniky odhadu pre zarovnávania sa zakladajú na generatívnom modeli. Generatívny model (napr. HMM) sa snaží modelovať proces, ktorý generuje dáta ako pravdepodobnosť $P(X,Y,Z)$, kde $X = x_1x_2\dots x_n$, $Y = y_1y_2\dots y_m$ a Z~je zarovnanie. Ak vieme vypočítať (alebo dobre odhadnúť) $P(X,Y,Z)$, hľadáme
 $$\operatorname{ arg\,max}_z P(X = x,Y = y,Z = z)$$
-predikuje zarovnanie $z$ z~dvoch sekvencií $x$ a $y$. Aby sme zľahčili odhad pravdepodobnosti$P(X,Y,Z)$, rozložíme ju pomocou nezávislých predpokladov na procese, ktorý generuje $x$ a $y$. To síce vedie k~efektívnym a jednoduchým problémom odhadu, ale obmedzuje to interakcie v~rámci sekvencií, ktoré by sme mohli modelovať. \cite{svmTrainingProteinsAlignment}
+čiže optimálne zarovnanie $z$ z~dvoch sekvencií $x$ a $y$.
 
-Výskum v~oblasti strojového učenia dokázal, že diskriminačné učenie (SVM, RandomForest) zvyčajne produkuje oveľa presnejšie pravidlá ako generatívne učenie (HMM, naive Bayes classifier). \cite{svmTrainingProteinsAlignment}
-Môže to byť vysvetlené tým, že $P(Z|X,Y)$, je už vhodné na vyhodnotenie optimálnej predikcie
+Aby sme zľahčili odhad pravdepodobnosti $P(X,Y,Z)$, rozložíme ju pomocou nezávislých pravdepodobností (napríkald v HMM na pravdeodobnosti prechodov a emisné pravdepodobnosti v stavoch).
+To síce vedie k~efektívnym a jednoduchým výpočtom odhadu, ale obmedzuje to interakcie v~rámci sekvencií, ktoré by sme mohli modelovať. Napríklad nemôžme modelovať rôzne doplnkové informácie, ktoré sú závislé na sekvenciách \cite{svmTrainingProteinsAlignment}.
+
+Naproti tomu, v diskriminačných modeloch počítame
 $$\operatorname{ arg\,max}_z P(Z = z|X = x,Y = y).$$
-\cite{svmTrainingProteinsAlignment}\\
-Diskriminačné učenie aplikované na problém zarovnania bude priamo odhadovať $P(Z|X,Y)$ alebo prislúchajúcu diskriminačnú funkciu, a preto sa zamerá na podstatnú časť problému odhadu. \cite{svmTrainingProteinsAlignment}
+V tom prípade nemusíme modelovať proces, ktorý generuje $x$ a $y$ a môžme sa zamerať na podstatnú časť problému \cite{svmTrainingProteinsAlignment}.
+
+% Výskum v~oblasti strojového učenia dokázal, že diskriminačné učenie (SVM, RandomForest) zvyčajne produkuje oveľa presnejšie pravidlá ako generatívne učenie (HMM, naive Bayes classifier) \cite{svmTrainingProteinsAlignment}.
+% Môže to byť vysvetlené tým, že $P(Z|X,Y)$, je už vhodné na vyhodnotenie optimálnej predikcie
+% $$\operatorname{ arg\,max}_z P(Z = z|X = x,Y = y).$$
+% \cite{svmTrainingProteinsAlignment}\\
+% Diskriminačné učenie aplikované na problém zarovnania bude priamo odhadovať $P(Z|X,Y)$ alebo prislúchajúcu diskriminačnú funkciu, a preto sa zamerá na podstatnú časť problému odhadu \cite{svmTrainingProteinsAlignment}.
 
 Aktuálne existuje len niekoľko prístupov k~diskriminačnému učeniu modelov zarovnávaní.
 Jeden z~možných prístupov je riešiť \textit{problém inverzného zarovnania} pomocou strojového učenia. \cite{svmTrainingProteinsAlignment}
