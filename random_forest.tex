@@ -13,9 +13,10 @@ Klasifikátor náhodný les má niekoľko dôležitých vlastností, kvôli ktor
 \item má vysokú presnosť (podľa \cite{randomForest} je najpresnejší spomedzi všetkých vtedajších klasifikačných algoritmov)
 \item je efektívny aj na veľkých dátach
 \item dokáže obsiahnuť tisícky vstupných premenných
-\item natrénovaný náhoný les môžme uložiť a neskôr použiť na ďalšie dáta
+% \item natrénovaný náhoný les môžme uložiť a neskôr použiť na ďalšie dáta
 \item dáva odhad, ktoré premenné sú dôležité na klasifikáciu.
 \end{itemize}
+\cite{randomForest}
 
 Navyše má ešte niekoľko ďalších užitočných vlastností, ktoré však pre nás neboli rozhodujúce:
 
@@ -23,24 +24,25 @@ Navyše má ešte niekoľko ďalších užitočných vlastností, ktoré však p
 \item dokáže sa vysporiadať aj s~väčším množstvom chýbajúcich dát
 \item produkuje interný nevychýlený odhad chyby aj počas trénovania lesa
 \item dokáže počítať vzťahy medzi atribútmi a klasifikáciou
-\item počítanie vzdialenosti môže byť použité aj na neoanotované\footnote{bez informácie o~triede} dáta, čo sa dá použiť na klastrovanie a detekciu outlierov.
+\item počítanie vzdialenosti môže byť použité aj na dáta bez informácie o~triede, čo sa dá použiť na klastrovanie a detekciu outlierov.
 \item Ponúka experimentálnu metódu na detekciu interakcie medzi premennými.
 \end{itemize}
+\cite{randomForest}
 
 \subsection{Klasifikačné stromy}
-Keďže náhodný les je vlastne les \textit{klasifikačných stromov \footnote{niekedy označované ako rozhodovacie stromy}}, je nevyhnutné, aby sme si najskôr povedali niečo o~nich.
+Keďže náhodný les je vlastne les \textit{klasifikačných stromov (niekedy označované ako rozhodovacie stromy)}, je nevyhnutné, aby sme si najskôr povedali niečo o~nich.
 
 %subsection?
-Klasifikačný strom je strom vybudovaný na základe trénovacej množiny, ktorý na základe vstupných údajov (vstupného vektora) predpovedá hodnotu výstupnej premennej. Klasifikačný strom sa skladá z~\textit{uzlov} a \textit{listov}. V~uzle sa nachádza rozdeľovacie kritérium, podľa ktorého sa vieme rozhodnúť do ktorej vetvy máme pokračovať. V~listoch sa nachádzajú triedy, do ktorých sa vstupný vektor klasifikuje.
-
+Klasifikačný strom (obr \ref{fig:clf-tree}) sa skladá z~\textit{uzlov} a \textit{listov}. V~uzle sa nachádza rozdeľovacie kritérium, podľa ktorého sa vieme rozhodnúť do ktorej vetvy máme pokračovať. V~listoch sa nachádzajú triedy, do ktorých sa vstupný vektor klasifikuje. Klasifikačný strom je strom vybudovaný na základe trénovacej množiny, ktorý na základe vstupných údajov (vstupného vektora) predpovedá hodnotu výstupnej premennej.
 
 \begin{figure}[htp]
     \centering
     \includegraphics[width=.5\textwidth]{images/decision_tree}
     \caption[Klasifikačný strom]{Klasifikačný strom. $A$ sú atribúty, $P$ sú konkrétne hodnoty atribútov a $C$ sú triedy, do ktorých klasifikujeme dáta.}
+    \label{fig:clf-tree}
 \end{figure}
 
-Klasifikácia vstupného vektora vyzerá nasledovne: prechádzame strom zhora nadol a postupne sa zaraďujeme do vetiev podľa rozdeľovacích kritérií. Podľa toho, v~ktorom liste skončíme, sa určí výstupná hodnota.
+Klasifikácia vstupného vektora vyzerá nasledovne: prechádzame strom zhora nadol a postupne sa zaraďujeme do vetiev podľa rozdeľovacích kritérií. Výstupná hodnota sa určí podľa toho, v~ktorom liste skončíme.
 
 \subsubsection{Trénovanie}
 
@@ -52,7 +54,7 @@ Algoritmus začína so stromom, ktorý má práve jeden vrchol -- neuzavretý li
     \item Inak vyberie najinformatívnejší atribút $A_l$ a vrcholu $l$ pridá deti, rozdelené podľa hodnôt atribútu $A_l$.
 \end{itemize}
 
-Najinformatívnejší atribút vyberáme pomocou miery \textit{zisk informácie (angl. information gain)}. Zisk informácie je založený na rozdiele entrópie pred a po rozdelení podľa daného atribútu. Nech $C$ je množina tried a $p_c$ je pravdepodobnosť, že náhodný prvok z~$S$ patrí do $C$, potom entropiu množiny $S$ počítame ako:
+Najinformatívnejší atribút vyberáme pomocou miery \textit{zisk informácie (angl. information gain)}. Zisk informácie je založený na rozdiele entrópie pred a po rozdelení podľa daného atribútu. Nech $C$ je množina tried a $p_c$ je pravdepodobnosť, že náhodný prvok z~$S$ patrí do $C$, potom entropiu množiny $S$ vypočítame ako:
 $$E(S) = -\sum_{c \in C} p_c\log{p_c}$$
 Zisk informácie potom vypočítame takto:
 $$IG(S,A) = E(S) - \sum_{v \in A} \frac{\left| S_{\{A=v\}} \right|}{\left| S \right|} E\left(S_{\{A=v\}}\right)$$
@@ -60,7 +62,7 @@ $$IG(S,A) = E(S) - \sum_{v \in A} \frac{\left| S_{\{A=v\}} \right|}{\left| S \ri
 \subsection{Náhodný les}
 
 \subsubsection{Klasifikácia}
-Náhodný les sa skladá z~mnohých klasifikačných stromov, ktoré tvoria komisiu. Pri klasifikácii nejakého vstupného vektora sa predloží vstupný vektor každému stromu. Každý strom následne vráti klasifikáciu a hovoríme, že stromy \textit{hlasujú}. Náhodný les následne zvolí klasifikáciu podľa väčšiny z~hlasov všetkých stromov v~lese.
+Náhodný les sa skladá z~mnohých klasifikačných stromov. Pri klasifikácii nejakého vstupného vektora sa predloží vstupný vektor každému stromu. Každý strom následne vráti klasifikáciu a hovoríme, že stromy \textit{hlasujú}. Náhodný les následne zvolí klasifikáciu podľa väčšiny z~hlasov všetkých stromov v~lese.
 
 %TODO parametrizacia rf
 
@@ -70,9 +72,9 @@ Pri trénovaní náhodných lesov sa využívajú dve hlavné techniky. Prvou z~
 
 Druhá technika spočiva v~zmene trénovacieho algoritmu pre stromy. Nech trénovacie vektory majú $M$ atribútov. Namiesto všetkých $M$ atribútov sa v~každom vrchole vyberie náhodne len $m<<M$ z~nich. Najlepší atribút na rozdelenie vrcholu sa potom vyberá z~týchto $m$ atribútov, pričom $m$ je konštantné počas celého algoritmu.
 
-Každý strom je potom plne natrénovaný, bez orezávania.
+% Každý strom je potom plne natrénovaný, bez orezávania.
 
-Parameter $m$ je jediným parametrom, na ktorý je náhodný les citlivý. Ako bolo ukázané v~\cite{randomForestPaper}, chyba náhodného lesa závisí na dvoch veciach: korelácii medzi dvoma storomami v~lese (zvýšenie korelácie vedie k~zväčšeniu chyby) a sily\footnote{silný klasifikátor je taký, ktorý má malú chybu} každého stromu v~lese (zvýšenie sily jednotlivých stromov vedie k~zníženiu chyby). Ak znížime $m$ znížime oboje -- koreláciu aj silu stromov. Optimálny rozsah $m$ je zvyčajne celkom veľký a v~praxi sa zvykne často používať $m = \sqrt{M}$ alebo sa zvykne $m$ zvoliť, tak aby sa minimalizovala \textit{out of bag}\footnote{dáta, ktoré sa nenachádzajú v~jednotlivých trénovacích množinách pre dané stromy, viac v~\cite{randomForest}} chyba.
+Parameter $m$ je jediným parametrom, na ktorý je náhodný les citlivý. Ako bolo ukázané v~\cite{randomForestPaper}, chyba náhodného lesa závisí na dvoch veciach: korelácii medzi dvoma storomami v~lese (zvýšenie korelácie vedie k~zväčšeniu chyby) a sily\footnote{silný klasifikátor je taký, ktorý má malú chybu} každého stromu v~lese (zvýšenie sily jednotlivých stromov vedie k~zníženiu chyby). Ak znížime $m$ znížime oboje -- koreláciu aj silu stromov. Optimálny rozsah $m$ je zvyčajne celkom veľký a v~praxi sa zvykne často používať $m = \sqrt{M}$ alebo sa zvykne $m$ zvoliť, tak aby sa minimalizovala \textit{out of bag (OOB)} chyba. OOB chyba je počítaná na dátach, ktoré sa nenachádzajú v~jednotlivých trénovacích množinách pre dané stromy (viac v~\cite{randomForest}).
 
 
 

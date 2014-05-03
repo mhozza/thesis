@@ -2,7 +2,7 @@
 \label{chap:clf}
  % Uvod ku kapitole (necislovany): Popises, preco chces byt schopny klasifikovat jednotlive pozicie a nadskrtnes, ako to bude neskor suvisiet s nejakym zapracovanim do HMM. Zakladna myslienka je, ze klasifikator ti dava moznost akymsi sposobom zhrnut informaciu vyplyvajucu zo sekvencie, anotacii a kontextu do jedneho cisla, ktore potom v ramci HMM mozes transparentne pouzit. Tuto ideu tam treba zdoraznit a vysvetlit to tak, aby citatelovi bolo jasne, na co to vsetko je dobre. Proste tento uvod musi celu kapitolu zasadit do kontextu celeje prace. Na zaver nadskrtnes strukturu kapitoly a v kratkosti (jedna/dve vety) zhrnies hlavne vysledky (t.j. ze pri vhodnej volbe atributov dostanes slusne klasifikatory).
 
-Cieľom našej práce bolo zahrnúť dodatočnú informáciu do zarovnávania sekvencií, ktorá je poskytnutá formou anotácií k~príslušným bázam. Keďže náš zarovnávač je založený na pHMM (sekcia \ref{subsec:hmm-alignment}), potrebujeme nejako určiť emisné pravdepodobnosti v~jednotlivých stavoch. Keďže chceme okrem jednotlivých báz zahrnúť aj iné informácie, rozhodli sme sa na tento účel využiť klasifikátory. Klasifikátory určujú, ktoré pozície sa majú zarovnať k~sebe a túto informáciu zakomponovávame do výsledného zarovnávača pomocou modelov, ktoré si popíšeme v~kapitole \ref{chap:models}.
+Cieľom našej práce bolo zahrnúť dodatočnú informáciu do zarovnávania sekvencií, ktorá je poskytnutá formou anotácií k~príslušným bázam. Keďže náš zarovnávač je založený na pHMM (sekcia \ref{subsec:hmm-alignment}), potrebujeme určiť emisné pravdepodobnosti v~jednotlivých stavoch. Keďže chceme okrem jednotlivých báz zahrnúť aj iné informácie, rozhodli sme sa na tento účel využiť klasifikátory. Klasifikátory určujú, ktoré pozície sa majú zarovnať k~sebe a túto informáciu zakomponovávame do výsledného zarovnávača pomocou modelov, ktoré si popíšeme v~kapitole \ref{chap:models}.
 
 V~tejto kapitole sa budeme venovať výberu klasifikátora a jeho vstupných atribútov. Najskôr si stručne popíšeme algoritmus klasifikátora, potom typy vstupných atribútov, ktoré sme navrhli a nakoniec sa budeme venovať vlastnostiam klasifikátora s~danými typmi atribútov a výberu finálneho klasifikátora pre použitie v~našich modeloch.
 
@@ -19,19 +19,20 @@ V~tejto kapitole sa budeme venovať výberu klasifikátora a jeho vstupných atr
 
 Keďže v~našich modeloch máme dva typy stavov, použili sme dva typy klasifikátorov: \textit{Match klasifikátor} pre Match stav a \textit{Indel klasifikátor} pre Inzert stavy.
 
-Klasifikátory dostanú na vstupe dáta asociované s~pozíciami v~daných sekvenciách a rozdeľujú ich do dvoch tried -- nula a jedna. V~Match klasifikátore trieda jedna znamená, že dané dve pozície majú byť zarovnané k~sebe a nula znamená, že nie. V~Indel klasifikátore trieda jedna označuje pozície, ktoré majú byť zarovnané k~medzere a nula tie, ktoré nemajú. Ako výstupnú hodnotu pre naše modely berieme pravdepodobnosť, že dané dáta patria do triedy jedna.
+Klasifikátory dostanú na vstupe dáta asociované s~pozíciami v~daných sekvenciách a rozdeľujú ich do dvoch tried -- nula a jedna. V~Match klasifikátore trieda jedna znamená, že dané dve pozície majú byť zarovnané k~sebe a nula znamená, že nie. V~Indel klasifikátore trieda jedna označuje pozície, ktoré majú byť zarovnané k~medzere a nula tie, ktoré nemajú. Ako výstupnú hodnotu pre naše modely berieme pravdepodobnosť, že dané dáta patria do triedy jedna. Túto pravepodobnosť defimnujeme ako $P(C=1|W=w)$, Kde $C$ je náhodná premenná pre výstupnú triedu, $W$ je náhodná premenná pre množinu atribútov a $w$ sú konkrétne hodnoty atribútov.
 
-Tieto pravdepodobnosti sú akousi mierou istoty daného klasifikátora, a keďže tieto dva klasifikátory sú nezávislé, súčet ich výstupov nemusí byť jedna. Sú totiž tri možnosti, čo sa môže stať:
-\begin{itemize}
-    \item dve bázy sú zarovnané k~sebe
-    \item báza je zarovnaná s~nejakou inou bázou (túto možnosť klasifikátory nepokrývajú)
-    \item báza je zarovnaná s~medzerou
-\end{itemize}
+Keďže tieto klasifikátory sú nezávislé, nemusí platiť, že $P_M(C=1|W_M=w_M) + P_I(C=1|W_I=w_I) = 1$, kde $P_M$ je výstup z Match klasifikátora a $P_I$ je výstup z Indel klasifikátora a $w_M$ a $w_I$ sú atribúty pre tie isté pozície v Match a Indel klasifikátory. Môže sa napríklad stať, že oba klasifikátory zaradia atribúty prislúchajúce tým istým pozíciám do triedy jedna, alebo do triedy nula.
+% Tieto pravdepodobnosti sú akousi mierou istoty daného klasifikátora, a keďže tieto dva klasifikátory sú nezávislé, súčet ich výstupov nemusí byť jedna. Sú totiž tri možnosti, čo sa môže stať:
+% \begin{itemize}
+%     \item dve bázy sú zarovnané k~sebe
+%     \item báza je zarovnaná s~nejakou inou bázou (túto možnosť klasifikátory nepokrývajú)
+%     \item báza je zarovnaná s~medzerou
+% \end{itemize}
 
 \subsection{Výber atribútov}
 \label{subsec:attribute-selection}
 
-Klasifikátor dokáže pracovať len s~poľom číselných atribútov, preto bolo treba najskôr dáta dať do tejto podoby. Navyše bolo treba rozhodnúť, aké dáta klasifikátoru podstrčíme. Potrebovali sme, aby klasifikátor videl bázy a ich anotácie na daných pozíciách. Navyše sme sa rozhodli pridať ako pomôcku aj okolie daných báz spolu s~anotáciami. Toto okolie budeme volať \textit{okno}. Vyskúšali sme štyri rôzne formy okna a zisťovali sme, ktorá forma je pre klasifikátor najvhodnejšia. Na to sme mali dve miery: úspešnosť klasifikátora a dôležitosť atribútov. Pri úspešnosti sme sledovali rozdelenie výstupu klasifikátora pre pozitívne a negatívne atribúty. Dôležitosť atribútov sme mali hlavne na kontrolu a vizualizáciu, ktoré dáta považuje klasifikátor za dôležité.
+Klasifikátor dokáže pracovať len s~poľom číselných atribútov, preto bolo treba najskôr dáta dať do tejto podoby. Navyše bolo treba rozhodnúť, aké dáta bude klasifikátor používať. Potrebovali sme, aby klasifikátor videl bázy a ich anotácie na daných pozíciách. Navyše sme sa rozhodli pridať ako pomôcku aj okolie daných báz spolu s~anotáciami. Toto okolie budeme volať \textit{okno}. Vyskúšali sme štyri rôzne formy okna a zisťovali sme, ktorá forma je pre klasifikátor najvhodnejšia. Na to sme mali dve miery: úspešnosť klasifikátora a dôležitosť atribútov. Pri úspešnosti sme sledovali rozdelenie výstupu klasifikátora pre pozitívne a negatívne atribúty. Dôležitosť atribútov sme mali hlavne na kontrolu a vizualizáciu atribútov.
 
 \subsubsection{Definícia okna}
 Okno veľkosti $w$ pozostáva z~$2w$ blokov veľkosti $k = (1+\#\text{anotácií})$.
@@ -54,7 +55,7 @@ Predpokladajme teraz, že $X$ je sekvencia s~bázou. Okno Indel klasifikátora v
                 \caption{Indel klasifikátor}
                 \label{fig:window-i}
         \end{subfigure}
-        \caption[Okno klasifikátora]{Okno klasifikátora pre pozície $i = 6$ a $j = 3$}
+        \caption[Okno klasifikátora]{Okno klasifikátora veľkosti 57,86 pre pozície $i = 6$ a $j = 3$}
 \end{figure}
 
 \subsubsection{Typ dát A~- okno bez úpravy}
@@ -80,7 +81,7 @@ Posledný typ dát je kombináciou typov dát A~a~B. Dáta opäť obsahujú vše
 
 \subsection{Trénovanie a testovanie klasifikátorov}
 \label{subsec:clf-training}
-Pre oba typy klasifikátorov sme sa snažili nájsť vhodné pozitívne a negatívne trénovacie príklady. Z~oboch sme do trénovacej množiny zahrnuli rovnako, aby bola trénovacia množina vyvážená. Ak by sme nemali vyváženú trénovaciu množinu, klasifikátory by zvýhodnili triedu, ktorej príkladov by bolo viacej. Napríklad, keby sme pri Indel klasifikátore zobrali všetky pozície s~medzerou ako pozitívne a všetky zarovnané pozície ako negatívne príklady, klasifikátor, ktorý by dával hodnotu nula, by mal pomerne vysokú úspešnosť, pretože zarovnaných pozícií je rádovo viac ako pozícií s~medzerou. Preto by natrénovaný klasifikátor mal tendenciu dávať nižšie hodnoty, aby znížil trénovaciu chybu a tomu sa chceme vyhnúť.
+Pre oba typy klasifikátorov sme sa snažili nájsť vhodné pozitívne a negatívne trénovacie príklady. Z~oboch sme do trénovacej množiny zahrnuli rovnako, aby bola trénovacia množina vyvážená. Ak by sme nemali vyváženú trénovaciu množinu, klasifikátory by zvýhodnili triedu, ktorej príkladov by bolo viacej. Napríklad, keď sme pri Indel klasifikátore zobrali všetky pozície s~medzerou ako pozitívne a všetky zarovnané pozície ako negatívne príklady, natrénovaný klasifikátor mal tendenciu dávať nižšie hodnoty, aby znížil trénovaciu chybu, čomu sa chceme vyhnúť. Klasifikátor, ktorý by dával stále hodnotu nula, by mal tiež pomerne vysokú úspešnosť, pretože zarovnaných pozícií je rádovo viac ako pozícií s~medzerou.
 
 Výber pozitívnych príkladov bol v~oboch prípadoch intuitívny. Pri výbere negatívnych príkladov sme sa museli zamyslieť nad vhodným protipólom k~pozitívnym dátam.
 
