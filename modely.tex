@@ -87,11 +87,11 @@ Alternatíva k~predošlej metóde je použiť spojitý HMM. Hlavný rozdiel medz
 % Keďže stále ide o~párový HMM, pásku si musíme predstaviť ako cestu v~2D tabuľke výstupov klasifikátorov, ktorá sa zhoduje s~cestou zarovnania. Teda ak sa pohneme horizontálne  alebo vertikálne, používame Indel klasifikátor a ak sa pohneme diagonálne tak použijeme Match klasifikátor.
 
 
-\subsection{Diskrétizácia skôre klasifikátorov}
+\subsection{Diskrétizácia skóre klasifikátorov}
 
 Pre diskrétnu verziu modelu B sme sa zaoberali spôsobom diskretizácie.
 Diskretizovať hodnoty môžme dvoma spôsobmi. Buď jednoducho spočítame histogram pre trénovacie dáta, alebo interpolujeme vstupnú vzorku pomocou spojitej distribúcie, napr. pomocou zmesi gausiánov (tak ako v spojitej verzii) a potom toto rozdelenie diskretizujeme (obr. \ref{fig:clf-discretisation}). Druhá spomenutá metóda má výhodu v~tom, že vyhladí šum a doplní chýbajúce dáta, ale keďže je pouzitá aproximácia, zavádza určitú nepresnosť.
-% V~oboch prípadoch si musíme zvoliť počet košov $b$, do ktorých dáta rozdelíme. Koše sme rozdelili rovnomerne a na základe experimentov sme si zvolili $b = 10$.
+V~oboch prípadoch si musíme zvoliť počet košov $b$, do ktorých dáta rozdelíme. Koše sme rozdelili rovnomerne a na základe experimentov (tabuľka \ref{tab:success-b-tape}) sme si zvolili $b = 10$.
 
 \begin{figure}[htp]
         \centering
@@ -122,46 +122,61 @@ Diskretizovať hodnoty môžme dvoma spôsobmi. Buď jednoducho spočítame hist
 \begin{table}[h]
 \catcode`\-=12
 \centering
-\begin{tabular}{cc}
+\begin{tabular}{lrc}
 \toprule
-& Úspešnosť\\
+& počet košov & Úspešnosť\\
 \midrule
-Histogram & 82,25\%\\
-Nasekaný gausián & 82,98\%\\
-Zmes gausiánov & 65,59\%\\
+Histogram & 10 & 81,78\%\\
+ & 20 & 81,35\%\\
+ & 50 & 59,97\%\\
+Diskretizovaný gausián & 10 & 81,80\%\\
+ & 20 & 81,55\%\\
+ & 50 & 81,20\%\\
+ & 100 & 81,12\%\\
+Spojitý model & --- & 65,59\%\\
 \bottomrule
 \end{tabular}
 \vspace{0.5cm}
-\caption[Porovnanie úspešností pri rôznom spracovaní pásky]{Porovnanie úspešností modelu B pri rôznom spracovaní pásky.}
+\caption[Porovnanie úspešností pri rôznom spracovaní pásky]{Porovnanie úspešností modelu B pri rôznom spracovaní pásky a rôznom počte košov pri diskretizacii.}
 \label{tab:success-b-tape}
 \end{table}
 
-Ako vidíme z~tabuľky \ref{tab:success-b-tape}, spojitá verzia modelu sa nám neosvedčila. Má totiž nedostatok, že distribučná funkcia nedosahuje maximum pri výstupe klasifikátora rovnom jedna, ale kúsok predtým, čo znamená istú penalizáciu v~prípade, že si je klasifikátor príliš istý. To, či použijeme vyhladenie pomocou gausiánu až tak nezaváži, ale rozhodli sme sa ho predsa len využiť, pretože úspešnosť bola trochu vyššia takmer na všetkých testovaných sekvenciách.
+Ako vidíme z~tabuľky \ref{tab:success-b-tape}, spojitá verzia modelu sa nám neosvedčila. Má totiž nedostatok, že distribučná funkcia nedosahuje maximum pri výstupe klasifikátora rovnom jedna, ale kúsok predtým, čo znamená istú penalizáciu v~prípade, že si je klasifikátor príliš istý.
+Môžme si tiež všimnúť prudký pokles úspešnosti pri diskretizácii pomocou histokgramu s počtom košov 50. Je to spôsobené tým, že na trénovacej množine klasifikátor nevrátil žiadne hodnoty pre niektoré koše. Preto je rozumné použiť vyhladenie pomocou gausiánu, kde sa takéto problémy vyriešia. Okem toho bola úspešnosť s použitím gausiánu trochu vyššia ako bez neho takmer na všetkých testovaných sekvenciách.
 
 \section{Trénovanie modelov}
 \label{sec:model-training}
 
-Množiny pre trénovanie klasifikátora ostali také, ako sme si popísali v~kapitole \ref{subsec:clf-training-sets}. Množina biologických dát pre trénovanie klasifikátora sa skladala z 30 sekvencií s dĺžkami od 1000 do 1500.
+Na testovanie úspešnosti klasifikátora sme použili tri typy množín, ktoré si označíme \textit{simulované 1 (skr. sim1)}, \textit{simulované 2 (sim2)} a \textit{biologické (bio)}
 
-V~prípade simulovaných dát 1 a 2 boli trénovacie množiny pre naše modely jedno zarovnanie dĺžky 10000. Testovacie množiny boli 6 zarovnaní dĺžky 1000. Zarovnania boli vygenerované našim simulátorom, ktorý je popísaný v kapitole \ref{subsec:simulator}.
-\todo fixnut V~tabuľke \ref{tab:sim-params} uvádzame pravdepodobnosť mutácie pre jednotlivé dáta.
-V prípade biologických dát má trénovacia množina pre modely 41 sekvencií, pričom každá má dĺžku od 1000 do 2500. Testovacia množina sa skladá zo 6 sekvencií s dĺžkami od 1000 do 1500.
+Každá dátová množina sa skladá z troch podmnožín -- množina na trénovanie klasifikátora, množina na trénovanie modelu a testovacia množina.
+Množina na trénovanie modelu totiž musí byť nezávislá od množiny na trénovanie modelu, pretože model budeme tiež používať na nezávisej množine a ak by sme použili tú istú množinu aj na trénovanie klasifkátora aj modleu, tak by model bol vychylený.
 
-\begin{table}
-\centering
-\begin{tabular}{cccc}
-\toprule
-anotácia $X$ & anotácia $Y$ & sim1 & sim2\\
-\midrule
-1 & 1 & 0,20 & 0,01\\
-1 & 0 & \multirow{2}{*}{0,35} & \multirow{2}{*}{0,30}\\
-0 & 1\\
-0 & 0 & 0,40 & 0,99\\
-\bottomrule
-\end{tabular}
-\caption[Pravdepodobnosť mutácie v~našich datasetoch]{Pravdepodobnosť mutácie v~simulovaných dátach 1 a 2}
-\label{tab:sim-params}
-\end{table}
+Množiny pre simulované dáta pozostávajú z 20 zarovnaní s dĺžkou 10000 pre trénovanie klasifikátora, jedného zarovnania s dĺžkou 10000 pre trénovanie modelu a 6 zarovnaní s dĺžkou 1000 pre testovanie modelu.
+Množina biologických dát pre trénovanie klasifikátora sa skladala z 30 sekvencií s dĺžkami od 1000 do 1500, trénovacia množina pre modely obsahuje 41 sekvencií s dĺžkou od 1000 do 2500 a testovacia množina sa skladá zo 6 sekvencií s dĺžkami od 1000 do 1500.
+
+V simulovaných dátach sme použili jednu anotáciu, ktorá označovala, či ide o gén, alebo nie.
+Simulované dáta 1 boli vygenerované našim simulátorom, ktorý je popísaný v kapitole \ref{subsec:simulator}.
+Simulované dáta 2 boli vygenerované tiež našim simulátorom, ktorý bol upravený tak, že v prípade génov sa sekvencie generovali z dvoch komplementárnych sekvencií a mimo génov z rovnakých sekvencií. Napríklad v prípade genov by sa namiesto AA vygenerovalo AT. To malo za úlohu posilniť význam anotácie.
+Biologické dáta boli prevzaté z databázy génov UCSC (\cite{karolchik2003ucsc}) a išlo o multi zarovnanie 7 sekvencií.
+Z nich sme si vybrali tri organizmy: človek (hg19), šimpanz(Pan troglodytes, panTro2) a pes (Canis familiaris, canFam2).
+Ako anotácie sme použili dáta z programu genscan\footnote{program na hľadanie génov} a anotáciu s opakovaniami. Obe anotácie sme mali tiež z databázy génov UCSC.
+
+% \begin{table}
+% \centering
+% \begin{tabular}{cccc}
+% \toprule
+% anotácia $X$ & anotácia $Y$ & sim1 & sim2\\
+% \midrule
+% 1 & 1 & 0,20 & 0,01\\
+% 1 & 0 & \multirow{2}{*}{0,35} & \multirow{2}{*}{0,30}\\
+% 0 & 1\\
+% 0 & 0 & 0,40 & 0,99\\
+% \bottomrule
+% \end{tabular}
+% \caption[Pravdepodobnosť mutácie v~našich datasetoch]{Pravdepodobnosť mutácie v~simulovaných dátach 1 a 2}
+% \label{tab:sim-params}
+% \end{table}
 
 Naše modely trénujeme pomocou metódy maximálnej vierohodnosti, tak ako sme si to popísali v~kapitole \ref{subsec:hmmtraining}. V HMM trénujeme prechodové a emisné pravdepodobnosti. Prechodové pravdepodobnosti sme trénovali vo všetkých modeloch rovnako a emisné pravdepoodbnosti rôzne.
 
@@ -204,7 +219,7 @@ Táto miera určuje konzistentnosť zarovnávača, čo je jedna z dôležitých 
 \begin{table}[htp]
 \catcode`\-=12
 \centering
-\begin{tabular}{lcccccccc}
+\begin{tabu} to \textwidth {X[l]X[c]X[c]X[c]X[c]X[c]X[c]X[c]X[c]}
 \toprule
 \multirow{2}{*}{Dáta} &
 \multicolumn{2}{c}{Model A} &
@@ -214,17 +229,21 @@ Táto miera určuje konzistentnosť zarovnávača, čo je jedna z dôležitých 
 \cmidrule(r){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(l){8-9}
 & Zhoda & Tranz. & Zhoda & Tranz. & Zhoda & Tranz. & Zhoda & Tranz.\\
 \midrule
-Sim & 79,75\% & 44,97\% & 84,35\% & 56,5\% & \textbf{85,78\%} & \textbf{61,03\%} & 82,72\%& 58,76\%\\
-% Sim2 &  & & \\
-Bio & \textbf{91,40\%} & 96,63\% & 91,24\% & \textbf{96,89\%} & 91,34\% & 96,45\% & 91,28\% & 95,98\%\\
+sim1 & 79,75\% & 44,97\% & 84,35\% & 56,5\% & \textbf{85,78\%} & \textbf{61,03\%} & 82,72\%& 58,76\%\\
+sim2 & 70,14\% & --- & \textbf{71,47}\% & --- & 60,38\% & --- & 61,47\% & --- \\
+bio & \textbf{91,40\%} & 96,63\% & 91,24\% & \textbf{96,89\%} & 91,34\% & 96,45\% & 91,28\% & 95,98\%\\
 \bottomrule
-\end{tabular}
+\end{tabu}
 \caption[Porovnanie s~existujúcimi zarovnávačmi]{Porovnanie našich modelov s~referenčným modelom a zarovnávačom muscle.}
 \label{tab:success-compare}
 \end{table}
 
-V~tabuľke \ref{tab:success-compare} sme porovnávali naše modely so základným modelom a zarovnávačom muscle.
-Na simulovaných dátach, ktoré boli generované náhodne, naše modely nedokázali prekonať referenčné modely. Avšak na biologických dátach, v ktorých je viacej pravidelností, dokázali dodatočné inforácie pomôcť dosiahnuť lepšiu tranzitivitu a v prípade modelu A aj lepšiu úspešnošť.
+V~tabuľke \ref{tab:success-compare} sme porovnávali naše modely so základným modelom a zarovnávačom muscle. Typ dát v našich expeimentoch je typ D a okno je veľkosti 9.
+Na simulovaných dátach, ktoré boli generované náhodne, naše modely nedokázali prekonať referenčné modely.
+Keď sme však posilnili význam anotácie (simulované dáta 2) referenčné modely, ktoré anotáciu k dispozícii nemali boli v nevýhode a naše modeli dopadli lepšie.
+Na biologických dátach, v ktorých je viacej pravidelností ako v simulovaných, dokázali dodatočné informácie pomôcť dosiahnuť lepšiu tranzitivitu (čo bol v tomto prípade náš primárny cieľ) a v prípade modelu A aj lepšiu úspešnošť.
+
+Naše modely produkujú porovnateľné výsledky, avšak model B bol vo väčšine prípadov lepší. Model B je totiž kombináciou pôvodného pHMM a modelu A. Na rozdiel od modelu A sa nespolieha len na výsledky klasifikácie, pri korých sa občas môže stať, že niesú dobré (úspešnosť je len okolo 80\%), ale aj na samotné frekvencie výskytov dvojíc písmen. Klasifikátor potom na základe dodatočnej informácie upravuje túto pravdepodobnosť.
 
 % Model A~emituje len na základe natrénovaného klasifikátora, takže čokoľvek dokážeme klasifikátor naučiť, môžme priamo použiť. Model B používa klasifikátor iba ako pomôcku, funguje podobne ako štandardný model pre zarovnanie (sekcia \ref{subsec:hmm-alignment}) a klasifikátor iba mierne upravuje výsledné pravdepodobnosti. Model B je teda viazaný aj pravdepodobnosťami výskytov dvojíc báz.
 
@@ -295,7 +314,13 @@ Na simulovaných dátach, ktoré boli generované náhodne, naše modely nedoká
 
 \subsection{Vplyv dodatočnej informácie na zarovnanie}
 
-V~tejto sekcii sme zisťovali, aký vplyv má dodatočná informácia na zarovnanie. Vyskúšali sme zakázať anotácie pri veľkosti okna jedna a 9. Pri veľkosti okna rovnej jedna nemáme okrem anotácie žiadnu ďalšiu informáciu. Pri veľkosti okna 9 máme aj okolie sekvencie.
+V~tejto sekcii sme zisťovali, aký vplyv má dodatočná informácia na zarovnanie v simulovaných dátach 1. Porovnali sme štyri scenáre:
+\begin{itemize}
+    \item okno veľkosti jedna bez anotácie -- zodpovedá tomu, čo vidí aj základný pHMM
+    \item okno veľkosti jedna s anotáciou -- obsahuje navyše iba anotáciu
+    \item okno veľkosti 9 bez anotácie -- obsahuje navyše iba okolie v sekvencii
+    \item okno veľkosti 9 s anotáciou -- obsahuje navyše okolie v sekvencii aj anotácii
+\end{itemize}
 
 \begin{table}[htp]
 \centering
@@ -314,11 +339,10 @@ Veľkosť okna & Anotácia & Model A~& Model B\\
 \label{tab:annotation-compare}
 \end{table}
 
-V~tabuľke \ref{tab:annotation-compare} si môžeme všimnúť, že zatiaľ čo pri modeli A~je úspešnosť veľmi podobná, hoci aj anotácie aj väčšie okno mierne pomohli. Naopak pri modeli B sú rozdiely výrazne väčšie, vidíme, že aj samotná anotácia výrazne pomohla a väčšie okno je pre tento model nutnosťou.
+V~tabuľke \ref{tab:annotation-compare} si môžeme všimnúť, že zatiaľ čo pri modeli A~je úspešnosť veľmi podobná, hoci aj anotácie aj väčšie okno mierne pomohli. Naopak pri modeli B sú rozdiely výrazne väčšie, vidíme, že aj samotná anotácia výrazne pomohla a väčšie okno je pre tento model nutnosťou. Pri menšom počte atribútov totiž klasifikátor môže vrátiť len malý počet rôznych hodnôt (maximálne toľko, koľko je možných vstupov), čo je v modeli B nedostatočné. V modeli A to až tak nevadí, pretože v tomto prípade sa bude správať podobne ako pHMM -- pre rovnaké bázy bude dávať vyššie hodnoty a pre rôzne nižšie.
 
 \subsection{Použitie jedného klasifikátora pre Match aj Inzert stav}
-
-V~tejto sekcii sme vyskúšali nahradenie Indel klasifikátora Match klasifikátorom, ktorý vracia opačné hodnoty. Teda trénujeme len jeden klasifikátor.
+V tejto sekcii si ukážeme, že voľba dvoch špecializovaných klasifikátorov mala svoje opodstatnenie. Namiesto dvoch špecifických klasifikátorov sme použili jeden klasifikátor aj pre Match aj pre Inzert stav. Tento klasifikátor bol taký istý ako náš Match klasifikátor a v Inzert stave sme prevrátili jeho hodnotu. Tieto možnosti sme porovnali na simulovaných dátach 1.
 
 \begin{table}[htp]
 \centering
@@ -334,6 +358,14 @@ V~tejto sekcii sme vyskúšali nahradenie Indel klasifikátora Match klasifikát
 \label{tab:1clf-compare}
 \end{table}
 
-Z~tabuľky \ref{tab:1clf-compare} vidno, že použitie dvoch typov klasifikátorov má svoje opodstatnenie, hoci naše modeli dokášu fungovať aj z~jedným.
+Z~tabuľky \ref{tab:1clf-compare} vidíme, že hoci naše modeli dokážu fungovať aj s jedným klasifikátorom, použitie dvoch typov klasifikátorov má svoje opodstatnenie a zvyšuje úspešnosť klasifikatorov.
 
 \section{Zhrnutie}
+
+V tejto kapitole sme si predstavili dva modely pre zarovnávanie sekvencií s dodatočnou informáciou pomocou klasifikátorov: model A a model B.
+Oba modely boli založené na pHMM. Prvý z nich priamo nahradil emisné pravdepodobnosti výstupom klasifikátora, a teda nemôže byť považovany za pravdepodobnostný model.
+Druhý model sme navrhli ako pravdepodobnostný model, a okrem dvoch sekvencií mal k dispozícii pásku s výstupom z klasifikátorov. Uviedli sme si aj spôsob diskretizácie výstupu klasifikatora pre model B.
+
+Ukázali sme, že na biologických dátach dokážu naše modely prekonať úspešnosť referenčných modelov. Okrem toho sme ukázali, že naše modely sú na rozdiel od referenčných modelov použiteľné aj v prípade, že vlastnosti zarovnania veľmi závisia od anotácie.
+
+Nakoniec sme si ukázali aj opodstatnenie dvoch typov klasifikátorov namiesto jedného a aj to, že anotácia aj väčšie okolie daných báz majú pozitívny vplyv na zarovnávanie našimi modelmi.
