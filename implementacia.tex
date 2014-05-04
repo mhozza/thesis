@@ -5,12 +5,12 @@ V~tejto kapitole sa budeme zaoberať implementáciou nášho riešenia. Popíše
 
 \section{Výber jazyka a použité knižnice}
 %daky pokec o~tom ze som to pisal v~pythone a preco je python super
-Ako jazyk pre písanie nášho zarovnávača sme si vybrali Python (vo verzii 2.7). Dôvodov sme mali niekoľko: Zarovnávač sme nepísali od začiatku, ale rozširovali sme program \textit{Realigner} \cite{nanasi2013probabilistic}, ktorý je napísaný v~jazyku Python 2.7. Ďalšími dôvodmi sú pohodlnosť písania v~jazyku Python a dostupnosť veľkého množstva užitočných knižníc. Knižnice pre Python sa dajú písať aj v~jazyku C alebo C++, čo umožňuje skĺbiť rýchlosť C a jednoduchosť jazyka Python.
+Ako jazyk pre písanie nášho zarovnávača sme si vybrali Python (vo verzii 2.7). Dôvodov sme mali niekoľko: Zarovnávač sme nepísali od začiatku, ale rozširovali sme program \textit{Realigner} \cite{Nanasi2014}, ktorý je napísaný v~jazyku Python 2.7. Ďalšími dôvodmi sú pohodlnosť písania v~jazyku Python a dostupnosť veľkého množstva užitočných knižníc. Knižnice pre Python sa dajú písať aj v~jazyku C alebo C++, čo umožňuje skĺbiť rýchlosť C a jednoduchosť jazyka Python.
 
 \subsection{Realigner}
 \label{subsec:realigner}
 
-\textit{Realigner} je program na zarovnávanie a vylepšovanie zarovnaní pomocou pHMM, ktorý bol pôvodne vyvinutý na zarovnávanie sekvencií s~tandemovými opakovaniami \cite{nanasi2013probabilistic}. Umožňuje prezarovnanie sekvencií pomocou párových HMM a Viterbiho algoritmu. Prezarovnanie dokáže robiť aj v~rámci lokálneho okolia okolo pôvodného zarovnania. Program je rozšíriteľný o~nové modely, čo sme využili pre naše potreby.
+\textit{Realigner} je program na zarovnávanie a vylepšovanie zarovnaní pomocou pHMM, ktorý bol pôvodne vyvinutý na zarovnávanie sekvencií s~tandemovými opakovaniami \cite{Nanasi2014}. Umožňuje prezarovnanie sekvencií pomocou párových HMM a Viterbiho algoritmu. Prezarovnanie dokáže robiť aj v~rámci lokálneho okolia okolo pôvodného zarovnania. Program je rozšíriteľný o~nové modely, čo sme využili pre naše potreby.
 
 \subsection{Pythonové knižnice}
 %  python kniznice - najma scikit-learn, numpy, track
