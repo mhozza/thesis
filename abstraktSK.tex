@@ -1,11 +1,11 @@
 Zarovnávanie dvoch DNA sekvencií je jedným zo základných
 bioinformatických problémov. V~tejto práci sa zaoberáme možnosťami použitia prídavnej informácie o~funkcii vstupných sekvencií na zlepšenie kvality takýchto zarovnaní.
-Informácie sme zakomponovali pomocou dvoch klasifikátorov, pre Match a Inzert stavy.
-Klasifikátor pre Match stav rozhoduje, či dané pozície majú byť zarovnané k~sebe alebo nie. Klasifikátor pre Inzert stavy, rozhoduje, či daná pozícia má byť zarovnaná k~medzere alebo nie. Ako jadro klasifikátorov sme použili náhodné lesy. Venovali sme sa výberu atribútov a vhodnými atribútmi sa nám podarilo zlepšiť úspešnosť klasifikátorov. Ukázali sme, že klasifikátor sa dokáže naučiť, ktoré pozície majú byť zarovnané k~sebe a ktoré nie.
+Informácie sme zakomponovali pomocou dvoch klasifikátorov, jeden pre zarovnané časti sekvencií a druhý pre nezarovnané časti sekvencií.
+Klasifikátor pozície na dve triedy: tie, ktoré majú byť zarovnané k~sebe (trieda 1) a tie, ktoré nie (trieda 0). V~prípade klasifikátora pre nezarovnané časti, tie, ktoré majú byť zarovnané k~medzere (trieda 1) a tie ktoré nie (trieda 0). Výstupom klasifikátora je potom pravdepodobnosť, že ďáta patria do triedy 1. Na klasifikáciu sme použili náhodné lesy (Random Forests). Venovali sme sa výberu atribútov a vhodnými atribútmi sa nám podarilo zlepšiť úspešnosť klasifikátorov. Ukázali sme, že klasifikátor sa dokáže naučiť, ktoré pozície majú byť zarovnané k~sebe a ktoré nie.
 
 Vyvinuli sme dva modely pre zarovnanie sekvencií s~anotáciami za pomoci klasifikátora, ktoré sú založené na párových skrytých Markovovských modeloch.
 V~modeli A~sme nahradili emisné tabuľky stavov výstupom z~klasifikátora.
-V~modeli B navyše modelujeme aj pásku s~výstupom z~klasifikátora.
+V~modeli B modelujeme okrem báz aj pásku s~výstupom z~klasifikátora.
 Naše modely dokázali prekonať referenčné modely na biologických dátach aj na simulovaných dátach s~vyššou dôležitosťou anotácie. Na simulovaných dátach dosiahol model B podobné výsledky a model A~mierne horšie.
 \\ \\
 {\bf Kľúčové slová:} zarovnávanie sekvencií, dodatočná informácia, strojové učenie, náhodné lesy, anotácie, skryté markvovské modely

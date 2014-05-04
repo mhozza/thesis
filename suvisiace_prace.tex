@@ -1,15 +1,15 @@
-\section[Zarov. s dodat. info.]{Zarovnávanie sekvencií s dodatočnou informáciou}
+\section[Zarov. s~dodat. info.]{Zarovnávanie sekvencií s~dodatočnou informáciou}
 \label{section:other-work}
 
 V~tejto sekcii si uvedieme stručný prehľad modelov a existujúcich riešení, ktoré zahŕňajú doplnkové informácie do zarovnania pomocou metód klasifikácie.
  % a stručne uvedieme, v~čom sa bude náš model líšiť.
 
-V strojovom učení môžme rozlišovať dva typy modelov: \textit{generatívny model} a \textit{diskriminačný model}.
-Konvenčné techniky odhadu pre zarovnávania sa zakladajú na generatívnom modeli. Generatívny model (napr. HMM) sa snaží modelovať proces, ktorý generuje dáta ako pravdepodobnosť $P(X=x,Y=y,Z=z)$, kde $x = x_1x_2\dots x_n$, $y = y_1y_2\dots y_m$a $z$ je zarovnanie. V tom prípade ak chceme nájsť optimálne zarovnanie $z$ sekvencií $x$ a $y$, hľadáme
+V~strojovom učení môžme rozlišovať dva typy modelov: \textit{generatívny model} a \textit{diskriminačný model}.
+Konvenčné techniky odhadu pre zarovnávania sa zakladajú na generatívnom modeli. Generatívny model (napr. HMM) sa snaží modelovať proces, ktorý generuje dáta ako pravdepodobnosť $P(X=x,Y=y,Z=z)$, kde $x = x_1x_2\dots x_n$, $y = y_1y_2\dots y_m$a $z$ je zarovnanie. V~tom prípade ak chceme nájsť optimálne zarovnanie $z$ sekvencií $x$ a $y$, hľadáme
 $$\operatorname{ arg\,max}_z P(X = x,Y = y,Z = z).$$
 
 Pri zložitejších modeloch, napríklad ak chceme modelovať aj nejaké anotácie, však pravdepodobnosť spoločnú pravdepodobnosť nevieme vypočítať.
-Môžme však namiesto toho použiť diskriminačný model, kde stačí počítať s pravdepodobnosťou
+Môžme však namiesto toho použiť diskriminačný model, kde stačí počítať s~pravdepodobnosťou
 $$P(Z=z|W=w),$$ kde $w$ sú atribúty (bázy aj anotácie). V~tom prípade nemusíme modelovať proces, ktorý generuje $x$ a $y$ a môžme sa zamerať na podstatnú časť problému \cite{svmTrainingProteinsAlignment}.
 
 %Pri generatívnom modeli sa snažíme modelovať ako boli dáta generované. Na základe predpokladov o generovaní sa sažíme určiť triedu.
@@ -44,13 +44,13 @@ Problém inverzného zarovnania bol prvý krát formulovaný v~\cite{inverseAlig
 Máme dané sekvencie a k~nim zarovnanie. Inverzné zarovnanie nám vráti váhový model, s~ktorým daný algoritmus na zarovnávanie vráti požadované zarovnanie k~daným sekvenciám.
 \end{df}
 
-Doterajší výskum v oblasti zarovnávania s dodatočnou informáciou pomocou diskriminačného učenia sa zaoberal hlavne zarovnávaním proteínových sekvencií. Články zaoberajúce sa takýmto zarovnaním boli postavené na probléme inverzného zarovnania.
+Doterajší výskum v~oblasti zarovnávania s~dodatočnou informáciou pomocou diskriminačného učenia sa zaoberal hlavne zarovnávaním proteínových sekvencií. Články zaoberajúce sa takýmto zarovnaním boli postavené na probléme inverzného zarovnania.
 
 V~článku \cite{svmTrainingProteinsAlignment},
 použili na odhad modelu zarovnania sekvencií Support Vector Machine (SVM).
 Na trénovanie Support Vector Machine (SVM) dá pozerať ako na riešenie problému inverzného zarovnania. V~článku sa zaoberajú použitím \textit{Structural SVM} algoritmu na zarovnávanie proteínových sekvencií. Ako atribúty použili anotácie so štruktúrou sekvencií, napríklad sekundárnu štruktúru.
 Sekundárna štruktúra je priestorové usporiadanie reťazca niekoľkých posebe idúcich aminokyselín. Určuje, ktoré aminokyseliny sú blízko seba. Najznámejšie sekundárne štruktúry sú alfa-hélix a beta-skladaný list \cite{wiki:bielkovina}.
-V tomto prípade diskriminačné učenie umožňuje zahrnutie množstva dodatočnej informácie -- státisíce parametrov.
+V~tomto prípade diskriminačné učenie umožňuje zahrnutie množstva dodatočnej informácie -- státisíce parametrov.
 Navyše SVM umožňuje trénovanie pomocou rôznych účelových funkcií (loss functions).
 SVM algoritmus má lepšiu úspešnosť ako generatívna metóda SSALN, ktorá je veľmi presným generatívnym modelom zarovnaní zahŕňajúcim informáciu o~štruktúre.
 
