@@ -1,3 +1,14 @@
-English abstract
+Pairwise alignments of two DNA sequences is one of the basic problems of computational biology. In this thesis we deal with possibilities of using additional information about sequences to improve quality of alignments.
+We incorporated additional information into alignments using two classifiers. One for aligned parts of sequences and other for unaligned parts.
+Classifier splits positions into two classes: those which should be aligned together (class 1) and others (class 0). In case of classifier for unaligned parts of sequences the two classes are those which should be aligned to space (class 1) and others (class 0). The output from classifier is probability that data belong to class 1.
+We addressed the selection of features and using appropriate features we were able to improve the accuracy of our classifiers.
+We have shown that it trained classifier can distinguish positions which should be aligned together and which should not.
+
+We developed two models for sequence alignment with annotations using classifiers. Our models are based on Hidden Markov Models.
+Model A uses output from classifier instead of emission probabilities.
+Model B models a sequence of outputs from classifier in addition to two DNA sequences.
+
+Our models outperform reference models on biological data and simulated data with higher importance of annotation.
+On simulated data model B achieved similar accuracy as reference models and model B was slightly worse.
 \\ \\
-{\bf Key words:} ...
+{\bf Key words:} DNA, sequence alignment, additional information, machine learninf, Random Forest, annotations, Hidden Markov Models
