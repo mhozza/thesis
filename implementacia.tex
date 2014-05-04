@@ -5,12 +5,12 @@ V tejto kapitole sa budeme zaoberať implementáciou nášho riešenia. Popíše
 
 \section{Výber jazyka a použité knižnice}
 %daky pokec o~tom ze som to pisal v~pythone a preco je python super
-Ako jazyk pre písanie nášho zarovnávača sme si vybrali Python (vo verzii 2.7). Dôvodov sme mali niekoľko: V prvom rade zarovnávač sme nepísali od začiatku, ale ako základ sme zobrali zarovnávač od Michala Nánásiho (viď sekcia \ref{subsec:realigner}), ktorý už bol napísaný v jazyku Python 2.7. Ďalšími dôvodmi sú pohodlnosť písania v jazyku Python a dostupnosť veľkého množstva užitočných knižníc. Knižnice pre Python sa dajú písať aj v jazyku C alebo C++, čo umožňuje skĺbiť rýchlosť C a jednoduchosť jazyka Python.
+Ako jazyk pre písanie nášho zarovnávača sme si vybrali Python (vo verzii 2.7). Dôvodov sme mali niekoľko: Zarovnávač sme nepísali od začiatku, ale rozširovali sme program \textit{Realigner} \cite{nanasi2013probabilistic}, ktorý je napísaný v jazyku Python 2.7. Ďalšími dôvodmi sú pohodlnosť písania v jazyku Python a dostupnosť veľkého množstva užitočných knižníc. Knižnice pre Python sa dajú písať aj v jazyku C alebo C++, čo umožňuje skĺbiť rýchlosť C a jednoduchosť jazyka Python.
 
 \subsection{Realigner}
 \label{subsec:realigner}
 
-\textit{Realigner} je program na zarovnávanie a prezarovnávanie\footnote{modifikáciu existujúceho zarovnania}, ktorý napísal Michal Nánási pre potreby \cite{nanasi2013probabilistic}. Umožňuje prezarovnanie sekvencií pomocou párových HMM a Viterbiho algoritmu. Prezarovnanie dokáže robiť aj v rámci lokálneho okolia okolo pôvodného zarovnania. Program je rozšíriteľný o nové modely, čo sme využili pre naše potreby.
+\textit{Realigner} je program na zarovnávanie a vylepšovanie zarovnaní pomocou pHMM, ktorý bol pôvodne vyvinutý na zarovnávanie sekvencií s tandemovými opakovaniami \cite{nanasi2013probabilistic}. Umožňuje prezarovnanie sekvencií pomocou párových HMM a Viterbiho algoritmu. Prezarovnanie dokáže robiť aj v rámci lokálneho okolia okolo pôvodného zarovnania. Program je rozšíriteľný o nové modely, čo sme využili pre naše potreby.
 
 \subsection{Pythonové knižnice}
 %  python kniznice - najma scikit-learn, numpy, track
@@ -61,7 +61,7 @@ Jej hlavnými výhodami sú:
 \subsection{HMM stavy s~klasifikátorom}
 \label{subsec:hmm-states}
 
-V zarovnávači bol implementovaný Viterbiho algoritmus, ktorý pracoval s párovými HMM. Tento algoritmus pracoval s triedou \textit{GeneralizedPairState}, ktorá poskytovala metódu \method{emission} vracajúcu emisiu báz na daných pozíciách. Od tejto triedy dedia naše triedy \textit{ClassifierState}, \textit{ClassifierIndelState}, ktoré tvoria náš model~A a preťažili sme metódu \method{emission} tak, aby vracala hodnoty z klasifikátora. Museli sme však urobiť niekoľko zmien. Viterbiho algoritmus si pýta emisie po jednej. Avšak volanie C-čkovej funkcie z knižnice scikit-learn z Pythonu je pomalé, takže pre dlhé sekvencie by zarovnanie trvalo veľmi dlho. Preto sme si najskôr naraz, počas jedného volania funkcie predpočítali emisie pre všetky pozície a tie sme potom zapamätali a vracali v momente, keď si ich Viterbiho algoritmus vypýtal. Na to sme využili možnosť hromadnej klasifikácie v našej triede PairClassifier (sekcie \ref{subsec:pairclassifier}). Tieto dve triedy sa líšia iba v použitej triede na predspracovanie dát.
+V zarovnávači bol implementovaný Viterbiho algoritmus, ktorý pracoval s párovými HMM. Algoritmus v zarovnávači vedel obmedziť prehľadávanie aj v rámci okolia pôvodného zarovnania. Tento algoritmus pracoval s triedou \textit{GeneralizedPairState}, ktorá poskytovala metódu \method{emission} vracajúcu emisiu báz na daných pozíciách. Od tejto triedy dedia naše triedy \textit{ClassifierState}, \textit{ClassifierIndelState}, ktoré tvoria náš model~A a preťažili sme metódu \method{emission} tak, aby vracala hodnoty z klasifikátora. Museli sme však urobiť niekoľko zmien. Viterbiho algoritmus si pýta emisie po jednej. Avšak volanie C-čkovej funkcie z knižnice scikit-learn z Pythonu je pomalé, takže pre dlhé sekvencie by zarovnanie trvalo veľmi dlho. Preto sme si najskôr naraz, počas jedného volania funkcie predpočítali emisie pre všetky pozície a tie sme potom zapamätali a vracali v momente, keď si ich Viterbiho algoritmus vypýtal. Na to sme využili možnosť hromadnej klasifikácie v našej triede PairClassifier (sekcie \ref{subsec:pairclassifier}). Ak sme prehľadávali len okolie pôvodného zarovnania, predpočítali sme si pozície len v tomto okolí. Tieto dve triedy sa líšia iba v použitej triede na predspracovanie dát.
 
 Od tried ClassifierState a ClassifierIndelState potom dedia triedy \textit{ClassifierAnnotationState} a \textit{ClassifierAnnotationIndelState}, ktoré tvoria diskrétnu verziu nášho modelu~B. Triedy mali v súbore uložené tabuľky emisií a podľa aktuálnych pozícií si zistili bázy a aktuálny výstup klasifikátora, ktoré slúžili ako indexy do tabuľky. Tieto triedy navyše obsahujú metódy na trénovanie emisií.
 
@@ -76,7 +76,7 @@ V tejto sekcii sa budeme venovať dvom hlavným pomocným programom. Prvým z ni
 \subsection{Simulátor}
 \label{subsec:simulator}
 
-Simulátor slúži na generovanie zarovnaní pre naše experimenty. Náhodne vygeneruje tri\footnote{aby sme vedeli počítať tranzitivitu} sekvencie, ktoré vznikli zo spoločného predka a vyrobí korektné spoločné zarovnanie všetkých troch sekvencií. Okrem toho vyrobí aj dodatočné informácie, ktoré majú pomôcť pri zarovnávaní.
+Simulátor slúži na generovanie zarovnaní pre naše experimenty. Náhodne vygeneruje tri sekvencie (kvôli vyhodnocovaniu tranzitivity zarovnaní), ktoré vznikli zo spoločného predka a vyrobí korektné spoločné zarovnanie všetkých troch sekvencií. Okrem toho vyrobí aj dodatočné informácie, ktoré majú pomôcť pri zarovnávaní.
 
 \subsubsection{Algoritmus}
 Ako prvú simulátor vygeneruje informáciu o~tom, ktoré časti sekvencie prislúchajú génom a ktoré nie. Informácia má podobu binárneho vektora.
@@ -111,7 +111,8 @@ Deléciu simulujeme opäť pomocou podobnej Markovovskej reťaze, pretože poča
 
 \subsubsection{Využitie}
 
-Simulátor je prvá vec, ktorú sme implementovali a slúžil na väčšinu našich experimentov. Simulované dáta majú totiž oproti biologickým niekoľko výhod. Prvou je, že poznáme správnu odpoveď, a teda môžme objektívne zhodnotiť úspešnosť našich modelov. Druhou je možnosť zvoliť si parametre, ktoré menia závislosť mutácií na anotáciách a testovať správanie modelov, ak zvýšime túto závislosť. Ďalšou výhodou je, že si môžme vygenerovať ľubovoľne veľa ľubovoľne dlhých sekvencií.
+Simulátor je prvá vec, ktorú sme implementovali a slúžil na väčšinu našich experimentov. Simulované dáta majú totiž oproti biologickým niekoľko výhod. Prvou je, že poznáme správnu odpoveď, a teda môžme objektívne zhodnotiť úspešnosť našich modelov. Druhou je možnosť zvoliť si parametre, ktoré menia závislosť mutácií na anotáciách a testovať správanie modelov, ak zvýšime túto závislosť.
+% Ďalšou výhodou je, že si môžme vygenerovať ľubovoľne veľa ľubovoľne dlhých sekvencií.
 
 \subsection{Trénovanie modelov}
 \label{subsec:impl-model-traioning}
@@ -133,7 +134,7 @@ V SimpleMatchState, SimpleIndelState algoritmus priamo spočíta výskyty prísl
 V ClassifierState, ClassifierIndelState sa emisie netrénujú, takže tabuľka bude prázdna.
 V ClassifierAnnotationState, ClassifierAnnotationIndelState sa pre každý stav a pre každú dvojicu báz (resp. bázu) spočítajú hodnoty z klasifikátora a tie sa následne aproximujú pomocou gausiánov. Na toto využijeme triedu \method{gaussian\_kde} z modulu \method{scipy.stats}. Táto trieda robí odhad distribučnej funkcie z množiny hodnôt. Šírku pásma (parameter, ktorý určuje hladkosť výslednej funkcie) sme nechali na predvolenej hodnote -- ,,scott''. Tá nastavuje šírku pásma podľa vzorca:
 $$n^{-1/(d+4)},$$
-kde $n$ je počet vstupov a $d$ je počet dimenzií (v našom prípade $d = 1$). Viac detailov je v \cite{scipydoc} alebo \cite{wiki:kde}. Následne túto funkciu diskretizujeme na $k$ hodnôt. To spravíme pomocou určitého integrálu, pomocou metódy \method{integrate\_box(a, b)}, ktorá spočíta určitý integrál od $a$ po $b$.
+kde $n$ je počet vstupov a $d$ je počet dimenzií (v našom prípade $d = 1$). Viac detailov je v \cite{scipydoc} alebo \cite{wiki:kde, rosenblatt1956remarks}. Následne túto funkciu diskretizujeme na $k$ hodnôt. To spravíme pomocou určitého integrálu, pomocou metódy \method{integrate\_box(a, b)}, ktorá spočíta určitý integrál od $a$ po $b$.
 Keďže gaussian\_kde je definovaný na intervale $\left<-\infty, \infty \right>$ a $$\int_{-\infty}^\infty \! gaussian\_kde(x) \mathrm{d}x = 1,$$ orezaním definičného oboru na $\left<0,1\right>$ sa môže stať, že $$\int_0^1 \! gaussian\_kde(x) \mathrm{d}x < 1.$$ V tom prípade výslednú hodnotu ešte musíme normalizovať vydelením hodnotou $$\mu = \int_0^1 \! gaussian\_kde(x) \mathrm{d}x.$$ Ako sme si ukázali v \ref{sec:model-training} výslednú pravdepodobnosť dopočítame vynásobením diskretizovanej pravdepodobnosti daného výstupu klasifikátora v prípade daných báz a pravdepodobnosti daných báz.
 V ContignuousClassifierAnnotationState, ContignuousClassifierAnnotationIndelState postupujeme rovnako, ako v predchádzajúcom prípade, ale distribúciu už nediskretizujeme. Namiesto toho si ju uložíme do súboru ako $g$ spolu s číslom $\lambda = p/\mu$, kde $p$ je pravdepodobnosť daných báz a $\mu$ je normalizačná konštanta -- tá istá ako v predchádzajúcom prípade. Hustotu emisie potom počas zarovnávania vypočítame tak, že zoberieme parametre pre danú dvojicu báz (resp. bázu) -- $g$ a $\lambda$ -- a pre výstup klasifikátora $c$ bude hustota $f(c) = \lambda g(c).$
 % \subsection{Testovanie klasifikátora}
