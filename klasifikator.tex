@@ -14,7 +14,7 @@ V~tejto kapitole sa budeme venovať výberu klasifikátora a jeho vstupných atr
 
 Keďže v~našich modeloch máme dva typy stavov, použili sme dva typy klasifikátorov: \textit{Match klasifikátor} pre Match stav a \textit{Indel klasifikátor} pre Inzert stavy.
 
-Klasifikátory dostanú na vstupe dáta asociované s~pozíciami v~daných sekvenciách a rozdeľujú ich do dvoch tried -- nula a jedna. V~Match klasifikátore trieda jedna znamená, že dané dve pozície majú byť zarovnané k~sebe a nula znamená, že nie. V~Indel klasifikátore trieda jedna označuje pozície, ktoré majú byť zarovnané k~medzere a nula tie, ktoré nemajú. Ako výstupnú hodnotu pre naše modely berieme pravdepodobnosť, že dané dáta patria do triedy jedna. Túto pravepodobnosť definujeme ako $P(C=1|W=w)$, Kde $C$ je náhodná premenná pre výstupnú triedu, $W$ je náhodná premenná pre množinu atribútov a $w$ sú konkrétne hodnoty atribútov.
+Klasifikátory dostanú na vstupe dáta asociované s~pozíciami v~daných sekvenciách a rozdeľujú ich do dvoch tried -- nula a jedna. V~Match klasifikátore trieda jedna znamená, že dané dve pozície majú byť zarovnané k~sebe a nula znamená, že nie. V~Indel klasifikátore trieda jedna označuje pozície, ktoré majú byť zarovnané k~medzere a nula tie, ktoré nemajú. Ako výstupnú hodnotu pre naše modely berieme pravdepodobnosť, že dané dáta patria do triedy jedna. Túto pravepodobnosť definujeme ako $$P(C=1|W=w),$$ kde $C$ je náhodná premenná pre výstupnú triedu, $W$ je náhodná premenná pre množinu atribútov a $w$ sú konkrétne hodnoty atribútov.
 
 Keďže tieto klasifikátory sú nezávislé, nemusí platiť, že $$P_M(C=1|W_M=w_M) + P_I(C=1|W_I=w_I) = 1,$$ kde $P_M$ je výstup z~Match klasifikátora a $P_I$ je výstup z~Indel klasifikátora a $w_M$ a $w_I$ sú atribúty pre tie isté pozície v~Match a Indel klasifikátory. Môže sa napríklad stať, že oba klasifikátory zaradia atribúty prislúchajúce tým istým pozíciám do triedy jedna, alebo do triedy nula.
 % Tieto pravdepodobnosti sú akousi mierou istoty daného klasifikátora, a keďže tieto dva klasifikátory sú nezávislé, súčet ich výstupov nemusí byť jedna. Sú totiž tri možnosti, čo sa môže stať:
@@ -62,13 +62,13 @@ Ako prvý typ dát sme zobrali okno tak, ako sme ho definovali v~predošlej sekc
 Druhý typ dát obsahuje aktuálnu bázu spolu s~jej anotáciami a navyše pole veľkosti $k*w$,
 ktoré má na $i$-tom mieste jedna ak $okno_X[i] = okno_Y[i]$, ináč nula
 ($w$ je veľkosť okna, $k$ je veľkosť bloku, $okno_X$ je časť okna zodpovedajúca sekvencii $X$ a $okno_Y$ sekvencii $Y$).
-V~Indel klasifikátore je jedna malá zmena: pozícia 0 aj 1 v~$x$-ovej sekvencii sú porovnávané s~pozíciou 1 v~$y$-ovej a pozícia 2 v~$x$-ovej sa porovnáva s~pozíciou 2 v~$y$-ovej.
-Pozíciu 1 v~$y$-ovej sekvencii sme zopakovali preto, že sme experimentom zistili, že pre klasifikátor je dôležitá.
+V~Indel klasifikátore je jedna malá zmena: pozícia nula aj jedna v~$x$-ovej sekvencii sú porovnávané s~pozíciou jedna v~$y$-ovej a pozícia dva v~$x$-ovej sa porovnáva s~pozíciou dva v~$y$-ovej.
+Pozíciu jedna v~$y$-ovej sekvencii sme zopakovali preto, že sme experimentom zistili, že pre klasifikátor je dôležitá.
 
 \subsubsection{Typ dát C - matica zhôd v~okne}
 
 Tretí typ dát je podobný ako typ B. Rozdiel je v~tom, že teraz pole obsahuje nielen zhody po dvojiciach ale celú maticu zhôd. Teda opäť máme aktuálne bázy s~anotáciami a pole má veľkosť $k*w^2$. Každý riadok sa skladá z~jednotlivých blokov a v~tabuľke v~$x$-tom riadku, $y$-tom stĺpci a $i$-tom mieste v~bloku je jedna práve
-vtedy, keď $okno_X[x+i] = okno_Y[y+i]$.
+vtedy, keď $$okno_X[x+i] = okno_Y[y+i].$$
 
 \subsubsection{Typ dát D - kombinácia A~a B}
 

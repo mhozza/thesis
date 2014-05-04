@@ -5,7 +5,7 @@ V~tejto sekcii si uvedieme stručný prehľad modelov a existujúcich riešení,
  % a stručne uvedieme, v~čom sa bude náš model líšiť.
 
 V~strojovom učení môžme rozlišovať dva typy modelov: \textit{generatívny model} a \textit{diskriminačný model}.
-Konvenčné techniky odhadu parametrov modelu pre zarovnávania sa zakladajú na generatívnom modeli. Generatívny model (napr. HMM) sa snaží modelovať proces, ktorý generuje dáta ako pravdepodobnosť $P(X=x,Y=y,Z=z)$, kde $x = x_1x_2\dots x_n$, $y = y_1y_2\dots y_m$a $z$ je zarovnanie. V~tom prípade ak chceme nájsť optimálne zarovnanie $z$ sekvencií $x$ a $y$, hľadáme
+Konvenčné techniky odhadu parametrov modelu pre zarovnávania sa zakladajú na generatívnom modeli. Generatívny model (napr. HMM) sa snaží modelovať proces, ktorý generuje dáta ako pravdepodobnosť $P(X=x,Y=y,Z=z)$, kde $x = x_1x_2\dots x_n$, $y = y_1y_2\dots y_m$ a $z$ je zarovnanie. V~tom prípade ak chceme nájsť optimálne zarovnanie $z$ sekvencií $x$ a $y$, hľadáme
 $$\operatorname{ arg\,max}_z P(X = x,Y = y,Z = z).$$
 
 Pri zložitejších modeloch, napríklad ak chceme modelovať aj nejaké anotácie, spoločnú pravdepodobnosť nevieme vypočítať.
@@ -37,7 +37,7 @@ $$P(Z=z|W=w),$$ kde $w$ sú atribúty (bázy aj anotácie). V~tom prípade nemus
 % toto uz je ok
 
 Aktuálne existuje len niekoľko prístupov k~diskriminačnému učeniu modelov zarovnávaní.
-Jeden z~možných prístupov je riešiť \textit{problém inverzného zarovnania} pomocou strojového učenia. \cite{svmTrainingProteinsAlignment}
+Jeden z~možných prístupov je riešiť \textit{problém inverzného zarovnania} pomocou strojového učenia \cite{svmTrainingProteinsAlignment}.
 Problém inverzného zarovnania bol prvý krát formulovaný v~\cite{inverseAlign1}.
 \begin{df}[Inverzné zarovnanie]
 \label{def:inv-aln}

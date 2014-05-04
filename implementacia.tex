@@ -137,7 +137,7 @@ Máme štyri základné typy stavov, ktoré sme si popísali v~sekcii \ref{subse
     \item SimpleMatchState, SimpleIndelState
     \item ClassifierState, ClassifierIndelState
     \item ClassifierAnnotationState, ClassifierAnnotationIndelState
-    \item ContignuousClassifierAnnotationState, ContignuousClassifierAnnotationIndelState
+    \item ContignuousClassifierAnnotationState,\\ ContignuousClassifierAnnotationIndelState
 \end{itemize}
 
 V~SimpleMatchState, SimpleIndelState algoritmus priamo spočíta výskyty príslušných dvojíc báz (resp. báz) a vydelí celkovým počtom výskytu stavu.
@@ -158,12 +158,12 @@ Hlavný program sa spúšťa príkazom
 \end{verbatim}
 s~následujúcimi parametrami
 \begin{itemize}
-    \item \method{--mathtype}: float/LogNum -- označuje, či sa má počítať s~logaritmovanými hodnotami alebo s~reálnymi
-    \item \method{--algorithm}: viterbi -- v~našich modeloch je podporovaný len viterbi
-    \item \method{--beam\_width}: číslo -- šírka okolo lúča vstupného zarovnania, ktorá sa má prehľadávať vo viterbiho algoritme
-    \item \method{--model}: ClassificationHMM.js/OracleHMM.js/SimpleHMM2.js/vlastný -- model, ktorý sa má použiť (naše modely sa nachádzajú v~data/models)
-    \item \method{--sequence\_regexp}: sekvenciaX sekvenciaY regulárne výrazy na vyfiltrovanie dvoch sekvencií zo vstupného súboru zarovnania
-    \item \method{--annotation\_model}: súbor.js -- súbor s~konfiguráciou anotácií pre jednotlivé sekvencie
+    \item \method{----mathtype}: float/LogNum -- označuje, či sa má počítať s~logaritmovanými hodnotami alebo s~reálnymi
+    \item \method{----algorithm}: viterbi -- v~našich modeloch je podporovaný len viterbi
+    \item \method{----beam\_width}: číslo -- šírka okolo lúča vstupného zarovnania, ktorá sa má prehľadávať vo viterbiho algoritme
+    \item \method{----model}: ClassificationHMM.js/OracleHMM.js/SimpleHMM2.js/vlastný -- model, ktorý sa má použiť (naše modely sa nachádzajú v~data/models)
+    \item \method{----sequence\_regexp}: sekvenciaX sekvenciaY regulárne výrazy na vyfiltrovanie dvoch sekvencií zo vstupného súboru zarovnania
+    \item \method{----annotation\_model}: súbor.js -- súbor s~konfiguráciou anotácií pre jednotlivé sekvencie
 \end{itemize}
 Pozičné parametre
 \begin{itemize}

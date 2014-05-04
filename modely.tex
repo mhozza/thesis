@@ -60,14 +60,14 @@ Prvým modelom je \textit{model s~klasifikátorom ako emisiou (ďalej len model 
 \end{figure}
 
 V~základnom modeli pre zarovnanie (kapitola \ref{sec:hmm-alignment}) je pravdepodobnosť emisie v~match stave $P(X=x \wedge Y=y),$ kde $X, Y$ sú náhodné premenné pre bázy v~sekvenciách $X$ a $Y$ a $x, y$ sú konkrétne bázy. Pre Inzert stavy analogicky.
-Na rozdiel od toho, výstup klasifikátora je definovaný ako $P(C=1 | W=w),$ kde $C \in \{0,1\}$ je náhodná premenná pre výstupnú triedu, pričom nula znamená, že dáta nemajú byť zarovnané k~sebe a 1 znamená, že majú byť, $W$ je náhodná premenná pre okno klasifikátora, zahŕňajúce všetky atribúty a $w$ je konkrétna hodnota okna.
+Na rozdiel od toho, výstup klasifikátora je definovaný ako $P(C=1 | W=w),$ kde $C \in \{0,1\}$ je náhodná premenná pre výstupnú triedu, pričom nula znamená, že dáta nemajú byť zarovnané k~sebe a jedna znamená, že majú byť, $W$ je náhodná premenná pre okno klasifikátora, zahŕňajúce všetky atribúty a $w$ je konkrétna hodnota okna.
 Pre porovnanie, ak by sme mali Match klasifikátor a ako atribúty len príslušné bázy, bolo by to $P(C=1 | X=x \wedge Y=y)$. Vidíme teda, že zatiaľ čo
 % tieto dve pravdepodobnosti sú definované ináč a zatiaľ čo
 $$\sum_{x \in X, y \in Y} P(X=x \wedge Y=y) = 1,$$
 pre
 $$\sum_{x \in X, y \in Y} P(C=1| W=w)$$
 takáto rovnosť neplatí.
-Viterbiho algoritmus však bude fungovať aj s~hodnotami $P(C=1| W=w)$ namiesto emisií a bude hľadať zarovnanie, ktoré bude maximalizovať takto definované skóre.
+Viterbiho algoritmus však bude fungovať aj s~hodnotami $$P(C=1| W=w)$$ namiesto emisií a bude hľadať zarovnanie, ktoré bude maximalizovať takto definované skóre.
 O~takomto modeli už však nemôžme hovoriť ako o~pravdeopdobnostnom, ani ako o~pHMM. Tento model je len inšpirovaný pHMM.
 
 Keďže predošlý model nie je korektný pravdepodobnostný model, navrhli sme alternatívny model, \textit{model s~klasifikátorovou páskou (ďalej len model B)}, ktorý navyše modeluje aj výstup z~klasifikátora, a teda je korektný pravdepodobnostný model.
@@ -78,7 +78,7 @@ Pásku s~výstupom z~klasifikátora považujeme za akúsi pomôcku pre náš zar
     \includegraphics[width=.5\textwidth]{images/model_clf_paska}
     \caption{Model s~klasifikátorovou páskou}
 \end{figure}
-Klasifikátor môže vrátiť ľubovoľnú hodnotu z~intervalu $\left<0,1 \right>$. Klasické HMM robí iba s~diskrétnymi hodnotami, a keďže výstup z~klasifikátora je spojitý, museli sme sa s~týmto problémom vysporiadať. Preto sme navrhli dve varianty tohto modelu -- diskrétnu a spojitú.
+Klasifikátor môže vrátiť ľubovoľnú hodnotu z~intervalu $\left<0,1 \right>$. Klasické HMM robí iba s~diskrétnymi hodnotami a keďže výstup z~klasifikátora je spojitý, museli sme sa s~týmto problémom vysporiadať. Preto sme navrhli dve varianty tohto modelu -- diskrétnu a spojitú.
 
 V~diskrétnom modeli sme hodnoty klasifikátora rovnomerne rozdelili na $b$ hodnôt a výstup sme zaokrúhlili na najbližšiu z~nich. V~našich modeloch sme zvolili $b=10$.
 
@@ -269,9 +269,6 @@ Naše modely produkujú porovnateľné výsledky, avšak model B bol vo väčši
 
 \subsection{Vhodná veľkosť okna}
 
-V~sekcii \ref{subsec:window-size} sme si ukázali, že výber typu dát je nezávislý na výbere veľkosti okna. V~tejto sekcii chceme zistiť aký vplyv na úspešnosť našich modelov má veľkosť okna.
-Vyskúšali sme viacero možností a výsledky sme zapísali do tabuľke \ref{tab:window-compare}.
-
 \begin{table}[htp]
 \centering
 \begin{tabular}{ccc}
@@ -292,7 +289,11 @@ Veľkosť okna & Model A~& Model B\\
 \label{tab:window-compare}
 \end{table}
 
+V~sekcii \ref{subsec:window-size} sme si ukázali, že výber typu dát je nezávislý na výbere veľkosti okna. V~tejto sekcii chceme zistiť aký vplyv na úspešnosť našich modelov má veľkosť okna.
+Vyskúšali sme viacero možností a výsledky sme zapísali do tabuľke \ref{tab:window-compare}.
+
 Z~tabuľky vidíme, že pre model B je optimálna veľkosť okna 7-9, pri väčších oknách už úspešnosť nerastie. Pri modeli A~rástla úspešnosť až po veľkosť okna 15. Optimálnu hodnotu pre model A~sme na základe tabuľky určili na 9-15. Pri vyšších hodnotách okna sa už úspešnosť nezvyšovala, tak sme ich do tabuľky nedali.
+
 
 \subsection{Vplyv dodatočnej informácie na zarovnanie}
 

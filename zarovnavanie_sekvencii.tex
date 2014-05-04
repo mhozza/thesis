@@ -13,8 +13,7 @@ Podobné sekvencie, ktoré sa vyvinuli mutáciami zo sekvencie v~spoločnom pred
 
 %Vývoj sekvencií hromadí \textit{inzercie}, \textit{delécie} a \textit{substitúcie}, takže predtým ako môže byť vyhodnotená podobnosť, treba urobiť zarovnanie sekvencií. Preto je zarovnanie sekvencií veľmi dôležité.
 
-Počas evolúcie dvoch homologických sekvencií nastane veľa \textit{inzercií}, \textit{delécií} a \textit{substitúcií}, preto predtým ako môžeme začať porovnávať sekvencie, ich musíme zarovnať tak, aby homologické časti sekvencií boli na rovnakom mieste v~zarovnaní. Substicúcie nastanú ak niektorá báza zmutuje, teda sa zmení na inú. Inzercie nastanú ak sa do sekvencie pridá nejaký súvislý úsek a delécie nastanú ak zo sekvencie vypadne súvislý úsek. Inzerciu a deléciu označíme spoločne pojmom indel. Indely v~sekvencii voláme aj medzery a označujeme pomlčkami. Pričom vo všeobecnosti ak máme medzeru v~jednej sekvencii, nevieme povedať, či ide o~deléciu v~tejto sekvencii, alebo inzerciu v~druhej.
-\cite{durbin, skripta}
+Počas evolúcie dvoch homologických sekvencií nastane veľa \textit{inzercií}, \textit{delécií} a \textit{substitúcií}, preto predtým ako môžeme začať porovnávať sekvencie, ich musíme zarovnať tak, aby homologické časti sekvencií boli na rovnakom mieste v~zarovnaní. Substicúcie nastanú ak niektorá báza zmutuje, teda sa zmení na inú. Inzercie nastanú ak sa do sekvencie pridá nejaký súvislý úsek a delécie nastanú ak zo sekvencie vypadne súvislý úsek. Inzerciu a deléciu označíme spoločne pojmom indel. Indely v~sekvencii voláme aj medzery a označujeme pomlčkami. Pričom vo všeobecnosti ak máme medzeru v~jednej sekvencii, nevieme povedať, či ide o~deléciu v~tejto sekvencii, alebo inzerciu v~druhej \cite{durbin, skripta}.
 
 \begin{figure}[hbtp]
     \centering
@@ -70,7 +69,7 @@ TATGAGGTCGACCGTTTCAGCGTGACTATAGACGTCATTGAAGCAATATACAGG------AACACCACCT
 \section{Párové zarovnávanie}
 Párové zarovnávanie je základná úloha zarovnávania sekvencií, kde sa k~sebe zarovnávajú dve sekvencie. V~tejto práci sa budeme zaoberať len párovým zarovnávaním.
 
-Kľúčové problémy sú:
+Kľúčové problémy sú \cite{durbin}:
 \begin{enumerate}
 \item Aké typy zarovnávania by sme mali uvažovať
 \item Skórovací systém, ktorý použijeme na ohodnotenie zarovnania a trénovanie
@@ -78,27 +77,22 @@ Kľúčové problémy sú:
 \item Štatistická významnosť zarovnania.
 \end{enumerate}
 
-\cite{durbin}
-
 \section{Typy zarovnaní}
 Základné typy zarovnaní sú \textit{Globálne zarovnanie} a \textit{Lokálne zarovnanie}.
 \begin{df}[Globálne zarovnanie]
 Vstupom sú dve sekvencie $X = x_1x_2\dots x_n$ a $Y = y_1y_2\dots y_m$
 Výstupom je zarovnanie celých sekvencií $X$ a $Y$.
 \end{df}
-
 \begin{df}[Lokálne zarovnanie]
 Vstupom sú dve sekvencie $X = x_1x_2\dots x_n$ a $Y = y_1y_2\dots y_m$
 Výstupom je zarovnanie nejakých podreťazcov $x_i\dots x_j$ a $y_k\dots y_l$ sekvencií.
 \end{df}
-V~praxi sa väčšinou snažíme nájsť zarovnania s~najvyšším skóre.
-\cite{skripta}
+V~praxi sa väčšinou snažíme nájsť zarovnania s~najvyšším skóre \cite{skripta}.
 
 \section{Skórovacie systémy}
 Takmer všetky metódy zarovnania hľadajú zarovnanie dvoch reťazcov na základe nejakej \textit{skórovacej schémy}. Skôrovacia schéma je metóda, ktorou priradíme zarovnaniu skóre -- zvyčajne čím väčšie skóre, tým realistickejšie zarovnanie by to malo byť.
 Skórovacie schémy môžu byť veľmi jednoduché, napr. $+1$ za \textit{zhodu} a $-1$ za \textit{nezhodu} a \textit{medzeru}.
-Ak chceme mať schému, kde biologicky najkorektnejšie zarovnanie má najvyššie skóre, musíme vziať do úvahy, že biologické sekvencie majú evolučnú históriu, 3D štruktúru a mnohé ďalšie vlastnosti obmedzujúce ich evolučné procesy. Skórovací systém, ktorý by uvažoval všetky tieto faktory, by bol veľmi zložitý, preto sa používajú jednoduchšie, ktoré zanedbávajú veľa faktorov.
-\cite{durbin}
+Ak chceme mať schému, kde biologicky najkorektnejšie zarovnanie má najvyššie skóre, musíme vziať do úvahy, že biologické sekvencie majú evolučnú históriu, 3D štruktúru a mnohé ďalšie vlastnosti obmedzujúce ich evolučné procesy. Skórovací systém, ktorý by uvažoval všetky tieto faktory, by bol veľmi zložitý, preto sa používajú jednoduchšie, ktoré zanedbávajú veľa faktorov \cite{durbin}.
 
 \subsection{Skórovacie matice}
 Skoro vždy však chceme rôzne zhody a nezhody skórovať rôzne - nie len všetky zhody $+1$ a nezhody $-1$.
@@ -126,12 +120,11 @@ Iným typom skórovacej schémy je napríklad \textit{párový skrytý markvovsk
 Pre danú skórovaciu schému potrebujeme algoritmus, ktorý nájde optimálne zarovnanie dvoch sekvencií.
 Budeme uvažovať zarovnávanie s~medzerami. Medzery používame na znázornenie inzercie alebo delécie\footnote{vo všeobecnosti nevieme povedať, či ide o~inzerciu v~jednej sekvencii alebo deléciu v~druhej sekvencii}. Na označenie medzier používame pomlčku {\tt'-'} a medzeru do sekvencie medzi dve bázy pridáme tak, že medzi dve bázy napíšeme jednu alebo viac pomlčiek -- počet pomlčiek zodpovedá počtu medzier a teda aj počtu báz, ktoré má na danom mieste jedna sekvencia navyše oproti druhej. Do sekvencie môžeme pridať ľubovoľne veľa medzier (pričom nemôžeme mať dve pomlčky v~jednom stĺpci), aby sme dosiahli lepšie skóre. Pre dve sekvencie dĺžky $n$ existuje
 $$ {2n \choose n}  = \frac{(2n)!}{(n!)^2} \simeq \frac{2^{2n}}{\sqrt{\pi n}} $$
-možných globálnych zarovnaní. \cite{durbin} Pre dlhšie sekvencie nie je možné enumerovať všetky a vybrať tú s~najlepším skóre.
+možných globálnych zarovnaní \cite{durbin}. Pre dlhšie sekvencie nie je možné enumerovať všetky a vybrať tú s~najlepším skóre.
 
 Algoritmy na hľadanie zarovnaní využívajú \textit{dynamické programovanie}.
 Často sa používajú aj rôzne heuristiky na urýchlenie výpočtu.
-My sa zaoberať algoritmami využívajúcimi heuristiky nebudeme. Pre rôzne typy zarovnaní a skórovacie schémy máme rôzne algoritmy zarovnávania.
-\cite{durbin, skripta}
+My sa zaoberať algoritmami využívajúcimi heuristiky nebudeme. Pre rôzne typy zarovnaní a skórovacie schémy máme rôzne algoritmy zarovnávania \cite{durbin, skripta}.
 
 \subsection{Algoritmus pre globálne zarovnanie: Needelman-Wunch}
 \label{subsec:global-alignment}
@@ -218,8 +211,8 @@ V~tomto prípade sú všetky krajné políčka nulové.
 
 Zarovnanie potom nájdeme tak, že začneme z~políčka s~maximálnym skóre, a postupne budeme prechádzať na políčka, z~ktorých sme získali maximálnu hodnotu, kým nenarazíme na nulu.
 
-Časová aj pamäťová zložitosť sú, rovnako ako pri globálnom zarovnaní $O(nm)$.
-\cite{durbin}
+Časová aj pamäťová zložitosť sú, rovnako ako pri globálnom zarovnaní $O(nm)$
+\cite{durbin}.
 
 \subsection{Afínne skórovanie medzier}
 \label{subsec:affine-gap-scoring}
@@ -293,9 +286,8 @@ Tieto vzťahy vieme popísať stavovým diagramom na obrázku \ref{fig:alignment
     \label{fig:alignment-fsa}
 \end{figure}
 
-Časová zložitosť je $O(nm)$, pretože vypĺňame $3nm$ políčok, každé v~konštantnom čase. Pamäťová zložitosť je opäť $O(nm)$.
-
-\cite{durbin}
+Časová zložitosť je $O(nm)$, pretože vypĺňame $3nm$ políčok, každé v~konštantnom čase. Pamäťová zložitosť je opäť $O(nm)$
+\cite{durbin}.
 
 \section[Zarovnávanie s~pHMM]{Zarovnávanie pomocou skrytých Markovovských modelov}
 \label{sec:hmm-alignment}
@@ -307,7 +299,7 @@ V~každom kroku HMM vygeneruje a presunie sa do nejakého (aj toho istého) stav
 Konkrétny HMM je definovaný množinou stavov a nasledujúcimi distribúciami.
 \begin{itemize}
 \item distribúcia začiatočných stavov (pravdepodobnosť $\pi_i$, že HMM začne v~stave $i$)
-\item distribúcia prechodov (pravdepodobnosť $a_{i,j}$, že HMM prejde zo stavu $i$ do stavu $j$)
+\item distribúcia prechodov (pravdepodobnosť $a_{i,j}$, že HMM prejde zo stavu $i$ do stavu~$j$)
 \item distribúcia emisií (pravdepodobnosť $e_{i,x}$, že HMM v~stave $i$ vygeneruje symbol $x$)
 \end{itemize}
 
@@ -362,7 +354,7 @@ kde $x$ je postupnosť symbolov a $s$ je postupnosť stavov \cite{skripta, durbi
 
 V~sekcii \ref{subsec:affine-gap-scoring} sme si ukázali jednoduchý algoritmus na globálne zarovnávanie s~afínnym skórovaním medzier. K~tomuto algoritmu sme si uviedli aj jednoduchý stavový automat (obr. \ref{fig:alignment-fsa}). Tento automat vieme previesť na pHMM.
 
-Na to aby sme automat previedli na pHMM, musíme urobiť niekoľko zmien -- musíme nastaviť emisné a prechodové pravdepodobnosti, tak aby sčítavali do jedna.\cite{durbin}
+Na to aby sme automat previedli na pHMM, musíme urobiť niekoľko zmien -- musíme nastaviť emisné a prechodové pravdepodobnosti, tak aby sčítavali do jedna \cite{durbin}.
 
 \begin{figure}[htp]
     \centering
@@ -372,7 +364,7 @@ Na to aby sme automat previedli na pHMM, musíme urobiť niekoľko zmien -- mus�
 \end{figure}
 
 \subsection{Viterbiho algoritmus na pHMM}
-Hľadáme najpravdepodobnejšiu postupnosť stavov A~ak máme dané sekvencie $X$ a $Y$, teda $\arg\max_A \Pr(A, X, Y)$. Úlohu budeme riešiť dynamickým programovaním.
+Hľadáme najpravdepodobnejšiu postupnosť stavov A~ak máme dané sekvencie $X$~a~$Y$, teda $\arg\max_A \Pr(A, X, Y)$. Úlohu budeme riešiť dynamickým programovaním.
 
 Podproblém $V[i, j, u]$ je pravdepodobnosť najpravdepodobnejšej postupnosti stavov končiacej v~$X[i]$ a $Y[j]$ v~stave $u$.
 
@@ -424,12 +416,11 @@ Aby sme stavy vedeli zrekonštruovať, pamätáme si pre každé $V[i, j, u]$ st
 
 Časová zložitosť tohto algoritmu je $O(nm)$.
 
-Poznámka: pre dlhé sekvencie budú čísla $V[i, j, u]$ veľmi malé a môže dôjsť k~podtečeniu. V~praxi teda používame zlogaritmované hodnoty a namiesto násobenia súčet.
-\cite{durbin}
+Poznámka: pre dlhé sekvencie budú čísla $V[i, j, u]$ veľmi malé a môže dôjsť k~podtečeniu. V~praxi teda používame zlogaritmované hodnoty a namiesto násobenia súčet \cite{durbin}.
 
 \subsection{Nastavenie parametrov pHMM}
 \label{subsec:hmmtraining}
-Ak máme anotované trénovacie sekvencie, môžme HMM trénovať \textit{metódou maximálnej vierohodnosti (v~angličtine maximum likelihood estimation)}. \cite{ durbin, wiki:mle}
+Ak máme anotované trénovacie sekvencie, môžme HMM trénovať \textit{metódou maximálnej vierohodnosti (v~angličtine maximum likelihood estimation)} \cite{ durbin, wiki:mle}.
 Emisie získame tak, že vyfiltrujeme symboly s~príslušným stavom a spočítame frekvencie pre každý stav zvlášť, pričom v~Match stave počítame frekvencie dvojíc symbolov. Tranzície získame tak, že pre každý stav spočítame frekvencie nasledujúcich stavov. Parametre modelu môžme teda ľahko natrénovať z~existujúcich párových zarovnaní.
 
 \section[Štat. významnosť ]{Štatistická významnosť zarovnania}
@@ -443,7 +434,7 @@ Ako vodítko pri rozhodnutí sa používajú identifikátory \textit{štatistick
     \label{fig:p-value}
 \end{figure}
 
-P-hodnota zarovnania je pravdepodobnosť, že medzi náhodne generovanými sekvenciami tej istej dĺžky by sme našli zarovnanie s~rovnakým skóre alebo vyšším. Keďže P-hodnota závisí od dĺžok sekvencií a skóre, musíme ju počítať pri každom zarovnaní. Je však časovo náročné robiť to generovaním veľkého množstva zarovnaní, preto sa používajú matematicky odvodené vzorce na odhad tejto hodnoty. (\cite{Karlin}, \cite{Mitrophanov}).
+P-hodnota zarovnania je pravdepodobnosť, že medzi náhodne generovanými sekvenciami tej istej dĺžky by sme našli zarovnanie s~rovnakým skóre alebo vyšším. Keďže P-hodnota závisí od dĺžok sekvencií a skóre, musíme ju počítať pri každom zarovnaní. Je však časovo náročné robiť to generovaním veľkého množstva zarovnaní, preto sa používajú matematicky odvodené vzorce na odhad tejto hodnoty \cite{Karlin}, \cite{Mitrophanov}.
 
 E-hodnota vyjadruje strednú hodnotu počtu zarovnaní so skóre aspoň takým ako má naše zarovnanie medzi náhodne generovanými sekvenciami. E-hodnota teda môže byť aj väčšia ako jedna. Ak je E-hodnota väčšia ako jedna, tak čisto náhodou by sme očakávali aspoň jedno také silné zarovnanie, a teda zarovnania s~takouto (a nižšou) E-hodnotou nebudeme považovať za štatisticky významné.
 
