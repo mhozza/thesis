@@ -12,16 +12,11 @@ V~tejto kapitole sa budeme venovať výberu klasifikátora a jeho vstupných atr
 \section[Použitie náh. lesov v~zarovnaní]{Použitie náhodných lesov na klasifikáciu zarovnaní}
 \label{sec:use-rf-alignment}
 
-% - Popisat dva typy klasifikatov (Match, Indel) a zdovodnit, preco budujeme dva klasifikatory a nie jeden alebo tri.
-% - Vyber atributov: Popisat potrebu vytiahnut z dat nejake atributy, ktore mozno klasifikatoru podhodit. Popisat styri typy extrakcie atributov a oznacit ich (ja by som ich oznacil A,B,C,D, nie 1-4, aby sa to potom neplietlo s inymi cislovanymi vecami); je vhodne si jednotlive atributy kompaktne oznacit, aby sa potom dalo jednoduchsie o nich diskutovat (napr. stredova pozicia moze byt 0, pozicie nalavo mozu byt -1,-2 a napravo 1,2; takze potom mozes mat atributy typu x_0,x_{-1} a pod.; pri inserte jednoducho v y nemas 0; anotaciu v x mozes mat napr. a_0, a_{-1} a pod.; anotaciu v y mozes mat b_0, b_1 a pod.; no a rovnost mozes oznacovat napr. m_{0,0} alebo nieco podobne)
-% - Trenovanie a testovanie klasifikatorov: pozitivne data su jednoduche, no s negativnymi je problem; potreba vyvazit v trenovacich datach pozitivne a negativne priklady (preco?), potreba obohatit negativne data o urcity typ dat (preco?); oznacit dva typy trenovacich dat (povedzme "náhodné" a "diagonálne"); charakteristika trenovacich a testovacich dat: z coho sme data vyberali? kolko trenovacich a testovacich prikladov? (najlepsie vyrobit nejaku prehladnu tabulku)
-% - Kratky popis kniznice, ktoru pouzivas na klasifikaciu (co je to zac, v akom jazyku, aka rychla / pomala...)
-
 Keďže v~našich modeloch máme dva typy stavov, použili sme dva typy klasifikátorov: \textit{Match klasifikátor} pre Match stav a \textit{Indel klasifikátor} pre Inzert stavy.
 
-Klasifikátory dostanú na vstupe dáta asociované s~pozíciami v~daných sekvenciách a rozdeľujú ich do dvoch tried -- nula a jedna. V~Match klasifikátore trieda jedna znamená, že dané dve pozície majú byť zarovnané k~sebe a nula znamená, že nie. V~Indel klasifikátore trieda jedna označuje pozície, ktoré majú byť zarovnané k~medzere a nula tie, ktoré nemajú. Ako výstupnú hodnotu pre naše modely berieme pravdepodobnosť, že dané dáta patria do triedy jedna. Túto pravepodobnosť defimnujeme ako $P(C=1|W=w)$, Kde $C$ je náhodná premenná pre výstupnú triedu, $W$ je náhodná premenná pre množinu atribútov a $w$ sú konkrétne hodnoty atribútov.
+Klasifikátory dostanú na vstupe dáta asociované s~pozíciami v~daných sekvenciách a rozdeľujú ich do dvoch tried -- nula a jedna. V~Match klasifikátore trieda jedna znamená, že dané dve pozície majú byť zarovnané k~sebe a nula znamená, že nie. V~Indel klasifikátore trieda jedna označuje pozície, ktoré majú byť zarovnané k~medzere a nula tie, ktoré nemajú. Ako výstupnú hodnotu pre naše modely berieme pravdepodobnosť, že dané dáta patria do triedy jedna. Túto pravepodobnosť definujeme ako $P(C=1|W=w)$, Kde $C$ je náhodná premenná pre výstupnú triedu, $W$ je náhodná premenná pre množinu atribútov a $w$ sú konkrétne hodnoty atribútov.
 
-Keďže tieto klasifikátory sú nezávislé, nemusí platiť, že $P_M(C=1|W_M=w_M) + P_I(C=1|W_I=w_I) = 1$, kde $P_M$ je výstup z Match klasifikátora a $P_I$ je výstup z Indel klasifikátora a $w_M$ a $w_I$ sú atribúty pre tie isté pozície v Match a Indel klasifikátory. Môže sa napríklad stať, že oba klasifikátory zaradia atribúty prislúchajúce tým istým pozíciám do triedy jedna, alebo do triedy nula.
+Keďže tieto klasifikátory sú nezávislé, nemusí platiť, že $$P_M(C=1|W_M=w_M) + P_I(C=1|W_I=w_I) = 1,$$ kde $P_M$ je výstup z~Match klasifikátora a $P_I$ je výstup z~Indel klasifikátora a $w_M$ a $w_I$ sú atribúty pre tie isté pozície v~Match a Indel klasifikátory. Môže sa napríklad stať, že oba klasifikátory zaradia atribúty prislúchajúce tým istým pozíciám do triedy jedna, alebo do triedy nula.
 % Tieto pravdepodobnosti sú akousi mierou istoty daného klasifikátora, a keďže tieto dva klasifikátory sú nezávislé, súčet ich výstupov nemusí byť jedna. Sú totiž tri možnosti, čo sa môže stať:
 % \begin{itemize}
 %     \item dve bázy sú zarovnané k~sebe
@@ -32,14 +27,14 @@ Keďže tieto klasifikátory sú nezávislé, nemusí platiť, že $P_M(C=1|W_M=
 \subsection{Výber atribútov}
 \label{subsec:attribute-selection}
 
-Klasifikátor dokáže pracovať len s~poľom číselných atribútov, preto bolo treba najskôr dáta dať do tejto podoby. Navyše bolo treba rozhodnúť, aké dáta bude klasifikátor používať. Potrebovali sme, aby klasifikátor videl bázy a ich anotácie na daných pozíciách. Navyše sme sa rozhodli pridať ako pomôcku aj okolie daných báz spolu s~anotáciami. Toto okolie budeme volať \textit{okno}. Vyskúšali sme štyri rôzne formy okna a zisťovali sme, ktorá forma je pre klasifikátor najvhodnejšia. Na to sme mali dve miery: úspešnosť klasifikátora a dôležitosť atribútov. Pri úspešnosti sme sledovali rozdelenie výstupu klasifikátora pre pozitívne a negatívne atribúty. Dôležitosť atribútov sme mali hlavne na kontrolu a vizualizáciu atribútov.
+Klasifikátor dokáže pracovať len s~vektorom číselných atribútov, preto bolo treba najskôr dáta dať do tejto podoby. Navyše bolo treba rozhodnúť, aké dáta bude klasifikátor používať. Potrebovali sme, aby klasifikátor videl bázy a ich anotácie na daných pozíciách. Navyše sme sa rozhodli pridať ako pomôcku aj okolie daných báz spolu s~anotáciami. Toto okolie budeme volať \textit{okno}. Vyskúšali sme štyri rôzne formy okna a zisťovali sme, ktorá forma je pre klasifikátor najvhodnejšia. Na to sme mali dve miery: úspešnosť klasifikátora a dôležitosť atribútov. Pri úspešnosti sme sledovali rozdelenie výstupu klasifikátora pre pozitívne a negatívne atribúty. Dôležitosť atribútov sme mali hlavne na kontrolu a vizualizáciu atribútov.
 
 \subsubsection{Definícia okna}
 Okno veľkosti $w$ pozostáva z~$2w$ blokov veľkosti $k = (1+\#\text{anotácií})$.
 Majme teda dve sekvencie, $X = x_1 x_2 \dots x_n$ a $Y = y_1 y_2 \dots y_n$ a pozície $i$ a $j$.
-Pri Match klasifikátore okno veľkosti $w$ obsahuje $x_{i - w/2}\dots x_i \dots x_{i + (1 + w)/2}$, $y_{j - w/2}\dots y_j \dots y_{j + (1 + w)/2}$ a všetky anotácie príslušných báz. (Obr. \ref{fig:window-m})
+Pri Match klasifikátore okno veľkosti $w$ obsahuje $x_{i - w/2}\dots x_i \dots x_{i + (1 + w)/2}$, $y_{j - w/2}\dots y_j \dots y_{j + (1 + w)/2}$ a všetky anotácie príslušných báz (obr. \ref{fig:window-m}).
 Pri Indel klasifikátore používame tiež dve pozície -- prvá je pozícia bázy, na ktorú sa pýtame a druhá je pozícia medzery medzi dvoma bázami.
-Predpokladajme teraz, že $X$ je sekvencia s~bázou. Okno Indel klasifikátora veľkosti $w$ obsahuje $x_{i - w/2}\dots x_i \dots x_{i + (1 + w)/2}$, $y_{j - w/2}\dots y_j \dots y_{j + (1 + w)/2 - 1}$ a všetky anotácie príslušných báz. (Obr. \ref{fig:window-i})
+Predpokladajme teraz, že $X$ je sekvencia s~bázou. Okno Indel klasifikátora veľkosti $w$ obsahuje $x_{i - w/2}\dots x_i \dots x_{i + (1 + w)/2}$, $y_{j - w/2}\dots y_j \dots y_{j + (1 + w)/2 - 1}$ a všetky anotácie príslušných báz (obr. \ref{fig:window-i}).
 
 \begin{figure}[h]
         \centering
@@ -109,7 +104,7 @@ Indel klasifikátor sme chceli natrénovať tak, aby pre miesta, ktoré majú by
 
 \subsubsection{Parametre trénovacej a testovacej množiny}
 \label{subsec:clf-training-sets}
-Dáta pre naše experimenty pochádzajú z~nášho simulátora, ktorý si popíšeme v \ref{subsec:simulator}. Trénovacia sada sa skladá z~20 zarovnaní sekvencií, pričom každé zarovnanie má dĺžku 10000. Celá trénovacia sada pre Match klasifikátor má 329428 príkladov. Pre Indel klasifikátor má sada 34150 príkladov.
+Dáta pre naše experimenty pochádzajú z~nášho simulátora, ktorý si popíšeme v~sekcii \ref{subsec:simulator}. Trénovacia sada sa skladá z~20 zarovnaní sekvencií, pričom každé zarovnanie má dĺžku 10000. Celá trénovacia sada pre Match klasifikátor má 329428 príkladov. Pre Indel klasifikátor má sada 34150 príkladov.
 Testovacia sada sa skladá z~jedného zarovnania s~dĺžkou 10000. Pre Match klasifikátor obsahuje 16498 príkladov. Pre Indel klasifikátor obsahuje 1674 príkladov.
 Vo všetkých sadách je polovica príkladov pozitívnych a polovica negatívnych.
 
@@ -120,7 +115,7 @@ Vo všetkých sadách je polovica príkladov pozitívnych a polovica negatívnyc
 % - Potom uz len popisujes ZAUJIMAVE ukazy z tabulky, pricom grafy a pod. uvadzas len pre tie priklady, kde potrebujes dalsiu evidenciu navyse oproti udajom, ktore uz su uvedene vo velkej tabulke. NEZAUJIMAVE ukazy (t.j. ak je vsetko tak, ako by clovek priamo ocakaval) popisovat netreba.
 % - Asi sa chces venovat aj nejakym sposobom distribuciam skore, ale tam chces zasa len ukazat porovnanie najlepsieho a najhorsieho grafu. (Kedze toto je asi dolezite pre vyber "finalneho" klasifikatora, ktory pojde do HMM...)
 
-Použili sme klasifikátory tak, ako sme popísali v~sekcii \ref{sec:use-rf-alignment} a výsledky sa nachádzajú v~tabuľke \ref{tab:clf-results}. Pre naše experimenty sme použili okno veľkosti päť, ale ako si ukážeme v časti \ref{subsec:window-size} na veľkosti okna pri našich experimentoch nezáleží.
+Použili sme klasifikátory tak, ako sme popísali v~sekcii \ref{sec:use-rf-alignment} a výsledky sa nachádzajú v~tabuľke \ref{tab:clf-results}. Pre naše experimenty sme použili okno veľkosti päť, ale ako si ukážeme v~sekcii \ref{subsec:window-size} na veľkosti okna pri našich experimentoch nezáleží.
 
 \begin{table}[htp]
 \catcode`\-=12
@@ -249,7 +244,7 @@ V~tabuľke \ref{tab:clf-results} vidíme, že hoci typ C obsahuje nadmnožinu at
 
 \subsection{Nezávislosť typu dát na veľkosti okna}
 \label{subsec:window-size}
-V tejto časti si ukážeme, že výber nášho typu dát nie je závislý na veľkosti okna. A teda môžme najskôr vybrať typ dát a potom sa rozhodnúť, akú veľkosť okna použijeme.
+V~tejto časti si ukážeme, že výber nášho typu dát nie je závislý na veľkosti okna. A~teda môžme najskôr vybrať typ dát a potom sa rozhodnúť, akú veľkosť okna použijeme.
 
 \begin{table}[htp]
 \catcode`\-=12
@@ -258,7 +253,7 @@ V tejto časti si ukážeme, že výber nášho typu dát nie je závislý na ve
 \centering
 \begin{tabular}{ccccc}
 \toprule
-veľkosť okna & typ A & typ B & typ C & typ D\\
+veľkosť okna & typ A~& typ B & typ C & typ D\\
 \midrule
 1 &  72,07 & 72,14 & 72,17 & \textbf{71,82}\\
 3 &  79,82 & \textbf{80,07} & 75,29 & 79,43\\
@@ -279,7 +274,7 @@ veľkosť okna & typ A & typ B & typ C & typ D\\
 \centering
 \begin{tabular}{ccccc}
 \toprule
-veľkosť okna & typ A & typ B & typ C & typ D\\
+veľkosť okna & typ A~& typ B & typ C & typ D\\
 \midrule
 1 &  48,81 & 49,16 & 47,61 & \textbf{50,24}\\
 3 &  70,91 & \textbf{75,63} & 73,84 & 70,79\\
@@ -297,7 +292,7 @@ veľkosť okna & typ A & typ B & typ C & typ D\\
 \label{tab:clf-window-results}
 \end{table}
 
-Z tabuľky \ref{tab:clf-window-results} vidíme, že klasifikátor s atribútmi typu D je, až na okno veľkosti tri, vždy najlepší. Rovnako zostalo zachované aj poradie ostatných typov dát. Z toho môžme usúdiť, že pri voľbe typu dát nezáleží na veľkosti okna.
+Z~tabuľky \ref{tab:clf-window-results} vidíme, že klasifikátor s~atribútmi typu D je, až na okno veľkosti tri, vždy najlepší. Rovnako zostalo zachované aj poradie ostatných typov dát. Z~toho môžme usúdiť, že pri voľbe typu dát nezáleží na veľkosti okna.
 
 \section{Zhrnutie}
 

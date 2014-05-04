@@ -8,7 +8,7 @@
 Ako klasifikátor sme si vybrali \textit{náhodný les (angl. Random forest)}, pretože patrí v~súčasnosti medzi najlepšie klasifikátory. V~tejto sekcii si popíšeme základný algoritmus a v~čom spočívajú jeho výhody a jeho najdôležitejšie vlastnosti.
 
 \subsubsection[Dôležité vlastnosti]{Dôležité vlastnosti náhodných lesov}
-Klasifikátor náhodný les má niekoľko dôležitých vlastností, kvôli ktorým sme si ho vybrali:
+Klasifikátor náhodný les má niekoľko dôležitých vlastností, kvôli ktorým sme si ho vybrali \cite{randomForest}:
 \begin{itemize}
 \item má vysokú presnosť (podľa \cite{randomForest} je najpresnejší spomedzi všetkých vtedajších klasifikačných algoritmov)
 \item je efektívny aj na veľkých dátach
@@ -16,9 +16,8 @@ Klasifikátor náhodný les má niekoľko dôležitých vlastností, kvôli ktor
 % \item natrénovaný náhoný les môžme uložiť a neskôr použiť na ďalšie dáta
 \item dáva odhad, ktoré premenné sú dôležité na klasifikáciu.
 \end{itemize}
-\cite{randomForest}
 
-Navyše má ešte niekoľko ďalších užitočných vlastností, ktoré však pre nás neboli rozhodujúce:
+Navyše má ešte niekoľko ďalších užitočných vlastností, ktoré však pre nás neboli rozhodujúce\cite{randomForest}:
 
 \begin{itemize}
 \item dokáže sa vysporiadať aj s~väčším množstvom chýbajúcich dát
@@ -27,7 +26,6 @@ Navyše má ešte niekoľko ďalších užitočných vlastností, ktoré však p
 \item počítanie vzdialenosti môže byť použité aj na dáta bez informácie o~triede, čo sa dá použiť na klastrovanie a detekciu outlierov.
 \item Ponúka experimentálnu metódu na detekciu interakcie medzi premennými.
 \end{itemize}
-\cite{randomForest}
 
 \subsection{Klasifikačné stromy}
 Keďže náhodný les je vlastne les \textit{klasifikačných stromov (niekedy označované ako rozhodovacie stromy)}, je nevyhnutné, aby sme si najskôr povedali niečo o~nich.
@@ -62,7 +60,7 @@ $$IG(S,A) = E(S) - \sum_{v \in A} \frac{\left| S_{\{A=v\}} \right|}{\left| S \ri
 \subsection{Náhodný les}
 
 \subsubsection{Klasifikácia}
-Náhodný les sa skladá z~mnohých klasifikačných stromov. Pri klasifikácii nejakého vstupného vektora sa predloží vstupný vektor každému stromu. Každý strom následne vráti klasifikáciu a hovoríme, že stromy \textit{hlasujú}. Náhodný les následne zvolí klasifikáciu podľa väčšiny z~hlasov všetkých stromov v~lese.
+Náhodný les sa skladá z~mnohých klasifikačných stromov. Pri klasifikácii nejakého vstupného vektora sa predloží vstupný vektor každému stromu. Každý strom následne vráti klasifikáciu a hovoríme, že stromy \textit{hlasujú}. Náhodný les následne zvolí klasifikáciu podľa väčšiny z~hlasov všetkých stromov v~lese \cite{randomForest}.
 
 %TODO parametrizacia rf
 

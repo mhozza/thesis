@@ -4,7 +4,7 @@
 V~tejto kapitole si stručne popíšeme čo je to globálne a lokálne zarovnanie a ukážeme základné algoritmy na hľadanie globálneho a lokálneho zarovnania. Tieto algoritmy budeme neskôr modifikované používať pri našom riešení.
 
 \section{Podobnosť sekvencií, sekvenčná homológia a zarovnanie}
-V~prírode vznikajú evolúciou nové sekvencie modifikáciou už existujúcich. Preto môžme často spozorovať podobnosť medzi neznámou sekvenciou a sekvenciou o~ktorej už niečo vieme. Ak zistíme podobnosti medzi sekvenciami, môžeme preniesť informácie o~štruktúre a/alebo funkcii na novú sekvenciu.
+V~prírode vznikajú evolúciou nové DNA sekvencie (ďalej len sekvencie) modifikáciou už existujúcich. Preto môžme často spozorovať podobnosť medzi neznámou sekvenciou a sekvenciou o~ktorej už niečo vieme. Ak zistíme podobnosti medzi sekvenciami, môžeme preniesť informácie o~štruktúre a/alebo funkcii na novú sekvenciu.
 
 Podobné sekvencie, ktoré sa vyvinuli mutáciami zo sekvencie v~spoločnom predkovi sa nazývajú \textit{homologické} a pod pojmom \textit{hľadanie homológov} rozumieme hľadanie takých podobností, ktoré s~veľkou pravdepodobnosťou vznikli práve spoločnou evolučnou históriou.
 
@@ -13,7 +13,7 @@ Podobné sekvencie, ktoré sa vyvinuli mutáciami zo sekvencie v~spoločnom pred
 
 %Vývoj sekvencií hromadí \textit{inzercie}, \textit{delécie} a \textit{substitúcie}, takže predtým ako môže byť vyhodnotená podobnosť, treba urobiť zarovnanie sekvencií. Preto je zarovnanie sekvencií veľmi dôležité.
 
-Počas evolúcie dvoch homologických sekvencií nastane veľa \textit{inzercií}, \textit{delécií} a \textit{substitúcií}, preto predtým ako môžeme začať porovnávať sekvencie, ich musíme zarovnať tak, aby homologické časti sekvencií boli na rovnakom mieste v~zarovnaní.
+Počas evolúcie dvoch homologických sekvencií nastane veľa \textit{inzercií}, \textit{delécií} a \textit{substitúcií}, preto predtým ako môžeme začať porovnávať sekvencie, ich musíme zarovnať tak, aby homologické časti sekvencií boli na rovnakom mieste v~zarovnaní. Substicúcie nastanú ak niektorá báza zmutuje, teda sa zmení na inú. Inzercie nastanú ak sa do sekvencie pridá nejaký súvislý úsek a delécie nastanú ak zo sekvencie vypadne súvislý úsek. Inzerciu a deléciu označíme spoločne pojmom indel. Indely v~sekvencii voláme aj medzery a označujeme pomlčkami. Pričom vo všeobecnosti ak máme medzeru v~jednej sekvencii, nevieme povedať, či ide o~deléciu v~tejto sekvencii, alebo inzerciu v~druhej.
 \cite{durbin, skripta}
 
 \begin{figure}[hbtp]
@@ -102,9 +102,9 @@ Ak chceme mať schému, kde biologicky najkorektnejšie zarovnanie má najvyšš
 
 \subsection{Skórovacie matice}
 Skoro vždy však chceme rôzne zhody a nezhody skórovať rôzne - nie len všetky zhody $+1$ a nezhody $-1$.
-Skóre môže záviseť od toho aké bázy sú v~danom stĺpci zarovnania. Na to sa používa \textit{skórovacia matica} (obr. \ref{fig:scoringmatrix}), kde máme definované skóre pre každú dvojicu. Skórovacie matice sa využívajú aj pri zarovnávaní proteínov, kde niektoré dvojice majú podobné chemické vlastnosti.
-\cite{durbin, skripta}
-Môžme mať aj afínne skôrovanie medzier, kde máme iné skóre za začatie medzery ako za predĺženie medzery. O tom si popíšeme v časti \ref{subsec:affine-gap-scoring}
+Skóre môže záviseť od toho aké bázy sú v~danom stĺpci zarovnania. Na to sa používa \textit{skórovacia matica} (obr. \ref{fig:scoringmatrix}), kde máme definované skóre pre každú dvojicu. Skórovacie matice sa využívajú aj pri zarovnávaní proteínov, kde niektoré dvojice majú podobné chemické vlastnosti
+\cite{durbin, skripta}.
+Môžme mať aj afínne skôrovanie medzier, kde máme iné skóre za začatie medzery ako za predĺženie medzery. O~tom si popíšeme v~sekcii \ref{subsec:affine-gap-scoring}
 Iným typom skórovacej schémy je napríklad \textit{párový skrytý markvovský model} (viac v~sekcii \ref{sec:hmm-alignment})
 
 \begin{figure}[hbtp]
@@ -124,9 +124,9 @@ Iným typom skórovacej schémy je napríklad \textit{párový skrytý markvovsk
 
 \section[Algoritmy]{Algoritmy na hľadanie zarovnaní}
 Pre danú skórovaciu schému potrebujeme algoritmus, ktorý nájde optimálne zarovnanie dvoch sekvencií.
-Budeme uvažovať zarovnávanie s~medzerami. Medzery používame na znázornenie inzercie alebo delécie\footnote{vo všeobecnosti nevieme povedať, či ide o inzerciu v jednej sekvencii alebo deléciu v druhej sekvencii}. Na označenie medzier používame pomlčku {\tt'-'} a medzeru do sekvencie medzi dve bázy pridáme tak, že medzi dve bázy napíšeme jednu alebo viac pomlčiek -- počet pomlčiek zodpovedá počtu medzier a teda aj počtu báz, ktoré má na danom mieste jedna sekvencia navyše oproti druhej. Do sekvencie môžeme pridať ľubovoľne veľa medzier (pričom nemôžeme mať dve pomlčky v jednom stĺpci), aby sme dosiahli lepšie skóre. Pre dve sekvencie dĺžky $n$ existuje
+Budeme uvažovať zarovnávanie s~medzerami. Medzery používame na znázornenie inzercie alebo delécie\footnote{vo všeobecnosti nevieme povedať, či ide o~inzerciu v~jednej sekvencii alebo deléciu v~druhej sekvencii}. Na označenie medzier používame pomlčku {\tt'-'} a medzeru do sekvencie medzi dve bázy pridáme tak, že medzi dve bázy napíšeme jednu alebo viac pomlčiek -- počet pomlčiek zodpovedá počtu medzier a teda aj počtu báz, ktoré má na danom mieste jedna sekvencia navyše oproti druhej. Do sekvencie môžeme pridať ľubovoľne veľa medzier (pričom nemôžeme mať dve pomlčky v~jednom stĺpci), aby sme dosiahli lepšie skóre. Pre dve sekvencie dĺžky $n$ existuje
 $$ {2n \choose n}  = \frac{(2n)!}{(n!)^2} \simeq \frac{2^{2n}}{\sqrt{\pi n}} $$
-možných globálnych zarovnaní. \cite{durbin} Pre dlhšie sekvencie nie je možné enumerovať všetky a vybrať tú s najlepším skóre.
+možných globálnych zarovnaní. \cite{durbin} Pre dlhšie sekvencie nie je možné enumerovať všetky a vybrať tú s~najlepším skóre.
 
 Algoritmy na hľadanie zarovnaní využívajú \textit{dynamické programovanie}.
 Často sa používajú aj rôzne heuristiky na urýchlenie výpočtu.
@@ -174,10 +174,10 @@ A[i-1,j-1]+s(x_i, y_j)\\
 A[i-1,j]-d\\
 A[i,j-1]-d
 \end{array} \right.$$
-Maticu vieme vypĺňať po riadkoch, pričom každé políčok vieme vypočítať z~troch políčok, ktoré už sú vypočítané. Políčko $A[0, 0] = 0$ a krajné políčka potom vieme vypočítať ako $A[i,0] = A[i-1,j]-d$ a $A[0, j] = A[i,j-1]-d$
+Maticu vieme vypĺňať po riadkoch, pričom každé políčok vieme vypočítať z~troch políčok, ktoré už sú vypočítané. Políčko $A[0, 0] = 0$ a krajné políčka potom vieme vypočítať ako $A[i,0] = A[i-1,0]-d$ a $A[0, j] = A[0,j-1]-d$
 
 Ak nás zaujíma aj zarovnanie -- nie len jeho skóre -- vieme si pre každé políčko zapamätať ktorá z~troch možností dosiahla maximálnu hodnotu
-(červené šípky na Obr. \ref{fig:global-align}). Na základe tejto informácie potom vieme zrekonštruovať zarovnanie tak, že postupne z~posledného políčka ($A[n,m]$) budeme prechádzať na políčko, z~ktorého sme vypočítali aktuálnu hodnotu.
+(červené šípky na obr. \ref{fig:global-align}). Na základe tejto informácie potom vieme zrekonštruovať zarovnanie tak, že postupne z~posledného políčka ($A[n,m]$) budeme prechádzať na políčko, z~ktorého sme vypočítali aktuálnu hodnotu.
 
 Časová zložitosť je $O(nm)$, pretože vypĺňame $nm$ políčok, každé v~konštantnom čase. Zjavne aj pamäťová zložitosť je $O(nm)$.
 
@@ -216,15 +216,16 @@ A[i,j-1]-d
 \end{array} \right.$$
 V~tomto prípade sú všetky krajné políčka nulové.
 
-Zarovnanie potom nájdeme tak, že začneme z políčka s maximálnym skóre, a postupne budeme prechádzať na políčka, z ktorých sme získali maximálnu hodnotu, kým nenarazíme na nulu.
+Zarovnanie potom nájdeme tak, že začneme z~políčka s~maximálnym skóre, a postupne budeme prechádzať na políčka, z~ktorých sme získali maximálnu hodnotu, kým nenarazíme na nulu.
 
 Časová aj pamäťová zložitosť sú, rovnako ako pri globálnom zarovnaní $O(nm)$.
+\cite{durbin}
 
 \subsection{Afínne skórovanie medzier}
 \label{subsec:affine-gap-scoring}
 V~jednoduchom skórovaní sme dávali za pomlčku vždy rovnaké skóre ($-1$). Pri evolúcii sa však môže stať, že sa naraz zmaže (alebo vloží) niekoľko susedných báz, čo je pravdepodobnejšie ako to, že sa dané bázy zmazali (alebo vložili) nezávisle. Pri \textit{afínnom skórovaní medzier} teda zavedieme dva typy skóre. Skóre za \textit{začatie medzery} a skóre za \textit{rozšírenie medzery}.
 
-Algoritmus globálneho zarovnania vieme upraviť nasledovne: Namiesto matice $A$ teraz budeme mať 3 matice $M$, $I_x$, $I_y$ zodpovedajúce trom situáciám (Obr. \ref{fig:affine-space-situations}).
+Algoritmus globálneho zarovnania vieme upraviť nasledovne: Namiesto matice $A$ teraz budeme mať 3 matice $M$, $I_x$, $I_y$ zodpovedajúce trom situáciám (obr. \ref{fig:affine-space-situations}).
 
 \begin{figure}[htp]
     \centering
@@ -271,13 +272,13 @@ I_y[i-1,j-1]+s(x_i, y_j)
 I_x[i,j] &= \max \left\{
 \begin{array}{l}
 M[i-1,j]-d\\
-I_x[i-1,j]-e
+I_x[i-1,j]-e\\
 I_y[i-1,j]-d
 \end{array} \right.\\
 I_y[i,j] &= \max \left\{
 \begin{array}{l}
 M[i,j-1]-d\\
-I_x[i,j-1]-d
+I_x[i,j-1]-d\\
 I_y[i,j-1]-e
 \end{array} \right.
 \end{align*}
@@ -300,7 +301,7 @@ Tieto vzťahy vieme popísať stavovým diagramom na obrázku \ref{fig:alignment
 \label{sec:hmm-alignment}
 
 \textit{Skrytý markovovský model (Hidden Markov Model, HMM)} je generatívny pravdepodobnostný model, ktorý generuje náhodnú sekvenciu spolu s~jej anotáciou (stavmi). HMM sa podobá na konečný automat. Skladá sa z~konečného množstva stavov, prechodov medzi nimi a emisií.
-V každom kroku HMM vygeneruje a presunie sa do nejakého (aj toho istého) stavu. Generovanie symbolov aj presun medzi stavmi prebieha pravdepodobnostne.
+V~každom kroku HMM vygeneruje a presunie sa do nejakého (aj toho istého) stavu. Generovanie symbolov aj presun medzi stavmi prebieha pravdepodobnostne.
 % Na rozdiel od bežných konečných automatov, HMM emitujú symboly v~stave, nie počas prechodu.
 % HMM sa skladá z~3 distribúcií
 Konkrétny HMM je definovaný množinou stavov a nasledujúcimi distribúciami.
@@ -310,14 +311,12 @@ Konkrétny HMM je definovaný množinou stavov a nasledujúcimi distribúciami.
 \item distribúcia emisií (pravdepodobnosť $e_{i,x}$, že HMM v~stave $i$ vygeneruje symbol $x$)
 \end{itemize}
 
-Generovanie sekvencie teda vyzerá nasledovne: Na začiatku je HMM v~stave $i$ s pravdepodobnosťou $\pi_i$. Potom v~každom kroku HMM emituje symbol $x$ s~pravdepodobnosťou $e_{i, x}$ a prejde do stavu $j$ s~pravdepodobnosťou $a_{i,j}$. Po $n$ krokoch takto vygenerujeme sekvenciu dĺžky $n$, pričom každý symbol je oanotovaný stavom, ktorý ho vygeneroval.
+Generovanie sekvencie teda vyzerá nasledovne: Na začiatku je HMM v~stave $i$ s~pravdepodobnosťou $\pi_i$. Potom v~každom kroku HMM emituje symbol $x$ s~pravdepodobnosťou $e_{i, x}$ a prejde do stavu $j$ s~pravdepodobnosťou $a_{i,j}$. Po $n$ krokoch takto vygenerujeme sekvenciu dĺžky $n$, pričom každý symbol je oanotovaný stavom, ktorý ho vygeneroval.
 
 V~takomto modeli vieme počítať pravdepodobnosť, že model vygeneruje sekvenciu $x$ dĺžky $n$ s~anotáciou $s$ ako súčin pravdepodobností prechodov a emisií.
 Výpočet vyzerá nasledovne:
 $$P(X=x | S=s) = \pi_{s_1}\left(\prod_{i=1}^{n-1} e_{s_i,x_i} a_{s_i,s_i+1}\right)e_{s_n,x_n},$$
-kde $x$ je postupnosť symbolov a $s$ je postupnosť stavov.
-
-\cite{skripta, durbin}
+kde $x$ je postupnosť symbolov a $s$ je postupnosť stavov \cite{skripta, durbin}.
 
 
 % % \subsection{Viterbiho algoritmus}
@@ -359,9 +358,9 @@ kde $x$ je postupnosť symbolov a $s$ je postupnosť stavov.
 \label{subsec:hmm-alignment}
 % \todo mic odporúča rovno popísať párové hmm a aj viterbiho rovno naňom, takže to asi prepíšem
 
-\textit{Párové skryté Markovovské modely (pHMM)} sa od tých obyčajných líšia v~tom, že namiesto jednej sekvencie generujú dvojicu sekvencií. Vedia generovať aj dvojicu symbolov aj jeden symbol v jednej sekvencii a nula symbolov v druhej. Na pHMM sa dajú použiť podobné algoritmy ako na HMM, ale treba ich upraviť tak, aby pracovali v~dvoch rozmeroch.
+\textit{Párové skryté Markovovské modely (pHMM)} sa od tých obyčajných líšia v~tom, že namiesto jednej sekvencie generujú dvojicu sekvencií. Vedia generovať aj dvojicu symbolov aj jeden symbol v~jednej sekvencii a nula symbolov v~druhej. Na pHMM sa dajú použiť podobné algoritmy ako na HMM, ale treba ich upraviť tak, aby pracovali v~dvoch rozmeroch.
 
-V~časti \ref{subsec:affine-gap-scoring} sme si ukázali jednoduchý algoritmus na globálne zarovnávanie s~afínnym skórovaním medzier. K~tomuto algoritmu sme si uviedli aj jednoduchý stavový automat (Obr. \ref{fig:alignment-fsa}). Tento automat vieme previesť na pHMM.
+V~sekcii \ref{subsec:affine-gap-scoring} sme si ukázali jednoduchý algoritmus na globálne zarovnávanie s~afínnym skórovaním medzier. K~tomuto algoritmu sme si uviedli aj jednoduchý stavový automat (obr. \ref{fig:alignment-fsa}). Tento automat vieme previesť na pHMM.
 
 Na to aby sme automat previedli na pHMM, musíme urobiť niekoľko zmien -- musíme nastaviť emisné a prechodové pravdepodobnosti, tak aby sčítavali do jedna.\cite{durbin}
 
@@ -417,10 +416,10 @@ a_{I_x, I_y} V[i,j-1,I_x]
 
 Algoritmus funguje takto:
 Nech $n$ a $m$ sú dĺžky sekvencií $X$ a $Y$.
-Na začiatku nainicializuje hodnoty pre $V[0,*,*]$ a $V[*,0,*]$ podľa \ref{eq:viterbi-init}.
+Na začiatku nainicializuje hodnoty pre $V[0,*,*]$ a $V[*,0,*]$ podľa \ref{eq:viterbi-init} ($*$ označíme ľubovoľnú možnú hodnotu).
 Potom postupne pre všetky $i = 1\dots n$, $j = 1\dots m$ a $u \in \{M, I_x, I_y\}$ dynamicky vypočíta $V[i, j, u]$ podľa \ref{eq:viterbi-rec}.
 
-Maximálne $V[n, m, u]\, \forall u \in \{M, I_x, I_y\}$ je pravdepodobnosť najpravdepodobnejšej postupnosti stavov.
+Maximálne $V[n, m, u],\, \forall u \in \{M, I_x, I_y\}$ je pravdepodobnosť najpravdepodobnejšej postupnosti stavov.
 Aby sme stavy vedeli zrekonštruovať, pamätáme si pre každé $V[i, j, u]$ stav $w$, ktorý viedol k~maximálnej hodnote. Táto postupnosť stavov nám udáva najpravdepodobnejšie zarovnanie.
 
 Časová zložitosť tohto algoritmu je $O(nm)$.
@@ -450,3 +449,5 @@ E-hodnota vyjadruje strednú hodnotu počtu zarovnaní so skóre aspoň takým a
 
 V~štatistike sa v~rôznych testoch štandardne používajú prahy na P-hodnotu $0.05$ alebo $0.01$.
 Pri zarovnávaní sekvencií však často používame ešte nižší prah, teda uvažujeme len zarovnania s~P-hodnotou menšou ako napr. $10^{-5}$. Pri malých hodnotách sú P-hodnota a E-hodnota približne rovnaké, teda taký istý prah môžme použiť aj na E-hodnotu.
+
+\input suvisiace_prace.tex
