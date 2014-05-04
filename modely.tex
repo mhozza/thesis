@@ -6,15 +6,15 @@ Hlavnou úlohou našej práce bolo preskúmať využitie dodatočnej informácie
 V~predchádzajúcej kapitole sme riešili problém ako na základe lokálnej informácie rozhodúť, či dané pozície majú byť zarovnané k~sebe alebo k~medzere. Navrhli sme dva klasifikátory -- pre Match a Inzert stav, pričom prvý rozhoduje, či dané dve pozície majú byť zarovnané k~sebe alebo nie. Druhý rozhoduje, či daná pozícia má byť zarovnaná k~medzere.
 
 V~tejto kapitole sa venujeme zakomponovaniu výsledkov z~klasifikátorov do modelov pre zarovnávanie sekvencií.
-Naše modely sa od tých, ktoré sme spomenuli v sekcii \ref{section:other-work}, líšia v niekoľkých veciach:
+Naše modely sa od tých, ktoré sme spomenuli v~sekcii \ref{section:other-work}, líšia v~niekoľkých veciach:
 \begin{itemize}
     \item my sa zaoberáme sekvenciami DNA, nie proteínmi
-    \item nemáme k dispozícii sekundárnu štruktúru, ale iný typ anotácií
+    \item nemáme k~dispozícii sekundárnu štruktúru, ale iný typ anotácií
     \item naše modely sú kombináciou generatívneho a diskriminačného prístupu
     \item naše modely sú založené na pHMM
     \item používame dva rôzne klasifikátory
     \item architektúry našich modelov abstrahujú od klasifikátora
-    \item v našej práci používame ako klasifikátor náhodný les
+    \item v~našej práci používame ako klasifikátor náhodný les
 \end{itemize}
 V~sekcii \ref{sec:hmm-alignment} sme si zadefinovali pHMM pre zarovnávanie sekvencií (obr. \ref{fig:simple-model}).
 Najskôr si popíšeme architektúry našich dvoch modelov, ktoré sú založené na pHMM, pričom pHMM sme modifikovali tak, aby zahŕňal výstupy z~klasifikátorov. Potom sa budeme venovať trénovaniu jednotlivých modelov a nakoniec si modely porovnáme a zhodnotíme ich úspešnosť.
