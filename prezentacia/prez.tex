@@ -9,6 +9,7 @@
 % Urobili vela prace, Nebolo to lahke
 
 
+
 \documentclass[xcolor=dvipsnames, compress, 12pt]{beamer}
 \usepackage[utf8]{inputenc}
 \usepackage[slovak]{babel}
@@ -26,9 +27,18 @@
 \usepackage{hyperref}
 \usepackage{multicol}
 \usepackage{fancyvrb}
+\usepackage{tabu}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{regexpatch}
+\makeatletter
+% Change the `-` delimiter to an active character
+\xpatchparametertext\@@@cmidrule{-}{\cA-}{}{}
+\xpatchparametertext\@cline{-}{\cA-}{}{}
+\makeatother
 
 \usecolortheme[named=Green]{structure}
-\usetheme{Dresden}
+\usetheme{Madrid}
 \setbeamertemplate{navigation symbols}{}
 \usebackgroundtemplate{\includegraphics[width=\paperwidth, height=\paperheight]{images/bg.png}}
 \setbeamercovered{transparent}
@@ -64,7 +74,8 @@
     \end{beamercolorbox}%
     \begin{beamercolorbox}[ht=2.5ex,dp=1.125ex,%
       leftskip=.3cm,rightskip=.3cm plus1fil]{title in head/foot}%
-      {\usebeamerfont{title in head/foot}\insertshorttitle} \hfill     \insertframenumber /\inserttotalframenumber %
+      {\usebeamerfont{title in head/foot}\insertshorttitle} \hfill     \insertframenumber
+      % /\inserttotalframenumber %
     \end{beamercolorbox}%
     \begin{beamercolorbox}[colsep=1.5pt]{lower separation line foot}
     \end{beamercolorbox}
@@ -113,8 +124,8 @@
 \begin{frame}{Cieľ}
   % \transdissolve
   \begin{itemize}
-  \item Cieľom práce je vytvoriť nové metódy na korekciu zarovnaní biologických sekvencií na základe prídavnej informácie.
-  \item Integrácia tejto informácie bude zabezpečená pomocou techník využívaných na klasifikáciu v~strojovom učení.
+  \item cieľom práce je vytvoriť nové metódy na korekciu zarovnaní biologických sekvencií na základe prídavnej informácie
+  \item integrácia tejto informácie bude zabezpečená pomocou techník využívaných na klasifikáciu v~strojovom učení
   \end{itemize}
 \end{frame}
 
@@ -122,7 +133,7 @@
 \begin{frame}[fragile]{Zarovnávanie sekvencií}
   \begin{itemize}
       \item jedným zo základných bioinformatických problémov
-      \item identifikuje časti sekvencie, ktoré vznikli z~toho istého predka (zarovnané bázy), inzercie a delécie v~priebehu evolúcie (medzery v~zarovnaní).
+      \item identifikuje časti sekvencie, ktoré vznikli z~toho istého predka (zarovnané bázy), inzercie a delécie v~priebehu evolúcie (medzery v~zarovnaní)
   \end{itemize}
 \pause
 \begin{df}[Globálne zarovnanie]
@@ -166,8 +177,8 @@ Príklad:
       \item \lenitem{Match -- emituje dvojice:\\ $AA, AC, AG,\dots, TT$}
       \item \lenitem{Insert X, Insert Y -- emitujú jednotlivé bázy $A,C,G,T$}
     \end{itemize}
-    \item \lenitem{Prechodové a emisné pravdepodobnosti sa trénujú pomocou frekvenčnej tabuľky}
-    \item Najpravdepodobnejšie zarovnanie nájdeme pomocou Viterbiho algoritmu
+    \item \lenitem{prechodové a emisné pravdepodobnosti sa trénujú pomocou frekvenčnej tabuľky}
+    \item najpravdepodobnejšie zarovnanie nájdeme pomocou Viterbiho algoritmu
   \end{itemize}
 \end{frame}
 
@@ -179,21 +190,6 @@ Príklad:
 
 %   \begin{itemize}
 %     \item pod parametrami rozumieme skórovací systém -- napr. skórovaciu maticu alebo skrytý markvovský model
-%   \end{itemize}
-% \end{frame}
-
-
-% \begin{frame}{Zarovnávanie sekvencií}
-% Kľúčové problémy:
-%   \begin{itemize}
-%     \pause
-%     \item Aké typy zarovnávania by sme mali uvažovať
-%     \pause
-%     \item Skórovací systém, ktorý použijeme na ohodnotenie zarovnania a trénovanie
-%     \pause
-%     \item Algoritmus, ktorý použijeme na hľadanie optimálneho alebo dobrého zarovnania podľa skórovacieho systému
-%     \pause
-%     \item Štatistická významnosť zarovnania.
 %   \end{itemize}
 % \end{frame}
 
@@ -271,6 +267,24 @@ Príklad:
 % \end{frame}
 
 %ToDo: Obrázok
+\section{Existujúce riešenia}
+\begin{frame}{Existujúce metódy zarovnávania sekvencií s dodatočnou informáciou}
+  \begin{df}[Problém inverzného zarovnania]
+  Vstupom sú dve sekvencie $X$, $Y$ a ich zarovnanie $Z$.
+  Výstupom sú parametre, podľa ktorých je toto zarovnanie optimálne.
+  \end{df}
+  \pause
+  \begin{itemize}
+    \item doterajšie publikácie boli o zarovnávaní proteínových sekvencií
+    \item doterajší výskum sa zaoberal havne riešením problému IZ
+    \item v \cite{svmTrainingProteinsAlignment} využili SVM na nájdenie parametrov a použili anotáciu o štruktúre sekvencií
+    \item podobný prístup zvolili v \cite{contralign}, kde na nájdenie parametrov využili CRF
+    \pause
+    \item obe riešenia ťažia z výhod diskriminatívneho učenia, kde hľadáme $P(Z|W)$ (namiesto $P(Z,W)$, ktoré hľadáme pri generatívnych modeloch)
+  \end{itemize}
+\end{frame}
+
+
 \section{Naše riešenie}
 \begin{frame}{Naše riešenie}
   \begin{itemize}
@@ -284,19 +298,30 @@ Príklad:
   \end{itemize}
 \end{frame}
 
+\begin{frame}{Naše riešenie -- odlišnosti}
+  \begin{itemize}
+    \item zaoberáme sa DNA sekvenciami, nie proteínmi
+    \item nemáme k~dispozícii sekundárnu štruktúru, ale iný typ anotácií
+    \item naše modely sú kombináciou generatívneho a diskriminačného prístupu
+    \item naše modely sú založené na pHMM
+    \item používame dva rôzne klasifikátory
+    \item architektúry našich modelov abstrahujú od klasifikátora
+    \item v~našej práci používame ako klasifikátor náhodný les
+  \end{itemize}
+\end{frame}
 
 \subsection{Klasifikácia na základe lokálnej informácie}
 
 \begin{frame}{Klasifikácia na základe lokálnej informácie}
 \begin{itemize}
-  \item Anotácie sme zakomponovali pomocou dvoch typov klasifikátorov
+  \item anotácie sme zakomponovali pomocou dvoch typov klasifikátorov
   \begin{enumerate}
     \item Match -- rozhoduje či dané pozície majú byť zarovnané k~sebe
     \item Indel -- rozhoduje či daná pozícia má byť zarovnaná k medzere
   \end{enumerate}
-  \item Použili sme \emph{náhodný les (angl. Random forest)} \cite{randomForestPaper}
-  \item Výstup $\in \left<0,1\right>$ -- istota klasifikátora, že dané dve pozície majú byť zarovnané k~sebe (v~insert stave, že daná pozícia má  byť zarovnaná k~medzere)
-  \item Atribúty sú okná veľkosti $w$
+  \item použili sme \emph{náhodný les (angl. Random forest)} \cite{randomForestPaper}
+  \item výstup $\in \left<0,1\right>$ -- istota klasifikátora, že dané dve pozície majú byť zarovnané k~sebe (v~insert stave, že daná pozícia má  byť zarovnaná k~medzere)
+  \item atribúty sú okná veľkosti $w$
 \end{itemize}
 \end{frame}
 
@@ -321,10 +346,10 @@ Príklad:
 
 \begin{frame}{Klasifikácia na základe lokálnej informácie}
   \begin{itemize}
-    \item K~dátam sme pridali informácie o~zhodách na zodpovedajúcich pozíciách, čím sa nám podarilo vylepšiť úspešnosť klasifikátora
-    \item Úspešnosť Match klasifikátora: \textbf{84,32\%}
-    \item Úspešnosť Indel klasifikátora: \textbf{76,46\%}
-    \item Klasifikátor sa dokáže naučiť, ktoré okná majú byť zarovnané k~sebe a ktoré nie
+    \item k~dátam sme pridali informácie o~zhodách na zodpovedajúcich pozíciách, čím sa nám podarilo vylepšiť úspešnosť klasifikátora
+    \item úspešnosť Match klasifikátora: \textbf{89,87\%}
+    \item úspešnosť Indel klasifikátora: \textbf{81,78\%}
+    \item klasifikátor sa dokáže naučiť, ktoré okná majú byť zarovnané k~sebe a ktoré nie
 \end{itemize}
 \end{frame}
 
@@ -368,12 +393,12 @@ Príklad:
 \begin{frame}{Zakomponovanie výsledkov klasifikácie do pHMM}
 
 \begin{itemize}
-  \item Vymysleli sme dva modely pre zarovnanie sekvencií s~anotáciami za pomoci klasifikátora
+  \item vymysleli sme dva modely pre zarovnanie sekvencií s~anotáciami za pomoci klasifikátora
   \begin{enumerate}
     \item Model s~klasifikátorom ako emisiou
     \item Model s~klasifikátorovou páskou
   \end{enumerate}
-  \item Založené na párových skrytých Markovovských modeloch.
+  \item založené na párových skrytých Markovovských modeloch.
 \end{itemize}
 
 \end{frame}
@@ -385,9 +410,9 @@ Príklad:
   \vspace*{-\baselineskip}
 
   \begin{itemize}
-    \item \lenitem{Emisné tabuľky stavov nahradíme výstupom z~klasifikátora}
-    \item \lenitem{Model nie je korektný pravdepodobnostný model, pretože pravdepodobnosti emisií nesčitujú do~1}
-    \item \lenitem{Prechodové pravdepodobnosti sme natrénovali zo zarovnaní z~trénovacej vzorky}
+    \item \lenitem{emisné tabuľky stavov nahradíme výstupom z~klasifikátora}
+    \item \lenitem{model nie je korektný pravdepodobnostný model, pretože pravdepodobnosti emisií nesčitujú do~1}
+    \item \lenitem{prechodové pravdepodobnosti sme natrénovali zo zarovnaní z~trénovacej vzorky}
   \end{itemize}
 \end{frame}
 
@@ -416,14 +441,14 @@ Príklad:
   \vspace*{-\baselineskip}
 
   \begin{itemize}
-      \item \lenitem{Modelujeme navyše sekvenciu výstupov klasifikátora vo forme pásky}
-      \item \lenitem{Trénujeme všetky parametre na trénovacej vzorke zarovnaní obohatenej o~pásku s~výstupmi z~klasifikátora}
+      \item \lenitem{modelujeme navyše sekvenciu výstupov klasifikátora vo forme pásky}
+      \item \lenitem{trénujeme všetky parametre na trénovacej vzorke zarovnaní obohatenej o~pásku s~výstupmi z~klasifikátora}
   \end{itemize}
 
   \begin{itemize}
-    \item \lenitem{Páska je cesta v~2D tabuľke výstupov klasifikátorov}
-    \item \lenitem{Zhoduje sa s~cestou zarovnania}
-    \item Ak sa pohneme horizontálne, alebo vertikálne, používame Indel klasifikátor a ak sa pohneme diagonálne, tak použijeme Match klasifikátor
+    \item \lenitem{páska je cesta v~2D tabuľke výstupov klasifikátorov}
+    \item \lenitem{zhoduje sa s~cestou zarovnania}
+    \item ak sa pohneme horizontálne, alebo vertikálne, používame Indel klasifikátor a ak sa pohneme diagonálne, tak použijeme Match klasifikátor
   \end{itemize}
 \end{frame}
 
@@ -540,29 +565,28 @@ Príklad:
 \begin{frame}{Výsledky}
 
 \begin{table}[htp]
+\footnotesize
+% \catcode`\-=12
 \centering
-\begin{tabular}{|l|r@{,}lr@{,}l|r@{,}lr@{,}l|}
-\hline
-Dáta &  \multicolumn{4}{|c|}{Simulované 1}  & \multicolumn{4}{|c|}{Simulované 2}\\% & \multicolumn{2}{|c|}{Biologické} \\
-\hline
-Model & \multicolumn{2}{|c}{Zhoda} & \multicolumn{2}{c}{Tranz.} & \multicolumn{2}{|c}{Zhoda} & \multicolumn{2}{c|}{Tranz.}\\% & Zhoda & Tranz.\\
-\hline
-Ref. model & 85 & 78\% & 61 & 03\% & 6 & 78\% & 8 & 87\%\\% & \% & \%\\
-\hline
-Model A~& 73 & 95\% & 38 & 10\% & 72 & 62\% & 39 & 48\%\\% & \% & \%\\
-\hline
-Model A~bez an. & 76 & 07\% & 45 & 63\% &  \multicolumn{2}{|c}{---} & \multicolumn{2}{c|}{---} \\% & \% & \%\\
-\hline
-Model B & 81 & 62\% & 54 & 94\% & 18 & 57\% & 10 & 50\%\\% & \% & \%\\
-\hline
-Model B  bez an.& 81 & 22\% & 54 & 18\% & \multicolumn{2}{|c}{---} & \multicolumn{2}{c|}{---}\\% & \% & \%\\
-\hline
-
-\end{tabular}
-\vspace{0.5cm}
-\caption{Porovnanie úspešností modelov. Zhoda je počítaná ako percentuálna zhoda originálneho a nového zarovnania. Tranzitivita je počítaná z~troch zarovnaní $AB$, $BC$ a $AC$ ako percentuálna zhoda medzi $AB \circ BC$ a $AC$.}
-\label{tab:datatype-all}
+\begin{tabu} to \textwidth {X[l]X[c]X[c]X[c]X[c]X[c]X[c]X[c]X[c]}
+\toprule
+\multirow{2}{*}{Dáta} &
+\multicolumn{2}{c}{Model A} &
+\multicolumn{2}{c}{Model B } &
+\multicolumn{2}{c}{Ref. Model } &
+\multicolumn{2}{c}{Muscle} \\
+\cmidrule(r){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(l){8-9}
+& Zhoda & Tranz. & Zhoda & Tranz. & Zhoda & Tranz. & Zhoda & Tranz.\\
+\midrule
+sim1 & 79,75\% & 44,97\% & 84,35\% & 56,5\% & \textbf{85,78\%} & \textbf{61,03\%} & 82,72\%& 58,76\%\\
+sim2 & 70,14\% & --- & \textbf{71,47}\% & --- & 60,38\% & --- & 61,47\% & --- \\
+bio & \textbf{91,40\%} & 96,63\% & 91,24\% & \textbf{96,89\%} & 91,34\% & 96,45\% & 91,28\% & 95,98\%\\
+\bottomrule
+\end{tabu}
+\caption[Porovnanie s~existujúcimi zarovnávačmi]{Porovnanie našich modelov s~referenčným modelom a zarovnávačom muscle.}
+\label{tab:success-compare}
 \end{table}
+
 
 \end{frame}
 
@@ -580,12 +604,16 @@ Model B  bez an.& 81 & 22\% & 54 & 18\% & \multicolumn{2}{|c}{---} & \multicolum
   \transdissolve[duration=5]
   \begin{center}
   \textbf{\color{Green} \LARGE Ďakujem za pozornosť!}
+
+  \includegraphics[width=.30\textwidth]{images/realigner}
+
+  \url{https://github.com/mhozza/realigner}
   \end{center}
 
 
 \end{frame}
 
-\begin{frame}[t]{Literatúra}
+\begin{frame}[allowframebreaks]{Literatúra}
   \bibliographystyle{apalike}
   \bibliography{references}
 \end{frame}
