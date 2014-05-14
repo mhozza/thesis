@@ -8,7 +8,9 @@
 % Ohurit komisiu
 % Urobili vela prace, Nebolo to lahke
 
-
+% oznacit modely
+% popisat tranzitivitu
+% popisat referencne modely
 
 \documentclass[xcolor=dvipsnames, compress, 12pt]{beamer}
 \usepackage[utf8]{inputenc}
@@ -306,7 +308,7 @@ Príklad:
     \item naše modely sú založené na pHMM
     \item používame dva rôzne klasifikátory
     \item architektúry našich modelov abstrahujú od klasifikátora
-    \item v~našej práci používame ako klasifikátor náhodný les
+    \item ako klasifikátor sme použili \emph{náhodný les (angl. Random forest)} \cite{randomForestPaper}
   \end{itemize}
 \end{frame}
 
@@ -319,7 +321,6 @@ Príklad:
     \item Match -- rozhoduje či dané pozície majú byť zarovnané k~sebe
     \item Indel -- rozhoduje či daná pozícia má byť zarovnaná k medzere
   \end{enumerate}
-  \item použili sme \emph{náhodný les (angl. Random forest)} \cite{randomForestPaper}
   \item výstup $\in \left<0,1\right>$ -- istota klasifikátora, že dané dve pozície majú byť zarovnané k~sebe (v~insert stave, že daná pozícia má  byť zarovnaná k~medzere)
   \item atribúty sú okná veľkosti $w$
 \end{itemize}
@@ -393,7 +394,7 @@ Príklad:
 \begin{frame}{Zakomponovanie výsledkov klasifikácie do pHMM}
 
 \begin{itemize}
-  \item vymysleli sme dva modely pre zarovnanie sekvencií s~anotáciami za pomoci klasifikátora
+  \item skonštruovali sme dva modely pre zarovnanie sekvencií s~anotáciami za pomoci klasifikátora
   \begin{enumerate}
     \item Model s~klasifikátorom ako emisiou
     \item Model s~klasifikátorovou páskou
